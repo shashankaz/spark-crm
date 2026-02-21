@@ -172,7 +172,8 @@ export const createTenantService = async ({
     plan,
   });
 
-  const tempPassword = randomBytes(9).toString("base64");
+  // const tempPassword = randomBytes(9).toString("base64");
+  const tempPassword = "Asdf@1234";
   const hashedPassword = await hashPassword(tempPassword);
 
   console.log(
