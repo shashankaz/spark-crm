@@ -1,3 +1,4 @@
+import { randomBytes } from "node:crypto";
 import { formatDate } from "date-fns";
 import { Tenant } from "../models/tenant.model.js";
 import { User } from "../models/user.model.js";
@@ -152,7 +153,7 @@ export const fetchTenantByIdService = async ({ id }) => {
   };
 };
 
-export const createTenantService = ({
+export const createTenantService = async ({
   name,
   gstNumber,
   panNumber,
@@ -161,7 +162,7 @@ export const createTenantService = ({
   address,
   plan,
 }) => {
-  return Tenant.create({
+  const tenant = await Tenant.create({
     name,
     gstNumber,
     panNumber,
@@ -170,6 +171,25 @@ export const createTenantService = ({
     address,
     plan,
   });
+
+  const tempPassword = randomBytes(9).toString("base64");
+  const hashedPassword = await hashPassword(tempPassword);
+
+  console.log(
+    `Creating admin user for tenant ${tenant._id} with email ${email} and temp password ${tempPassword}`,
+  );
+
+  await User.create({
+    tenantId: tenant._id,
+    firstName: name.split(" ")[0],
+    lastName: name.split(" ").slice(1).join(" ") || "",
+    email,
+    mobile: mobile || "",
+    password: hashedPassword,
+    role: "admin",
+  });
+
+  return { tenant };
 };
 
 export const updateTenantByIdService = async ({
@@ -233,7 +253,7 @@ export const createUserForTenantService = async ({
   return User.create({
     tenantId,
     firstName: name.split(" ")[0],
-    lastName: name.split(" ")[1] || "",
+    lastName: name.split(" ").slice(1).join(" ") || "",
     email,
     mobile: mobile || "",
     password: hashedPassword,

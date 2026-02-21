@@ -54,32 +54,4 @@ userSchema.pre("save", function (next) {
   next();
 });
 
-// userSchema.pre("save", async function (next) {
-//   if (this.isModified("password")) {
-//     const salt = await bcrypt.genSalt(10);
-//     this.password = await bcrypt.hash(this.password, salt);
-//   }
-
-//   next();
-// }); // Works only when use doc.save() or doc.create() but not with findOneAndUpdate() or updateOne()
-
-// userSchema.pre("findOneAndUpdate", async function () {
-//   const update = this.getUpdate();
-
-//   if (update.password) {
-//     const salt = await bcrypt.genSalt(10);
-//     update.password = await bcrypt.hash(update.password, salt);
-//   }
-// });
-
-// userSchema.post("save", function (next) {
-//   // Send welcome email
-
-//   next();
-// });
-
-// userSchema.pre("findOne", function () {
-//   this.populate("tenantId", "name");
-// });
-
 export const User = model("User", userSchema);
