@@ -20,8 +20,10 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       .finally(() => setLoading(false));
   }, []);
 
+  const clearUser = () => setUser(null);
+
   return (
-    <UserContext.Provider value={{ user, loading }}>
+    <UserContext.Provider value={{ user, loading, setUser, clearUser }}>
       {children}
     </UserContext.Provider>
   );

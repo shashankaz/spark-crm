@@ -1,6 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
+import { LoaderCircle } from "lucide-react";
 import toast from "react-hot-toast";
 
 import {
@@ -13,6 +15,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { PasswordInput } from "@/components/shared/password-input";
+
+import { useUser } from "@/hooks/use-user";
 
 import { loginFormSchema } from "./login-form-schema";
 import type { LoginFormValues } from "./login-form-schema";
@@ -30,22 +34,24 @@ export const LoginForm = () => {
   });
 
   const navigate = useNavigate();
+  const { setUser } = useUser();
 
-  const onSubmit = async (data: LoginFormValues) => {
-    try {
-      const { user } = await login(data);
-      if (user) {
-        console.log(user);
-        toast.success("Logged in successfully!");
-        if (user.role === "super_admin") navigate("/admin");
-        else navigate("/dashboard");
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error((error as Error).message);
-    } finally {
+  const { mutate, isPending } = useMutation({
+    mutationFn: login,
+    onSuccess: ({ user }) => {
+      setUser(user);
+      toast.success("Logged in successfully!");
+      if (user.role === "super_admin") navigate("/admin", { replace: true });
+      else navigate("/dashboard", { replace: true });
+    },
+    onError: (error) => {
+      toast.error(error.message);
       form.reset();
-    }
+    },
+  });
+
+  const onSubmit = (data: LoginFormValues) => {
+    mutate(data);
   };
 
   return (
@@ -85,9 +91,17 @@ export const LoginForm = () => {
       <Button
         type="submit"
         form="login-form"
+        disabled={isPending}
         className="w-full h-11 rounded-full mt-4"
       >
-        Sign in
+        {isPending ? (
+          <>
+            <LoaderCircle className="animate-spin" />
+            Signing in...
+          </>
+        ) : (
+          "Sign in"
+        )}
       </Button>
     </form>
   );

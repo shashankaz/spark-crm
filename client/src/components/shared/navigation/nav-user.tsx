@@ -1,5 +1,7 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { EllipsisVertical, LogOut, User } from "lucide-react";
+
+import { logout } from "@/api/services/auth.service";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -18,10 +20,28 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
+import { useUser } from "@/hooks/use-user";
+
 import type { User as UserType } from "@/types";
 
 export const NavUser = ({ user }: { user: UserType }) => {
   const { isMobile } = useSidebar();
+  const { clearUser } = useUser();
+
+  const navigate = useNavigate();
+
+  const base = user.role === "super_admin" ? "/admin" : "/dashboard";
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch {
+      // proceed with redirect even if the API call fails
+    } finally {
+      clearUser();
+      navigate("/login");
+    }
+  };
 
   return (
     <SidebarMenu>
@@ -75,7 +95,7 @@ export const NavUser = ({ user }: { user: UserType }) => {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <Link to="/dashboard/profile">
+              <Link to={`${base}/profile`}>
                 <DropdownMenuItem>
                   <User />
                   Profile
@@ -83,7 +103,7 @@ export const NavUser = ({ user }: { user: UserType }) => {
               </Link>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOut />
               Log out
             </DropdownMenuItem>
