@@ -28,7 +28,7 @@ const TenantsPage = () => {
 
   const { isPending, data: tenants = [] } = useQuery<Tenant[]>({
     queryKey: ["getAllTenants"],
-    queryFn: () => getAllTenants().then((response) => response.tenants),
+    queryFn: () => getAllTenants({}).then((response) => response.tenants),
   });
 
   if (isPending) return <TableSkeleton />;

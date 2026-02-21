@@ -36,9 +36,9 @@ import type { POCFormValues } from "./poc-form-schema";
 
 const MOCK_ORGANIZATIONS: Organization[] = [
   {
-    id: "1",
+    _id: "1",
     name: "Acme Corporation",
-    industary: "Technology",
+    industry: "Technology",
     size: "Enterprise",
     country: "United States",
     email: "contact@acmecorp.com",
@@ -65,9 +65,9 @@ const MOCK_ORGANIZATIONS: Organization[] = [
     ],
   },
   {
-    id: "2",
+    _id: "2",
     name: "GlobalTech Solutions",
-    industary: "Technology",
+    industry: "Technology",
     size: "Enterprise",
     country: "United Kingdom",
     email: "info@globaltech.co.uk",
@@ -77,9 +77,9 @@ const MOCK_ORGANIZATIONS: Organization[] = [
     pocs: [],
   },
   {
-    id: "3",
+    _id: "3",
     name: "Green Earth Ventures",
-    industary: "Other",
+    industry: "Other",
     size: "SMB",
     country: "Germany",
     email: "hello@greenearth.de",
@@ -89,9 +89,9 @@ const MOCK_ORGANIZATIONS: Organization[] = [
     pocs: [],
   },
   {
-    id: "4",
+    _id: "4",
     name: "Pinnacle Finance Group",
-    industary: "Finance",
+    industry: "Finance",
     size: "Mid-Market",
     country: "Canada",
     email: "support@pinnaclefinance.ca",
@@ -101,9 +101,9 @@ const MOCK_ORGANIZATIONS: Organization[] = [
     pocs: [],
   },
   {
-    id: "5",
+    _id: "5",
     name: "MediCore Health",
-    industary: "Healthcare",
+    industry: "Healthcare",
     size: "Enterprise",
     country: "Australia",
     email: "contact@medicore.com.au",
@@ -118,7 +118,7 @@ const OrganizationsEditPage = () => {
   const { organizationId } = useParams<{ organizationId: string }>();
   const [pocDialogOpen, setPocDialogOpen] = useState(false);
 
-  const org = MOCK_ORGANIZATIONS.find((o) => o.id === organizationId);
+  const org = MOCK_ORGANIZATIONS.find((o) => o._id === organizationId);
   const [pocs, setPocs] = useState<POC[]>(org?.pocs ?? []);
 
   if (!org) {
@@ -166,9 +166,7 @@ const OrganizationsEditPage = () => {
         <div className="border-b pb-4">
           <div className="flex items-center gap-3">
             <Heading title={org.name} />
-            {org.industary && (
-              <Badge variant="secondary">{org.industary}</Badge>
-            )}
+            {org.industry && <Badge variant="secondary">{org.industry}</Badge>}
           </div>
           {org.country && (
             <Description

@@ -37,7 +37,7 @@ export const OrganizationEditForm: React.FC<OrganizationEditFormProps> = ({
     mode: "onChange",
     defaultValues: {
       name: organization.name,
-      industary: organization.industary as OrganizationFormValues["industary"],
+      industry: organization.industry as OrganizationFormValues["industry"],
       size: organization.size as OrganizationFormValues["size"],
       country: organization.country as OrganizationFormValues["country"],
       email: organization.email ?? "",
@@ -49,7 +49,7 @@ export const OrganizationEditForm: React.FC<OrganizationEditFormProps> = ({
   useEffect(() => {
     form.reset({
       name: organization.name,
-      industary: organization.industary as OrganizationFormValues["industary"],
+      industry: organization.industry as OrganizationFormValues["industry"],
       size: organization.size as OrganizationFormValues["size"],
       country: organization.country as OrganizationFormValues["country"],
       email: organization.email ?? "",
@@ -67,10 +67,7 @@ export const OrganizationEditForm: React.FC<OrganizationEditFormProps> = ({
   };
 
   return (
-    <form
-      id="organization-edit-form"
-      onSubmit={form.handleSubmit(onSubmit)}
-    >
+    <form id="organization-edit-form" onSubmit={form.handleSubmit(onSubmit)}>
       <FieldGroup className="grid grid-cols-2 gap-8 -space-y-4">
         <Controller
           name="name"
@@ -95,15 +92,15 @@ export const OrganizationEditForm: React.FC<OrganizationEditFormProps> = ({
           )}
         />
         <Controller
-          name="industary"
+          name="industry"
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="industary">Industry</FieldLabel>
+              <FieldLabel htmlFor="industry">Industry</FieldLabel>
               <Select onValueChange={field.onChange} value={field.value ?? ""}>
                 <SelectTrigger
                   className="w-full"
-                  id="industary"
+                  id="industry"
                   aria-invalid={fieldState.invalid}
                 >
                   <SelectValue placeholder="Select industry" />
@@ -275,8 +272,8 @@ export const OrganizationEditForm: React.FC<OrganizationEditFormProps> = ({
           onClick={() =>
             form.reset({
               name: organization.name,
-              industary:
-                organization.industary as OrganizationFormValues["industary"],
+              industry:
+                organization.industry as OrganizationFormValues["industry"],
               size: organization.size as OrganizationFormValues["size"],
               country:
                 organization.country as OrganizationFormValues["country"],

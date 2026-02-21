@@ -6,7 +6,7 @@ export const organizationFormSchema = z.object({
   name: z
     .string("Please enter organization name")
     .min(1, "Organization name is required"),
-  industary: z
+  industry: z
     .enum(
       [
         "Technology",

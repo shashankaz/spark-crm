@@ -33,7 +33,7 @@ export const ActionCell = ({
         <DropdownMenuContent align="end">
           <DropdownMenuItem
             onClick={() =>
-              navigate(`/dashboard/organizations/${organization.id}/edit`)
+              navigate(`/dashboard/organizations/${organization._id}/edit`)
             }
           >
             <Pencil className="mr-2 h-4 w-4" />
@@ -53,7 +53,7 @@ export const ActionCell = ({
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
         onConfirm={() => {
-          console.log("Delete", organization.id);
+          console.log("Delete", organization._id);
           setDeleteOpen(false);
         }}
         placeholder="organization"
