@@ -1,6 +1,8 @@
 import { lazy } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router";
 
+import { ProtectedRoute } from "@/components/protected-route";
+
 const LandingPage = lazy(() => import("@/pages/landing-page"));
 const Login = lazy(() => import("@/pages/auth/login"));
 const Register = lazy(() => import("@/pages/auth/register"));
@@ -35,27 +37,40 @@ export const ReactRouter = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/contact" element={<Contact />} />
 
-        <Route path="/dashboard" element={<Layout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="organizations" element={<Organizations />} />
-          <Route
-            path="organizations/:organizationId/edit"
-            element={<OrganizationsEditPage />}
-          />
-          <Route path="leads" element={<Leads />} />
-          <Route path="leads/:leadId/edit" element={<LeadsEditPage />} />
-          <Route path="deals" element={<Deals />} />
-          <Route path="deals/:dealId/edit" element={<DealsEditPage />} />
-          <Route path="users" element={<Users />} />
-          <Route path="users/:userId/edit" element={<UsersEditPage />} />
-          <Route path="profile" element={<Profile />} />
+        <Route
+          path="/dashboard"
+          element={<ProtectedRoute allowedRoles={["admin", "user"]} />}
+        >
+          <Route element={<Layout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="organizations" element={<Organizations />} />
+            <Route
+              path="organizations/:organizationId/edit"
+              element={<OrganizationsEditPage />}
+            />
+            <Route path="leads" element={<Leads />} />
+            <Route path="leads/:leadId/edit" element={<LeadsEditPage />} />
+            <Route path="deals" element={<Deals />} />
+            <Route path="deals/:dealId/edit" element={<DealsEditPage />} />
+            <Route path="users" element={<Users />} />
+            <Route path="users/:userId/edit" element={<UsersEditPage />} />
+            <Route path="profile" element={<Profile />} />
+          </Route>
         </Route>
 
-        <Route path="/admin" element={<Layout />}>
-          <Route index element={<AdminDashboard />} />
-          <Route path="tenants" element={<Tenants />} />
-          <Route path="tenants/:tenantId/edit" element={<TenantsEditPage />} />
-          <Route path="profile" element={<Profile />} />
+        <Route
+          path="/admin"
+          element={<ProtectedRoute allowedRoles={["super_admin"]} />}
+        >
+          <Route element={<Layout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="tenants" element={<Tenants />} />
+            <Route
+              path="tenants/:tenantId/edit"
+              element={<TenantsEditPage />}
+            />
+            <Route path="profile" element={<Profile />} />
+          </Route>
         </Route>
 
         <Route path="*" element={<NotFound />} />

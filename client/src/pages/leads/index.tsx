@@ -19,15 +19,15 @@ import { Description } from "@/components/shared/typography/description";
 import { columns } from "./columns";
 import { LeadCreateForm } from "./lead-create-form";
 
-import type { Leads } from "@/types";
+import type { Lead } from "@/types";
 import { getAllLeads } from "@/api/services/lead.service";
 
 const LeadPage = () => {
   const [open, setOpen] = useState(false);
 
-  const { isPending, data: leads = [] } = useQuery<Leads[]>({
+  const { isPending, data: leads = [] } = useQuery<Lead[]>({
     queryKey: ["fetchLeads"],
-    queryFn: () => getAllLeads().then((response) => response.leads),
+    queryFn: () => getAllLeads({}).then((response) => response.leads),
   });
 
   if (isPending) return <TableSkeleton />;

@@ -11,9 +11,9 @@ import {
 
 import { DeleteDialog } from "@/components/shared/dashboard/delete-dialog";
 
-import type { Deals } from "@/types";
+import type { Deal } from "@/types";
 
-export const ActionCell = ({ deal }: { deal: Deals }) => {
+export const ActionCell = ({ deal }: { deal: Deal }) => {
   const [deleteOpen, setDeleteOpen] = useState(false);
 
   return (
@@ -25,7 +25,7 @@ export const ActionCell = ({ deal }: { deal: Deals }) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => console.log("Edit", deal.id)}>
+          <DropdownMenuItem onClick={() => console.log("Edit", deal._id)}>
             <Pencil className="mr-2 h-4 w-4" />
             Edit
           </DropdownMenuItem>
@@ -43,7 +43,7 @@ export const ActionCell = ({ deal }: { deal: Deals }) => {
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
         onConfirm={() => {
-          console.log("Delete", deal.id);
+          console.log("Delete", deal._id);
           setDeleteOpen(false);
         }}
         placeholder="deal"

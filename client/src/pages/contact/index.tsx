@@ -2,7 +2,7 @@ import { Link } from "react-router";
 
 import { Button } from "@/components/ui/button";
 
-import Footer from "@/components/shared/footer";
+import { Footer } from "@/components/shared/footer";
 
 import { ContactForm } from "./contact-form";
 

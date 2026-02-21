@@ -17,7 +17,7 @@ import { PasswordInput } from "@/components/shared/password-input";
 import { loginFormSchema } from "./login-form-schema";
 import type { LoginFormValues } from "./login-form-schema";
 
-import { loginUser } from "@/api/services/auth.service";
+import { login } from "@/api/services/auth.service";
 
 export const LoginForm = () => {
   const form = useForm<LoginFormValues>({
@@ -33,7 +33,7 @@ export const LoginForm = () => {
 
   const onSubmit = async (data: LoginFormValues) => {
     try {
-      const { user } = await loginUser(data);
+      const { user } = await login(data);
       if (user) {
         console.log(user);
         toast.success("Logged in successfully!");
