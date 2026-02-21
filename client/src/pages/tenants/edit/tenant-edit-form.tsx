@@ -1,6 +1,9 @@
 import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
+import { LoaderCircle } from "lucide-react";
+import toast from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -25,6 +28,8 @@ import { countriesFlag } from "@/utils/countries/countries-flag";
 import { tenantFormSchema } from "../tenant-form-schema";
 import type { TenantFormValues } from "../tenant-form-schema";
 
+import { updateTenantById } from "@/api/services/tenant.service";
+
 import type { Tenant } from "@/types";
 
 interface TenantEditFormProps {
@@ -32,6 +37,8 @@ interface TenantEditFormProps {
 }
 
 export const TenantEditForm: React.FC<TenantEditFormProps> = ({ tenant }) => {
+  const planValue = tenant.plan.toLowerCase() as TenantFormValues["plan"];
+
   const form = useForm<TenantFormValues>({
     resolver: zodResolver(tenantFormSchema),
     mode: "onChange",
@@ -42,14 +49,14 @@ export const TenantEditForm: React.FC<TenantEditFormProps> = ({ tenant }) => {
       email: tenant.email,
       mobile: tenant.mobile,
       address: {
-        line1: tenant.address.line1,
-        line2: tenant.address.line2 ?? "",
-        city: tenant.address.city,
-        state: tenant.address.state,
-        postalCode: tenant.address.postalCode,
-        country: tenant.address.country,
+        line1: tenant.address?.line1 ?? "",
+        line2: tenant.address?.line2 ?? "",
+        city: tenant.address?.city ?? "",
+        state: tenant.address?.state ?? "",
+        postalCode: tenant.address?.postalCode ?? "",
+        country: tenant.address?.country ?? "",
       },
-      plan: tenant.plan,
+      plan: planValue,
     },
   });
 
@@ -61,23 +68,35 @@ export const TenantEditForm: React.FC<TenantEditFormProps> = ({ tenant }) => {
       email: tenant.email,
       mobile: tenant.mobile,
       address: {
-        line1: tenant.address.line1,
-        line2: tenant.address.line2 ?? "",
-        city: tenant.address.city,
-        state: tenant.address.state,
-        postalCode: tenant.address.postalCode,
-        country: tenant.address.country,
+        line1: tenant.address?.line1 ?? "",
+        line2: tenant.address?.line2 ?? "",
+        city: tenant.address?.city ?? "",
+        state: tenant.address?.state ?? "",
+        postalCode: tenant.address?.postalCode ?? "",
+        country: tenant.address?.country ?? "",
       },
-      plan: tenant.plan,
+      plan: planValue,
     });
-  }, [tenant, form]);
+  }, [tenant]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: (data: TenantFormValues) =>
+      updateTenantById({ id: tenant._id, ...data }),
+    onSuccess: ({ message }) => {
+      toast.success(message);
+      queryClient.invalidateQueries({
+        queryKey: ["getTenantById", tenant._id],
+      });
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
 
   const onSubmit = (data: TenantFormValues) => {
-    try {
-      console.log("Tenant updated:", data);
-    } catch (error) {
-      console.error(error);
-    }
+    mutate(data);
   };
 
   return (
@@ -404,6 +423,7 @@ export const TenantEditForm: React.FC<TenantEditFormProps> = ({ tenant }) => {
         <Button
           type="button"
           variant="outline"
+          disabled={isPending}
           onClick={() =>
             form.reset({
               name: tenant.name,
@@ -412,21 +432,32 @@ export const TenantEditForm: React.FC<TenantEditFormProps> = ({ tenant }) => {
               email: tenant.email,
               mobile: tenant.mobile,
               address: {
-                line1: tenant.address.line1,
-                line2: tenant.address.line2 ?? "",
-                city: tenant.address.city,
-                state: tenant.address.state,
-                postalCode: tenant.address.postalCode,
-                country: tenant.address.country,
+                line1: tenant.address?.line1 ?? "",
+                line2: tenant.address?.line2 ?? "",
+                city: tenant.address?.city ?? "",
+                state: tenant.address?.state ?? "",
+                postalCode: tenant.address?.postalCode ?? "",
+                country: tenant.address?.country ?? "",
               },
-              plan: tenant.plan,
+              plan: planValue,
             })
           }
         >
           Reset
         </Button>
-        <Button type="submit" form="tenant-edit-form">
-          Save Changes
+        <Button
+          type="submit"
+          form="tenant-edit-form"
+          disabled={!form.formState.isValid || isPending}
+        >
+          {isPending ? (
+            <>
+              <LoaderCircle className="h-4 w-4 animate-spin" />
+              <span>Saving...</span>
+            </>
+          ) : (
+            "Save Changes"
+          )}
         </Button>
       </div>
     </form>

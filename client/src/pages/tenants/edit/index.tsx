@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { useParams, Link } from "react-router";
+import { useParams } from "react-router";
 import { Helmet } from "react-helmet-async";
 import { useQuery } from "@tanstack/react-query";
-import { Plus } from "lucide-react";
 
 import {
   Dialog,
@@ -10,7 +9,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { Heading } from "@/components/shared/typography/heading";
@@ -51,17 +49,6 @@ const TenantsEditPage = () => {
   const users = data?.users ?? [];
   const usersCount = data?.usersCount ?? 0;
 
-  // if (!tenant) {
-  //   return (
-  //     <div className="flex flex-col items-center justify-center h-64 gap-4">
-  //       <p className="text-muted-foreground">Tenant not found.</p>
-  //       <Button asChild variant="outline">
-  //         <Link to="/admin/tenants">Back to Tenants</Link>
-  //       </Button>
-  //     </div>
-  //   );
-  // }
-
   return (
     <>
       <Helmet>
@@ -92,17 +79,11 @@ const TenantsEditPage = () => {
 
           <TabsContent value="users" className="mt-6">
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-lg font-semibold">Users</h2>
-                  <p className="text-muted-foreground text-sm">
-                    Manage users belonging to {tenant.name}
-                  </p>
-                </div>
-                <Button type="button" onClick={() => setUserDialogOpen(true)}>
-                  <Plus />
-                  Add User
-                </Button>
+              <div>
+                <h2 className="text-lg font-semibold">Users</h2>
+                <p className="text-muted-foreground text-sm">
+                  Manage users belonging to {tenant.name}
+                </p>
               </div>
 
               <DataTable
