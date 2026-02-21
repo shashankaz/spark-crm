@@ -13,22 +13,22 @@ export const leadFormSchema = z.object({
     .string("Please enter a mobile number")
     .length(10, "Mobile number must be exactly 10 digits")
     .regex(/^\d+$/, "Mobile number must contain only digits"),
-  gender: z.enum(["Male", "Female", "Other"], "Please select a valid gender"),
+  gender: z.enum(["male", "female", "other"], "Please select a valid gender"),
   organization: z
     .string()
     .regex(/^[a-fA-F0-9]{24}$/, "Please select a valid organization"),
   source: z.enum(
     [
-      "Website",
-      "Facebook Ads",
-      "Google Ads",
-      "Instagram",
-      "LinkedIn",
-      "Email Marketing",
-      "Referral",
-      "Cold Call",
-      "WhatsApp",
-      "Other",
+      "website",
+      "facebook ads",
+      "google ads",
+      "instagram",
+      "linkedin",
+      "email marketing",
+      "referral",
+      "cold call",
+      "whatsApp",
+      "other",
     ],
     "Please select a valid source",
   ),

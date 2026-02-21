@@ -96,14 +96,14 @@ export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="Technology">Technology</SelectItem>
-                    <SelectItem value="Finance">Finance</SelectItem>
-                    <SelectItem value="Healthcare">Healthcare</SelectItem>
-                    <SelectItem value="Education">Education</SelectItem>
-                    <SelectItem value="Retail">Retail</SelectItem>
-                    <SelectItem value="Manufacturing">Manufacturing</SelectItem>
-                    <SelectItem value="Real Estate">Real Estate</SelectItem>
-                    <SelectItem value="Other">Other</SelectItem>
+                    <SelectItem value="technology">Technology</SelectItem>
+                    <SelectItem value="finance">Finance</SelectItem>
+                    <SelectItem value="healthcare">Healthcare</SelectItem>
+                    <SelectItem value="education">Education</SelectItem>
+                    <SelectItem value="retail">Retail</SelectItem>
+                    <SelectItem value="manufacturing">Manufacturing</SelectItem>
+                    <SelectItem value="real estate">Real Estate</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -132,9 +132,9 @@ export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="SMB">SMB</SelectItem>
-                    <SelectItem value="Mid-Market">Mid-Market</SelectItem>
-                    <SelectItem value="Enterprise">Enterprise</SelectItem>
+                    <SelectItem value="smb">SMB</SelectItem>
+                    <SelectItem value="mid-market">Mid-Market</SelectItem>
+                    <SelectItem value="enterprise">Enterprise</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -164,7 +164,10 @@ export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
                 <SelectContent>
                   <SelectGroup>
                     {countriesFlag.map((country) => (
-                      <SelectItem key={country.label} value={country.label}>
+                      <SelectItem
+                        key={country.label.toLocaleLowerCase()}
+                        value={country.label}
+                      >
                         <img
                           src={country.flag}
                           alt={country.label}

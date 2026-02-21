@@ -189,9 +189,9 @@ export const LeadEditForm: React.FC<LeadEditFormProps> = ({ lead }) => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="Male">Male</SelectItem>
-                    <SelectItem value="Female">Female</SelectItem>
-                    <SelectItem value="Other">Other</SelectItem>
+                    <SelectItem value="male">Male</SelectItem>
+                    <SelectItem value="female">Female</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -257,18 +257,18 @@ export const LeadEditForm: React.FC<LeadEditFormProps> = ({ lead }) => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="Website">Website</SelectItem>
-                    <SelectItem value="Facebook Ads">Facebook Ads</SelectItem>
-                    <SelectItem value="Google Ads">Google Ads</SelectItem>
-                    <SelectItem value="Instagram">Instagram</SelectItem>
-                    <SelectItem value="LinkedIn">LinkedIn</SelectItem>
-                    <SelectItem value="Email Marketing">
+                    <SelectItem value="website">Website</SelectItem>
+                    <SelectItem value="facebook ads">Facebook Ads</SelectItem>
+                    <SelectItem value="google ads">Google Ads</SelectItem>
+                    <SelectItem value="instagram">Instagram</SelectItem>
+                    <SelectItem value="linkedin">LinkedIn</SelectItem>
+                    <SelectItem value="email marketing">
                       Email Marketing
                     </SelectItem>
-                    <SelectItem value="Referral">Referral</SelectItem>
-                    <SelectItem value="Cold Call">Cold Call</SelectItem>
-                    <SelectItem value="WhatsApp">WhatsApp</SelectItem>
-                    <SelectItem value="Other">Other</SelectItem>
+                    <SelectItem value="referral">Referral</SelectItem>
+                    <SelectItem value="cold call">Cold Call</SelectItem>
+                    <SelectItem value="whatsapp">WhatsApp</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>

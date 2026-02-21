@@ -311,7 +311,10 @@ const LeadsEditPage = () => {
                     </SelectTrigger>
                     <SelectContent>
                       {LEAD_STATUS_OPTIONS.map((opt) => (
-                        <SelectItem key={opt.value} value={opt.value}>
+                        <SelectItem
+                          key={opt.value.toLocaleLowerCase()}
+                          value={opt.value}
+                        >
                           {opt.label}
                         </SelectItem>
                       ))}

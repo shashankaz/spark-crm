@@ -9,7 +9,7 @@ export const userEditSchema = z.object({
     .string("Please enter a mobile number")
     .length(10, "Mobile number must be exactly 10 digits")
     .regex(/^\d+$/, "Mobile number must contain only digits"),
-  role: z.enum(["Admin", "User"], "Role must be either Admin or User"),
+  role: z.enum(["admin", "user"], "Role must be either Admin or User"),
   newPassword: z
     .string()
     .min(6, "Password must be at least 6 characters")

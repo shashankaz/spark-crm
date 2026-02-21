@@ -12,7 +12,7 @@ export const userFormSchema = z.object({
   password: z
     .string("Please enter a password")
     .min(6, "Password must be at least 6 characters"),
-  role: z.enum(["Admin", "User"], "Role must be either Admin or User"),
+  role: z.enum(["admin", "user"], "Role must be either Admin or User"),
 });
 
 export type UserFormValues = z.infer<typeof userFormSchema>;

@@ -153,8 +153,8 @@ export const UserEditForm: React.FC<UserEditFormProps> = ({ user }) => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="Admin">Admin</SelectItem>
-                    <SelectItem value="User">User</SelectItem>
+                    <SelectItem value="admin">Admin</SelectItem>
+                    <SelectItem value="user">User</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>

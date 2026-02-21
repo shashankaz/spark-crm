@@ -158,8 +158,8 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = ({ setOpen }) => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="Admin">Admin</SelectItem>
-                    <SelectItem value="User">User</SelectItem>
+                    <SelectItem value="admin">Admin</SelectItem>
+                    <SelectItem value="user">User</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>

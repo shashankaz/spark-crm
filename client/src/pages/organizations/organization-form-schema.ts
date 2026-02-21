@@ -9,14 +9,14 @@ export const organizationFormSchema = z.object({
   industry: z
     .enum(
       [
-        "Technology",
-        "Finance",
-        "Healthcare",
-        "Education",
-        "Retail",
-        "Manufacturing",
-        "Real Estate",
-        "Other",
+        "technology",
+        "finance",
+        "healthcare",
+        "education",
+        "retail",
+        "manufacturing",
+        "real estate",
+        "other",
       ],
       "Please select a valid industry",
     )
