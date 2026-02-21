@@ -166,10 +166,10 @@ export const TenantEditForm: React.FC<TenantEditFormProps> = ({ tenant }) => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="Free">Free</SelectItem>
-                    <SelectItem value="Basic">Basic</SelectItem>
-                    <SelectItem value="Pro">Pro</SelectItem>
-                    <SelectItem value="Enterprise">Enterprise</SelectItem>
+                    <SelectItem value="free">Free</SelectItem>
+                    <SelectItem value="basic">Basic</SelectItem>
+                    <SelectItem value="pro">Pro</SelectItem>
+                    <SelectItem value="enterprise">Enterprise</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -374,7 +374,10 @@ export const TenantEditForm: React.FC<TenantEditFormProps> = ({ tenant }) => {
                 <SelectContent>
                   <SelectGroup>
                     {countriesFlag.map((country) => (
-                      <SelectItem key={country.label} value={country.label}>
+                      <SelectItem
+                        key={country.label.toLocaleLowerCase()}
+                        value={country.label}
+                      >
                         <img
                           src={country.flag}
                           alt={country.label}

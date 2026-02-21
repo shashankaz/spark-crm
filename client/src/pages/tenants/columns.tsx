@@ -111,6 +111,7 @@ export const columns: ColumnDef<Tenant>[] = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
+    cell: ({ row }) => <span className="capitalize">{row.original.plan}</span>,
   },
   {
     accessorKey: "updatedAt",

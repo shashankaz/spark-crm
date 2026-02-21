@@ -66,10 +66,10 @@ export const createTenant = async (req, res, next) => {
   try {
     const { name, gstNumber, panNumber, email, mobile, address, plan } =
       req.body;
-    if (!name || !email || !mobile) {
+    if (!name || !email || !mobile || !plan) {
       return res.status(400).json({
         success: false,
-        message: "Name, Email, and Mobile are required",
+        message: "Name, Email, Mobile, and Plan are required",
       });
     }
 

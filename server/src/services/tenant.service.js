@@ -17,7 +17,7 @@ export const fetchTenantsService = async ({ cursor, limit, search }) => {
 
   const [totalCount, tenants] = await Promise.all([
     Tenant.countDocuments(countQuery).exec(),
-    Tenant.find(whereQuery).sort({ _id: 1 }).limit(limit).exec(),
+    Tenant.find(whereQuery).sort({ createdAt: -1 }).limit(limit).exec(),
   ]);
 
   const formattedTenants = tenants.map((tenant) => ({

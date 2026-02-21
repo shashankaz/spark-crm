@@ -13,7 +13,7 @@ import {
 
 import { DeleteDialog } from "@/components/shared/dashboard/delete-dialog";
 
-import { deleteTenant } from "@/api/services/tenant.service";
+import { deleteTenantById } from "@/api/services/tenant.service";
 
 import type { Tenant } from "@/types";
 
@@ -24,7 +24,7 @@ export const ActionCell = ({ tenant }: { tenant: Tenant }) => {
 
   const handleDelete = async ({ id }: { id: string }) => {
     try {
-      const { message } = await deleteTenant({ id });
+      const { message } = await deleteTenantById({ id });
       toast.success(message);
     } catch (error) {
       console.error(error);

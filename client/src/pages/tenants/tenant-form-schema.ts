@@ -4,8 +4,17 @@ export const tenantFormSchema = z.object({
   name: z
     .string("Please enter a name")
     .min(2, "Name must be at least 2 characters"),
-  gstNumber: z.string("Please enter a GST number").optional(),
-  panNumber: z.string("Please enter a PAN number").optional(),
+  gstNumber: z
+    .string("Please enter a GST number")
+    .regex(
+      /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}$/,
+      "Invalid GST number format",
+    )
+    .optional(),
+  panNumber: z
+    .string("Please enter a PAN number")
+    .regex(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, "Invalid PAN number format")
+    .optional(),
   email: z.email("Invalid email address"),
   mobile: z
     .string("Please enter a mobile number")
@@ -19,7 +28,7 @@ export const tenantFormSchema = z.object({
     postalCode: z.string("Please enter the postal code"),
     country: z.string("Please enter the country"),
   }),
-  plan: z.enum(["Free", "Basic", "Pro", "Enterprise"], "Please select a plan"),
+  plan: z.enum(["free", "basic", "pro", "enterprise"], "Please select a plan"),
 });
 
 export type TenantFormValues = z.infer<typeof tenantFormSchema>;

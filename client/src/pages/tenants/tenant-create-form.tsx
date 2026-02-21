@@ -1,5 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
+import { LoaderCircle } from "lucide-react";
 import toast from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
@@ -55,17 +57,23 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
     },
   });
 
-  const onSubmit = async (data: TenantFormValues) => {
-    try {
-      const { message } = await createTenant(data);
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: createTenant,
+    onSuccess: ({ message }) => {
       toast.success(message);
-    } catch (error) {
-      console.error(error);
-      toast.error((error as Error).message);
-    } finally {
+      queryClient.invalidateQueries({ queryKey: ["getAllTenants"] });
       form.reset();
       setOpen(false);
-    }
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const onSubmit = (data: TenantFormValues) => {
+    mutate(data);
   };
 
   return (
@@ -154,10 +162,10 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="Free">Free</SelectItem>
-                    <SelectItem value="Basic">Basic</SelectItem>
-                    <SelectItem value="Pro">Pro</SelectItem>
-                    <SelectItem value="Enterprise">Enterprise</SelectItem>
+                    <SelectItem value="free">Free</SelectItem>
+                    <SelectItem value="basic">Basic</SelectItem>
+                    <SelectItem value="pro">Pro</SelectItem>
+                    <SelectItem value="enterprise">Enterprise</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -362,7 +370,10 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
                 <SelectContent>
                   <SelectGroup>
                     {countriesFlag.map((country) => (
-                      <SelectItem key={country.label} value={country.label}>
+                      <SelectItem
+                        key={country.label.toLocaleLowerCase()}
+                        value={country.label}
+                      >
                         <img
                           src={country.flag}
                           alt={country.label}
@@ -385,12 +396,28 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
         />
       </FieldGroup>
 
-      <div className="space-x-2 mt-4 flex justify-end">
-        <Button type="button" variant="outline" onClick={() => form.reset()}>
+      <div className="space-x-2 mt-8 flex justify-end">
+        <Button
+          type="button"
+          variant="outline"
+          disabled={isPending}
+          onClick={() => form.reset()}
+        >
           Reset
         </Button>
-        <Button type="submit" form="tenant-create-form">
-          Submit
+        <Button
+          type="submit"
+          form="tenant-create-form"
+          disabled={!form.formState.isValid || isPending}
+        >
+          {isPending ? (
+            <>
+              <LoaderCircle className="h-4 w-4 animate-spin" />
+              <span>Submitting...</span>
+            </>
+          ) : (
+            "Submit"
+          )}
         </Button>
       </div>
     </form>

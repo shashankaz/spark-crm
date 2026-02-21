@@ -1,6 +1,15 @@
 import { api } from "@/api";
 import type { Tenant, User } from "@/types";
 
+export type TenantAddress = {
+  line1: string;
+  line2?: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+};
+
 export type GetTenantDashboardStatsResponse = {
   message: string;
 };
@@ -108,7 +117,7 @@ export const createTenant = async ({
   panNumber?: string;
   email: string;
   mobile: string;
-  address?: string;
+  address?: TenantAddress;
   plan?: string;
 }): Promise<CreateTenantResponse> => {
   try {
@@ -148,7 +157,7 @@ export const updateTenantById = async ({
   panNumber?: string;
   email?: string;
   mobile?: string;
-  address?: string;
+  address?: TenantAddress;
   plan?: string;
 }): Promise<UpdateTenantResponse> => {
   try {
