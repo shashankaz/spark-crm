@@ -44,6 +44,8 @@ const leadActionHistorySchema = Schema(
   },
 );
 
+leadActionHistorySchema.index({ tenantId: 1, leadId: 1 });
+
 export const LeadActionHistory = model(
   "LeadActionHistory",
   leadActionHistorySchema,
