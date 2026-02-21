@@ -1,11 +1,19 @@
 import { Helmet } from "react-helmet-async";
+import { useQuery } from "@tanstack/react-query";
 
 import { Stats } from "@/components/dashboard/stats";
 import { RecentLeadsDeals } from "@/components/dashboard/recent-leads-deals";
 import { Heading } from "@/components/shared/typography/heading";
 import { Description } from "@/components/shared/typography/description";
 
+import { getDashboardStats } from "@/api/services/dashboard.service";
+
 const DashboardPage = () => {
+  const { isPending, data } = useQuery({
+    queryKey: ["getDashboardStats"],
+    queryFn: getDashboardStats,
+  });
+
   return (
     <>
       <Helmet>
@@ -19,9 +27,13 @@ const DashboardPage = () => {
           <Description description="Welcome back! Here's what's happening in your CRM." />
         </div>
 
-        <Stats />
+        <Stats stats={data?.stats} isLoading={isPending} />
 
-        <RecentLeadsDeals />
+        <RecentLeadsDeals
+          recentLeads={data?.recentLeads}
+          recentDeals={data?.recentDeals}
+          isLoading={isPending}
+        />
       </div>
     </>
   );

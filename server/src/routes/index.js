@@ -7,6 +7,7 @@ import userRoutes from "./v1/user.routes.js";
 import callRoutes from "./v1/call.routes.js";
 import commentRoutes from "./v1/comment.routes.js";
 import dealRoutes from "./v1/deal.routes.js";
+import dashboardRoutes from "./v1/dashboard.route.js";
 
 const router = Router();
 
@@ -18,5 +19,6 @@ router.use("/deal", dealRoutes);
 router.use("/user", userRoutes);
 router.use("/call", callRoutes);
 router.use("/comment", commentRoutes);
+router.use("/dashboard", dashboardRoutes);
 
 export default router;

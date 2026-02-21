@@ -5,12 +5,7 @@ import { User } from "../models/user.model.js";
 import { hashPassword } from "../utils/auth/bcrypt.js";
 import { AppError } from "../utils/app-error.js";
 import { PLAN_PRICES } from "../utils/plans.js";
-
-const calcChange = (current, previous) => {
-  if (previous === 0) return current > 0 ? "+100%" : "0%";
-  const pct = Math.round(((current - previous) / previous) * 100);
-  return pct >= 0 ? `+${pct}%` : `${pct}%`;
-};
+import { calcChange } from "../utils/stats-helper.js";
 
 export const fetchTenantDashboardStatsService = async () => {
   const now = new Date();
@@ -162,35 +157,59 @@ export const createTenantService = async ({
   address,
   plan,
 }) => {
-  const tenant = await Tenant.create({
-    name,
-    gstNumber,
-    panNumber,
-    email,
-    mobile,
-    address,
-    plan,
-  });
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
-  // const tempPassword = randomBytes(9).toString("base64");
-  const tempPassword = "Asdf@1234";
-  const hashedPassword = await hashPassword(tempPassword);
+  try {
+    const tenant = await Tenant.create(
+      [
+        {
+          name,
+          gstNumber,
+          panNumber,
+          email,
+          mobile,
+          address,
+          plan,
+        },
+      ],
+      { session },
+    );
 
-  console.log(
-    `Creating admin user for tenant ${tenant._id} with email ${email} and temp password ${tempPassword}`,
-  );
+    const createdTenant = tenant[0];
 
-  await User.create({
-    tenantId: tenant._id,
-    firstName: name.split(" ")[0],
-    lastName: name.split(" ").slice(1).join(" ") || "",
-    email,
-    mobile: mobile || "",
-    password: hashedPassword,
-    role: "admin",
-  });
+    // const tempPassword = randomBytes(9).toString("base64");
+    const tempPassword = "Asdf@1234";
+    const hashedPassword = await hashPassword(tempPassword);
 
-  return { tenant };
+    console.log(
+      `Creating admin user for tenant ${createdTenant._id} with email ${email} and temp password ${tempPassword}`,
+    );
+
+    await User.create(
+      [
+        {
+          tenantId: createdTenant._id,
+          firstName: name.split(" ")[0],
+          lastName: name.split(" ").slice(1).join(" ") || "",
+          email,
+          mobile: mobile || "",
+          password: hashedPassword,
+          role: "admin",
+        },
+      ],
+      { session },
+    );
+
+    await session.commitTransaction();
+
+    return { tenant: createdTenant };
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    session.endSession();
+  }
 };
 
 export const updateTenantByIdService = async ({
