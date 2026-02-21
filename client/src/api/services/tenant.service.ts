@@ -10,8 +10,37 @@ export type TenantAddress = {
   country: string;
 };
 
+export type TenantDashboardStat = {
+  value: number;
+  change: string;
+  trend: "up" | "down";
+};
+
+export type TenantRecentTenant = {
+  _id: string;
+  name: string;
+  email: string;
+  plan: string;
+  city: string;
+  country: string;
+  createdAt: string;
+};
+
+export type TenantPlanDistribution = {
+  plan: string;
+  count: number;
+};
+
 export type GetTenantDashboardStatsResponse = {
   message: string;
+  stats: {
+    totalTenants: TenantDashboardStat;
+    totalUsers: TenantDashboardStat;
+    monthlyRevenue: TenantDashboardStat;
+    paidPlans: TenantDashboardStat;
+  };
+  recentTenants: TenantRecentTenant[];
+  planDistribution: TenantPlanDistribution[];
 };
 
 export type GetAllTenantsResponse = {
@@ -53,8 +82,9 @@ export const getTenantDashboardStats =
       const response = await api.get("/tenant/dashboard");
 
       const { message } = response.data;
+      const { stats, recentTenants, planDistribution } = response.data.data;
 
-      return { message };
+      return { message, stats, recentTenants, planDistribution };
     } catch (error) {
       console.error("Get tenant dashboard stats error:", error);
       throw error;

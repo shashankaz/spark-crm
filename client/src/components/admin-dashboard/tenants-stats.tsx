@@ -8,8 +8,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 
-import { planDistribution, recentTenants } from "@/data/admin-dashboard";
+import type {
+  TenantRecentTenant,
+  TenantPlanDistribution,
+} from "@/api/services/tenant.service";
 
 const planVariant: Record<
   string,
@@ -21,7 +25,24 @@ const planVariant: Record<
   Free: "outline",
 };
 
-export const TenantsStats = () => {
+const planColor: Record<string, string> = {
+  Free: "bg-slate-400",
+  Basic: "bg-blue-400",
+  Pro: "bg-violet-500",
+  Enterprise: "bg-amber-500",
+};
+
+type Props = {
+  recentTenants?: TenantRecentTenant[];
+  planDistribution?: TenantPlanDistribution[];
+  isLoading?: boolean;
+};
+
+export const TenantsStats = ({
+  recentTenants = [],
+  planDistribution = [],
+  isLoading,
+}: Props) => {
   const totalPlans = planDistribution.reduce((sum, p) => sum + p.count, 0);
 
   return (
@@ -60,27 +81,31 @@ export const TenantsStats = () => {
                 </tr>
               </thead>
               <tbody>
-                {recentTenants.map((tenant) => (
-                  <tr
-                    key={tenant.id}
-                    className="border-b last:border-0 hover:bg-muted/50 transition-colors"
-                  >
-                    <td className="px-6 py-3">
-                      <p className="font-medium">{tenant.name}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {tenant.email}
-                      </p>
-                    </td>
-                    <td className="px-6 py-3 text-muted-foreground">
-                      {tenant.city}, {tenant.country}
-                    </td>
-                    <td className="px-6 py-3 text-right">
-                      <Badge variant={planVariant[tenant.plan]}>
-                        {tenant.plan}
-                      </Badge>
-                    </td>
-                  </tr>
-                ))}
+                {isLoading
+                  ? Array.from({ length: 5 }).map((_, i) => (
+                      <RecentTenantsSkeleton key={i} />
+                    ))
+                  : recentTenants.map((tenant) => (
+                      <tr
+                        key={tenant._id}
+                        className="border-b last:border-0 hover:bg-muted/50 transition-colors"
+                      >
+                        <td className="px-6 py-3">
+                          <p className="font-medium">{tenant.name}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {tenant.email}
+                          </p>
+                        </td>
+                        <td className="px-6 py-3 text-muted-foreground">
+                          {tenant.city}, {tenant.country}
+                        </td>
+                        <td className="px-6 py-3 text-right capitalize">
+                          <Badge variant={planVariant[tenant.plan]}>
+                            {tenant.plan}
+                          </Badge>
+                        </td>
+                      </tr>
+                    ))}
               </tbody>
             </table>
           </div>
@@ -95,26 +120,31 @@ export const TenantsStats = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {planDistribution.map((item) => {
-            const pct = Math.round((item.count / totalPlans) * 100);
+          {isLoading
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <PlanDistributionSkeleton key={i} />
+              ))
+            : planDistribution.map((item) => {
+                const pct = Math.round((item.count / totalPlans) * 100);
+                const color = planColor[item.plan] ?? "bg-slate-400";
 
-            return (
-              <div key={item.plan} className="space-y-1">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="font-medium">{item.plan}</span>
-                  <span className="text-muted-foreground">
-                    {item.count} <span className="text-xs">({pct}%)</span>
-                  </span>
-                </div>
-                <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
-                  <div
-                    className={`h-full rounded-full ${item.color}`}
-                    style={{ width: `${pct}%` }}
-                  />
-                </div>
-              </div>
-            );
-          })}
+                return (
+                  <div key={item.plan} className="space-y-1">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="font-medium">{item.plan}</span>
+                      <span className="text-muted-foreground">
+                        {item.count} <span className="text-xs">({pct}%)</span>
+                      </span>
+                    </div>
+                    <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
+                      <div
+                        className={`h-full rounded-full ${color}`}
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
 
           <div className="pt-2 border-t">
             <div className="flex items-center justify-between text-sm">
@@ -124,6 +154,35 @@ export const TenantsStats = () => {
           </div>
         </CardContent>
       </Card>
+    </div>
+  );
+};
+
+const RecentTenantsSkeleton = () => {
+  return (
+    <tr className="border-b last:border-0">
+      <td className="px-6 py-3 space-y-1">
+        <Skeleton className="h-4 w-32" />
+        <Skeleton className="h-3 w-44" />
+      </td>
+      <td className="px-6 py-3">
+        <Skeleton className="h-4 w-28" />
+      </td>
+      <td className="px-6 py-3 flex justify-end">
+        <Skeleton className="h-5 w-16 rounded-full" />
+      </td>
+    </tr>
+  );
+};
+
+const PlanDistributionSkeleton = () => {
+  return (
+    <div className="space-y-1">
+      <div className="flex items-center justify-between">
+        <Skeleton className="h-4 w-16" />
+        <Skeleton className="h-4 w-16" />
+      </div>
+      <Skeleton className="h-2 w-full" />
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import {
+  fetchTenantDashboardStatsService,
   fetchTenantsService,
   fetchTenantByIdService,
   createTenantService,
@@ -9,9 +10,13 @@ import {
 
 export const getTenantDashboardStats = async (req, res, next) => {
   try {
+    const { stats, recentTenants, planDistribution } =
+      await fetchTenantDashboardStatsService();
+
     res.json({
       success: true,
       message: "Tenant dashboard stats retrieved successfully",
+      data: { stats, recentTenants, planDistribution },
     });
   } catch (error) {
     next(error);

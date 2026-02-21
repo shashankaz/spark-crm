@@ -1,11 +1,19 @@
 import { Helmet } from "react-helmet-async";
+import { useQuery } from "@tanstack/react-query";
 
 import { StatsSection } from "@/components/admin-dashboard/stats-section";
 import { TenantsStats } from "@/components/admin-dashboard/tenants-stats";
 import { Heading } from "@/components/shared/typography/heading";
 import { Description } from "@/components/shared/typography/description";
 
+import { getTenantDashboardStats } from "@/api/services/tenant.service";
+
 const AdminDashboard = () => {
+  const { isPending, data } = useQuery({
+    queryKey: ["getTenantDashboardStats"],
+    queryFn: getTenantDashboardStats,
+  });
+
   return (
     <>
       <Helmet>
@@ -19,9 +27,13 @@ const AdminDashboard = () => {
           <Description description="Platform-wide overview — tenants, users, and revenue at a glance." />
         </div>
 
-        <StatsSection />
+        <StatsSection stats={data?.stats} isLoading={isPending} />
 
-        <TenantsStats />
+        <TenantsStats
+          recentTenants={data?.recentTenants}
+          planDistribution={data?.planDistribution}
+          isLoading={isPending}
+        />
       </div>
     </>
   );
