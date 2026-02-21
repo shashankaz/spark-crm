@@ -1,0 +1,234 @@
+import {
+  fetchLeadsService,
+  fetchLeadByIdService,
+  createLeadService,
+  updateLeadByIdService,
+  deleteLeadByIdService,
+} from "../services/lead.service.js";
+
+export const getAllLeads = async (req, res, next) => {
+  try {
+    const { tenantId } = req.user;
+    if (!tenantId) {
+      return res.status(400).json({
+        success: false,
+        message: "Tenant ID is missing in user data",
+      });
+    }
+
+    const cursor = req.query.cursor;
+    const limit = Number(req.query.limit) || 10;
+    const search = req.query.search;
+
+    const { leads, totalCount } = await fetchLeadsService({
+      tenantId,
+      cursor,
+      limit,
+      search,
+    });
+
+    res.json({
+      success: true,
+      message: "Leads retrieved successfully",
+      data: { leads, totalCount },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getLeadById = async (req, res, next) => {
+  try {
+    const { tenantId } = req.user;
+    if (!tenantId) {
+      return res.status(400).json({
+        success: false,
+        message: "Tenant ID is missing in user data",
+      });
+    }
+
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "Lead ID is required",
+      });
+    }
+
+    const lead = await fetchLeadByIdService({ id, tenantId });
+    if (!lead) {
+      return res.status(404).json({
+        success: false,
+        message: "Lead not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Lead retrieved successfully",
+      data: { lead },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const createLead = async (req, res, next) => {
+  try {
+    const { tenantId } = req.user;
+    if (!tenantId) {
+      return res.status(400).json({
+        success: false,
+        message: "Tenant ID is missing in user data",
+      });
+    }
+
+    const {
+      idempotentId,
+      orgId,
+      orgName,
+      userId,
+      firstName,
+      lastName,
+      email,
+      mobile,
+      gender,
+      source,
+    } = req.body;
+    if (!idempotentId || !tenantId || !orgId || !orgName || !userId) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Idempotent ID, Tenant ID, Organization ID, Organization Name, and User ID are required",
+      });
+    }
+
+    const lead = await createLeadService({
+      idempotentId,
+      tenantId,
+      orgId,
+      orgName,
+      userId,
+      firstName,
+      lastName,
+      email,
+      mobile,
+      gender,
+      source,
+    });
+    if (!lead) {
+      return res.status(400).json({
+        success: false,
+        message: "Failed to create lead",
+      });
+    }
+
+    res.status(201).json({
+      success: true,
+      message: "Lead created successfully",
+      data: { lead },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateLeadById = async (req, res, next) => {
+  try {
+    const { tenantId } = req.user;
+    if (!tenantId) {
+      return res.status(400).json({
+        success: false,
+        message: "Tenant ID is missing in user data",
+      });
+    }
+
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "Lead ID is required",
+      });
+    }
+
+    const {
+      orgId,
+      orgName,
+      dealId,
+      userId,
+      firstName,
+      lastName,
+      email,
+      mobile,
+      gender,
+      source,
+      status,
+    } = req.body;
+
+    const updatedLead = await updateLeadByIdService({
+      id,
+      tenantId,
+      orgId,
+      orgName,
+      dealId,
+      userId,
+      firstName,
+      lastName,
+      email,
+      mobile,
+      gender,
+      source,
+      status,
+    });
+    if (!updatedLead) {
+      return res.status(404).json({
+        success: false,
+        message: "Lead not found or failed to update",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Lead updated successfully",
+      data: { updatedLead },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteLeadById = async (req, res, next) => {
+  try {
+    const { tenantId } = req.user;
+    if (!tenantId) {
+      return res.status(400).json({
+        success: false,
+        message: "Tenant ID is missing in user data",
+      });
+    }
+
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "Lead ID is required",
+      });
+    }
+
+    const deleted = await deleteLeadByIdService({ id, tenantId });
+    if (!deleted) {
+      return res.status(404).json({
+        success: false,
+        message: "Lead not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Lead deleted successfully",
+      data: { id },
+    });
+  } catch (error) {
+    next(error);
+  }
+};

@@ -1,0 +1,69 @@
+import { useParams, Link } from "react-router";
+import { Helmet } from "react-helmet-async";
+
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+
+import type { User } from "@/types";
+
+import { UserEditForm } from "./user-edit-form";
+import { Heading } from "@/components/shared/typography/heading";
+import { Description } from "@/components/shared/typography/description";
+import { useQuery } from "@tanstack/react-query";
+import { getUserById, type GetUserByIdResponse } from "@/api/services/user.service";
+
+const UsersEditPage = () => {
+  const { userId } = useParams<{ userId: string }>();
+
+  const { isPending, data } = useQuery<GetUserByIdResponse>({
+    queryKey: ["getUserById", userId],
+    queryFn: () => getUserById({ id: userId! }).then((response) => response),
+    enabled: !!userId,
+  });
+
+  if (isPending) return null;
+
+  const user = data?.user;
+
+  if (!user) {
+    return (
+      <div className="flex flex-col items-center justify-center h-64 gap-4">
+        <p className="text-muted-foreground">User not found.</p>
+        <Button asChild variant="outline">
+          <Link to="/dashboard/users">Back to Users</Link>
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <Helmet>
+        <title>Edit {user.name} | Users</title>
+        <meta name="description" content={`Edit user ${user.name}`} />
+      </Helmet>
+
+      <div className="space-y-6">
+        <div className="border-b pb-4">
+          <div className="flex items-start justify-between">
+            <div>
+              <div className="flex items-center gap-3">
+                <Heading title={user.name} />
+                <Badge
+                  variant={user.role === "Admin" ? "default" : "secondary"}
+                >
+                  {user.role}
+                </Badge>
+              </div>
+              <Description description={user.email} />
+            </div>
+          </div>
+        </div>
+
+        <UserEditForm user={user} />
+      </div>
+    </>
+  );
+};
+
+export default UsersEditPage;

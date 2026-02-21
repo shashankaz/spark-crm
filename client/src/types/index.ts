@@ -1,0 +1,9 @@
+export type { Call } from "./domain/call";
+export type { Comment } from "./domain/comment";
+export type { Deal } from "./domain/deal";
+export type { Lead } from "./domain/lead";
+export type { LeadActionHistory } from "./domain/lead-action-history";
+export type { Organization } from "./domain/organization";
+export type { Session } from "./domain/session";
+export type { Tenant } from "./domain/tenant";
+export type { User } from "./domain/user";
