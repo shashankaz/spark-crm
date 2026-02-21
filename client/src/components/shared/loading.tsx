@@ -2,7 +2,7 @@ import { Link } from "react-router";
 
 import { Footer } from "@/components/shared/footer";
 
-const LoadingPage = () => {
+export const LoadingPage = () => {
   return (
     <div className="min-h-screen bg-background text-foreground font-inter flex flex-col">
       <header className="border-b border-border">
@@ -28,5 +28,3 @@ const LoadingPage = () => {
     </div>
   );
 };
-
-export default LoadingPage;

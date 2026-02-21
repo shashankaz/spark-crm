@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from "react-router";
 
-import LoadingPage from "@/components/shared/loading";
+import { LoadingPage } from "@/components/shared/loading";
 
 import { useUser } from "@/hooks/use-user";
 

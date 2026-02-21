@@ -1,12 +1,28 @@
-import { Link } from "react-router";
+import { Link, Navigate } from "react-router";
+
+import { LoadingPage } from "@/components/shared/loading";
 
 import { quotes } from "@/data/quotes";
 
+import { useUser } from "@/hooks/use-user";
+
 import { LoginForm } from "./login-form";
 
+const roleHomeMap = {
+  super_admin: "/admin",
+  admin: "/dashboard",
+  user: "/dashboard",
+} as const;
+
 const LoginPage = () => {
+  const { user, loading } = useUser();
+
   const quote = quotes[0];
   const year = new Date().getFullYear();
+
+  if (loading) return <LoadingPage />;
+
+  if (user) return <Navigate to={roleHomeMap[user.role]} replace />;
 
   return (
     <div className="min-h-screen grid md:grid-cols-[1fr_1fr] lg:grid-cols-[5fr_7fr]">
