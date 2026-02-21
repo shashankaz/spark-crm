@@ -35,6 +35,7 @@ export const PasswordInput = <T extends FieldValues>({
               placeholder={placeholder}
               type={showPassword ? "text" : "password"}
               autoComplete="off"
+              onCopy={(e) => e.preventDefault()}
             />
             <Button
               type="button"
