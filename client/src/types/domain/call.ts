@@ -13,5 +13,5 @@ export type Call = {
 
   duration: number;
 
-  createdAt: Date;
+  createdAt: string;
 };

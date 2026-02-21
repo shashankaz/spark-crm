@@ -4,6 +4,6 @@ export type Session = {
   userId: string;
   token?: string;
 
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 };

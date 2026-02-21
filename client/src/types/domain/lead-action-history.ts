@@ -10,5 +10,5 @@ export type LeadActionHistory = {
   userId: string;
   userName: string;
 
-  createdAt: Date;
+  createdAt: string;
 };

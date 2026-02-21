@@ -25,6 +25,6 @@ export type Tenant = {
   isDeleted: boolean;
   deletedAt?: Date;
 
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 };

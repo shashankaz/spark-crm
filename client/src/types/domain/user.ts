@@ -13,6 +13,6 @@ export type User = {
 
   tenantId: string;
 
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 };

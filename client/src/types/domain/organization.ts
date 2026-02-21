@@ -20,6 +20,6 @@ export type Organization = {
   contactEmail?: string;
   contactMobile?: string;
 
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 };

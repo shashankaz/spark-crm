@@ -12,6 +12,6 @@ export type Deal = {
   value: number;
   probability: number;
 
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 };

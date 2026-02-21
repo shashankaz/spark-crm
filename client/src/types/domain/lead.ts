@@ -24,6 +24,6 @@ export type Lead = {
 
   status: "new" | "contacted" | "qualified" | "lost";
 
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 };

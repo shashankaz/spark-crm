@@ -6,6 +6,6 @@ export type Comment = {
 
   comment: string;
 
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 };
