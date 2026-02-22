@@ -1,6 +1,7 @@
 import { formatDate } from "date-fns";
 import { Lead } from "../models/lead.model.js";
 import { AppError } from "../utils/app-error.js";
+import { calculateLeadScore } from "../utils/calculate-score.js";
 
 export const fetchLeadsService = async ({
   tenantId,
@@ -57,7 +58,7 @@ export const createLeadService = async ({
   gender,
   source,
 }) => {
-  return await Lead.create({
+  const lead = new Lead({
     idempotentId,
     tenantId,
     orgId,
@@ -71,6 +72,10 @@ export const createLeadService = async ({
     gender: gender || "",
     source: source || "",
   });
+
+  lead.score = calculateLeadScore(lead);
+
+  return await lead.save();
 };
 
 export const updateLeadByIdService = async ({
@@ -105,6 +110,8 @@ export const updateLeadByIdService = async ({
   lead.source = source || lead.source;
   lead.status = status || lead.status;
 
+  lead.score = calculateLeadScore(lead);
+
   return await lead.save();
 };
 
@@ -118,24 +125,26 @@ export const deleteLeadByIdService = async ({ id, tenantId }) => {
 };
 
 export const bulkWriteLeadsService = async ({ tenantId, leads }) => {
-  const operations = leads.map((lead) => ({
-    insertOne: {
-      document: {
-        idempotentId: lead.idempotentId,
-        tenantId,
-        orgId: lead.orgId || null,
-        orgName: lead.orgName || "",
-        dealId: null,
-        userId: lead.userId || null,
-        firstName: lead.firstName || "",
-        lastName: lead.lastName || "",
-        email: lead.email || "",
-        mobile: lead.mobile || "",
-        gender: lead.gender || "",
-        source: lead.source || "",
-      },
-    },
-  }));
+  const operations = leads.map((lead) => {
+    const document = {
+      idempotentId: lead.idempotentId,
+      tenantId,
+      orgId: lead.orgId || null,
+      orgName: lead.orgName || "",
+      dealId: null,
+      userId: lead.userId || null,
+      firstName: lead.firstName || "",
+      lastName: lead.lastName || "",
+      email: lead.email || "",
+      mobile: lead.mobile || "",
+      gender: lead.gender || "",
+      source: lead.source || "",
+    };
+
+    document.score = calculateLeadScore(document);
+
+    return { insertOne: { document } };
+  });
 
   return await Lead.bulkWrite(operations, { ordered: false });
 };
