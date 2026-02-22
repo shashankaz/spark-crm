@@ -60,7 +60,7 @@ const UsersPage = () => {
         <DataTable columns={columns} data={users} placeholder="users" />
 
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogContent>
+          <DialogContent className="sm:max-w-2xl">
             <DialogHeader>
               <DialogTitle className="text-2xl">Create New User</DialogTitle>
             </DialogHeader>

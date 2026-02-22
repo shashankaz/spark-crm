@@ -1,5 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
+import { LoaderCircle } from "lucide-react";
+import toast from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,8 +21,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { PasswordInput } from "@/components/shared/password-input";
+
 import { userFormSchema } from "./user-form-schema";
 import type { UserFormValues } from "./user-form-schema";
+
+import { createUser } from "@/api/services/user.service";
 
 interface UserCreateFormProps {
   setOpen: (open: boolean) => void;
@@ -30,7 +37,8 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = ({ setOpen }) => {
     resolver: zodResolver(userFormSchema),
     mode: "onChange",
     defaultValues: {
-      name: undefined,
+      firstName: undefined,
+      lastName: undefined,
       email: undefined,
       mobile: undefined,
       password: undefined,
@@ -38,31 +46,75 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = ({ setOpen }) => {
     },
   });
 
-  const onSubmit = (data: UserFormValues) => {
-    try {
-      console.log("Form submitted:", data);
-    } catch (error) {
-      console.error(error);
-    } finally {
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: createUser,
+    onSuccess: ({ message }) => {
+      toast.success(message);
+      queryClient.invalidateQueries({ queryKey: ["getAllUsers"] });
       form.reset();
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+    onSettled: () => {
       setOpen(false);
-    }
+    },
+  });
+
+  const onSubmit = (data: UserFormValues) => {
+    mutate({
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      mobile: data.mobile || undefined,
+      password: data.password,
+      role: data.role,
+    });
   };
 
   return (
     <form id="user-create-form" onSubmit={form.handleSubmit(onSubmit)}>
       <FieldGroup className="grid grid-cols-2 gap-8 -space-y-4">
         <Controller
-          name="name"
+          name="firstName"
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="name">Name</FieldLabel>
+              <FieldLabel htmlFor="firstName">First Name</FieldLabel>
               <Input
                 {...field}
-                id="name"
+                id="firstName"
                 aria-invalid={fieldState.invalid}
-                placeholder="Enter full name"
+                placeholder="Enter first name"
+                autoComplete="off"
+              />
+              {fieldState.invalid && (
+                <FieldError
+                  className="text-destructive text-xs"
+                  errors={[fieldState.error]}
+                />
+              )}
+            </Field>
+          )}
+        />
+        <Controller
+          name="lastName"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} className="-space-y-2">
+              <FieldLabel htmlFor="lastName">
+                Last Name{" "}
+                <span className="text-muted-foreground text-xs">
+                  (optional)
+                </span>
+              </FieldLabel>
+              <Input
+                {...field}
+                id="lastName"
+                aria-invalid={fieldState.invalid}
+                placeholder="Enter last name"
                 autoComplete="off"
               />
               {fieldState.invalid && (
@@ -120,29 +172,6 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = ({ setOpen }) => {
           )}
         />
         <Controller
-          name="password"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="password">Password</FieldLabel>
-              <Input
-                {...field}
-                id="password"
-                type="password"
-                aria-invalid={fieldState.invalid}
-                placeholder="Enter password"
-                autoComplete="new-password"
-              />
-              {fieldState.invalid && (
-                <FieldError
-                  className="text-destructive text-xs"
-                  errors={[fieldState.error]}
-                />
-              )}
-            </Field>
-          )}
-        />
-        <Controller
           name="role"
           control={form.control}
           render={({ field, fieldState }) => (
@@ -172,14 +201,36 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = ({ setOpen }) => {
             </Field>
           )}
         />
+
+        <PasswordInput
+          form={form}
+          name="password"
+          placeholder="Enter password"
+        />
       </FieldGroup>
 
       <div className="space-x-2 mt-4 flex justify-end">
-        <Button type="button" variant="outline" onClick={() => form.reset()}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => form.reset()}
+          disabled={isPending}
+        >
           Reset
         </Button>
-        <Button type="submit" form="user-create-form">
-          Submit
+        <Button
+          type="submit"
+          form="user-create-form"
+          disabled={!form.formState.isValid || isPending}
+        >
+          {isPending ? (
+            <>
+              <LoaderCircle className="animate-spin mr-2" />
+              Creating...
+            </>
+          ) : (
+            "Create"
+          )}
         </Button>
       </div>
     </form>

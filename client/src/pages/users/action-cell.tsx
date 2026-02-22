@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { EllipsisVertical, Pencil, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -21,28 +22,39 @@ export const ActionCell = ({ user }: { user: User }) => {
 
   const navigate = useNavigate();
 
-  const handleDelete = async ({ id }: { id: string }) => {
-    try {
-      const { message } = await deleteUser({ id });
+  const queryClient = useQueryClient();
+
+  const { mutate: handleDelete, isPending } = useMutation({
+    mutationFn: ({ id }: { id: string }) => deleteUser({ id }),
+    onSuccess: ({ message }) => {
       toast.success(message);
-    } catch (error) {
-      console.error(error);
-      toast.error((error as Error).message);
-    } finally {
+      queryClient.invalidateQueries({ queryKey: ["getAllUsers"] });
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+    onSettled: () => {
       setDeleteOpen(false);
-    }
-  };
+    },
+  });
+
   return (
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="h-8 w-8">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            disabled={isPending}
+          >
             <EllipsisVertical className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem
             onClick={() => navigate(`/dashboard/users/${user._id}/edit`)}
+            disabled={isPending}
           >
             <Pencil className="mr-2 h-4 w-4" />
             Edit
@@ -50,6 +62,7 @@ export const ActionCell = ({ user }: { user: User }) => {
           <DropdownMenuItem
             className="text-destructive focus:text-destructive"
             onClick={() => setDeleteOpen(true)}
+            disabled={isPending}
           >
             <Trash2 className="mr-2 h-4 w-4" />
             Delete

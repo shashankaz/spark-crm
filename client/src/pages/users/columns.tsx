@@ -95,6 +95,11 @@ export const columns: ColumnDef<User>[] = [
         </Button>
       );
     },
+    cell: ({ row }) => {
+      const role = row.getValue("role") as string;
+
+      return <span className="capitalize">{role}</span>;
+    },
   },
   {
     accessorKey: "updatedAt",

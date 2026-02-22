@@ -1,6 +1,9 @@
 import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
+import { LoaderCircle } from "lucide-react";
+import toast from "react-hot-toast";
 
 import {
   Field,
@@ -22,6 +25,8 @@ import { Separator } from "@/components/ui/separator";
 
 import { PasswordInput } from "@/components/shared/password-input";
 
+import { updateUser } from "@/api/services/user.service";
+
 import type { User } from "@/types";
 
 import { userEditSchema } from "./user-edit-form-scheme";
@@ -32,55 +37,95 @@ interface UserEditFormProps {
 }
 
 export const UserEditForm: React.FC<UserEditFormProps> = ({ user }) => {
+  const roleValue = user.role.toLowerCase() as UserEditFormValues["role"];
+
   const form = useForm<UserEditFormValues>({
     resolver: zodResolver(userEditSchema),
     mode: "onChange",
     defaultValues: {
-      name: user.name,
+      firstName: user.firstName,
+      lastName: user.lastName ?? "",
       email: user.email,
-      mobile: user.mobile,
-      role: user.role,
+      mobile: user.mobile ?? "",
+      role: roleValue,
       newPassword: "",
     },
   });
 
   useEffect(() => {
     form.reset({
-      name: user.name,
+      firstName: user.firstName,
+      lastName: user.lastName ?? "",
       email: user.email,
-      mobile: user.mobile,
-      role: user.role,
+      mobile: user.mobile ?? "",
+      role: roleValue,
       newPassword: "",
     });
-  }, [user, form]);
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: (data: UserEditFormValues) =>
+      updateUser({
+        id: user._id,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        mobile: data.mobile || undefined,
+        password: data.newPassword || undefined,
+        role: data.role,
+      }),
+    onSuccess: ({ message }) => {
+      toast.success(message);
+      queryClient.invalidateQueries({ queryKey: ["getUserById", user._id] });
+      queryClient.invalidateQueries({ queryKey: ["getAllUsers"] });
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
 
   const onSubmit = (data: UserEditFormValues) => {
-    try {
-      const payload = {
-        ...data,
-        ...(data.newPassword ? { password: data.newPassword } : {}),
-      };
-      delete (payload as { newPassword?: string }).newPassword;
-      console.log("User updated:", payload);
-    } catch (error) {
-      console.error(error);
-    }
+    mutate(data);
   };
 
   return (
     <form id="user-edit-form" onSubmit={form.handleSubmit(onSubmit)}>
       <FieldGroup className="grid grid-cols-2 gap-8 -space-y-4">
         <Controller
-          name="name"
+          name="firstName"
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="name">Name</FieldLabel>
+              <FieldLabel htmlFor="firstName">First Name</FieldLabel>
               <Input
                 {...field}
-                id="name"
+                id="firstName"
                 aria-invalid={fieldState.invalid}
-                placeholder="Enter full name"
+                placeholder="Enter first name"
+                autoComplete="off"
+              />
+              {fieldState.invalid && (
+                <FieldError
+                  className="text-destructive text-xs"
+                  errors={[fieldState.error]}
+                />
+              )}
+            </Field>
+          )}
+        />
+        <Controller
+          name="lastName"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} className="-space-y-2">
+              <FieldLabel htmlFor="lastName">Last Name</FieldLabel>
+              <Input
+                {...field}
+                id="lastName"
+                aria-invalid={fieldState.invalid}
+                placeholder="Enter last name (optional)"
                 autoComplete="off"
               />
               {fieldState.invalid && (
@@ -187,20 +232,29 @@ export const UserEditForm: React.FC<UserEditFormProps> = ({ user }) => {
         <Button
           type="button"
           variant="outline"
+          disabled={isPending}
           onClick={() =>
             form.reset({
-              name: user.name,
+              firstName: user.firstName,
+              lastName: user.lastName ?? "",
               email: user.email,
-              mobile: user.mobile,
-              role: user.role,
+              mobile: user.mobile ?? "",
+              role: roleValue,
               newPassword: "",
             })
           }
         >
           Reset
         </Button>
-        <Button type="submit" form="user-edit-form">
-          Save Changes
+        <Button type="submit" form="user-edit-form" disabled={isPending}>
+          {isPending ? (
+            <>
+              <LoaderCircle className="animate-spin mr-2" />
+              Saving...
+            </>
+          ) : (
+            "Save Changes"
+          )}
         </Button>
       </div>
     </form>
