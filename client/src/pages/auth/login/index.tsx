@@ -25,11 +25,11 @@ const LoginPage = () => {
   if (user) return <Navigate to={roleHomeMap[user.role]} replace />;
 
   return (
-    <div className="min-h-screen grid md:grid-cols-[1fr_1fr] lg:grid-cols-[5fr_7fr]">
+    <div className="min-h-screen grid md:grid-cols-[1fr_1fr] lg:grid-cols-[5fr_7fr] select-none">
       <div className="hidden md:flex flex-col justify-between bg-primary p-12">
         <Link
           to="/"
-          className="text-2xl text-primary-foreground select-none font-playfair-display font-medium"
+          className="text-2xl text-primary-foreground font-playfair-display font-medium"
         >
           Spark
         </Link>
@@ -51,7 +51,7 @@ const LoginPage = () => {
       <div className="flex flex-col justify-center items-center bg-background px-8 py-16">
         <Link
           to="/"
-          className="md:hidden text-2xl text-foreground mb-12 select-none font-playfair-display font-medium"
+          className="md:hidden text-2xl text-foreground mb-12 font-playfair-display font-medium"
         >
           Spark
         </Link>

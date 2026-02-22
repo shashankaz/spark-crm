@@ -91,7 +91,7 @@ export const LoginForm = () => {
       <Button
         type="submit"
         form="login-form"
-        disabled={isPending}
+        disabled={!form.formState.isValid || isPending}
         className="w-full h-11 rounded-full mt-4"
       >
         {isPending ? (

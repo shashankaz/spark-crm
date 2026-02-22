@@ -8,12 +8,12 @@ import { ContactForm } from "./contact-form";
 
 const Contact = () => {
   return (
-    <div className="min-h-screen bg-background text-foreground font-inter flex flex-col">
+    <div className="min-h-screen bg-background text-foreground font-inter flex flex-col select-none">
       <header className="fixed top-0 inset-x-0 z-50 border-b border-border bg-background/90 backdrop-blur-sm">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link
             to="/"
-            className="text-xl font-playfair-display font-medium tracking-tight text-foreground select-none"
+            className="text-xl font-playfair-display font-medium tracking-tight text-foreground"
           >
             Spark
           </Link>

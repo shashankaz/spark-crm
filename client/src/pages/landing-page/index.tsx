@@ -30,10 +30,10 @@ const stats = [
 
 const LandingPage = () => {
   return (
-    <div className="min-h-screen bg-background text-foreground font-inter">
+    <div className="min-h-screen bg-background text-foreground font-inter select-none">
       <header className="fixed top-0 inset-x-0 z-50 border-b border-border bg-background/90 backdrop-blur-sm">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <span className="text-xl font-playfair-display font-medium tracking-tight text-foreground select-none w-60">
+          <span className="text-xl font-playfair-display font-medium tracking-tight text-foreground w-60">
             Spark
           </span>
 
@@ -50,6 +50,12 @@ const LandingPage = () => {
             >
               Metrics
             </a>
+            <Link
+              to="/about"
+              className="hover:text-foreground transition-colors"
+            >
+              About
+            </Link>
           </nav>
 
           <div className="flex items-center justify-end gap-3 w-60">

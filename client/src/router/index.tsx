@@ -1,11 +1,14 @@
-import { lazy } from "react";
+import { lazy, Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router";
+
+import { LoadingPage } from "@/components/shared/loading";
 
 import { ProtectedRoute } from "@/components/protected-route";
 
 const LandingPage = lazy(() => import("@/pages/landing-page"));
 const Login = lazy(() => import("@/pages/auth/login"));
 const Register = lazy(() => import("@/pages/auth/register"));
+const About = lazy(() => import("@/pages/about"));
 const Contact = lazy(() => import("@/pages/contact"));
 
 const Layout = lazy(() => import("@/layout/layout"));
@@ -31,50 +34,53 @@ const NotFound = lazy(() => import("@/pages/not-found"));
 export const ReactRouter = () => {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/contact" element={<Contact />} />
+      <Suspense fallback={<LoadingPage />}>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
 
-        <Route
-          path="/dashboard"
-          element={<ProtectedRoute allowedRoles={["admin", "user"]} />}
-        >
-          <Route element={<Layout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="organizations" element={<Organizations />} />
-            <Route
-              path="organizations/:organizationId/edit"
-              element={<OrganizationsEditPage />}
-            />
-            <Route path="leads" element={<Leads />} />
-            <Route path="leads/:leadId/edit" element={<LeadsEditPage />} />
-            <Route path="deals" element={<Deals />} />
-            <Route path="deals/:dealId/edit" element={<DealsEditPage />} />
-            <Route path="users" element={<Users />} />
-            <Route path="users/:userId/edit" element={<UsersEditPage />} />
-            <Route path="profile" element={<Profile />} />
+          <Route
+            path="/dashboard"
+            element={<ProtectedRoute allowedRoles={["admin", "user"]} />}
+          >
+            <Route element={<Layout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="organizations" element={<Organizations />} />
+              <Route
+                path="organizations/:organizationId/edit"
+                element={<OrganizationsEditPage />}
+              />
+              <Route path="leads" element={<Leads />} />
+              <Route path="leads/:leadId/edit" element={<LeadsEditPage />} />
+              <Route path="deals" element={<Deals />} />
+              <Route path="deals/:dealId/edit" element={<DealsEditPage />} />
+              <Route path="users" element={<Users />} />
+              <Route path="users/:userId/edit" element={<UsersEditPage />} />
+              <Route path="profile" element={<Profile />} />
+            </Route>
           </Route>
-        </Route>
 
-        <Route
-          path="/admin"
-          element={<ProtectedRoute allowedRoles={["super_admin"]} />}
-        >
-          <Route element={<Layout />}>
-            <Route index element={<AdminDashboard />} />
-            <Route path="tenants" element={<Tenants />} />
-            <Route
-              path="tenants/:tenantId/edit"
-              element={<TenantsEditPage />}
-            />
-            <Route path="profile" element={<Profile />} />
+          <Route
+            path="/admin"
+            element={<ProtectedRoute allowedRoles={["super_admin"]} />}
+          >
+            <Route element={<Layout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="tenants" element={<Tenants />} />
+              <Route
+                path="tenants/:tenantId/edit"
+                element={<TenantsEditPage />}
+              />
+              <Route path="profile" element={<Profile />} />
+            </Route>
           </Route>
-        </Route>
 
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
     </Router>
   );
 };

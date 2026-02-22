@@ -157,6 +157,7 @@ export const ContactForm = () => {
         form="contact-form"
         size="lg"
         className="w-full rounded-full mt-6"
+        disabled={!form.formState.isValid}
       >
         Send message
       </Button>
