@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { EllipsisVertical, Pencil, Trash2 } from "lucide-react";
+import toast from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -12,6 +14,8 @@ import {
 
 import { DeleteDialog } from "@/components/shared/dashboard/delete-dialog";
 
+import { deleteOrganizationById } from "@/api/services/organization.service";
+
 import type { Organization } from "@/types";
 
 export const ActionCell = ({
@@ -21,6 +25,19 @@ export const ActionCell = ({
 }) => {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const { mutate: handleDelete } = useMutation({
+    mutationFn: () => deleteOrganizationById({ id: organization._id }),
+    onSuccess: ({ message }) => {
+      toast.success(message);
+      queryClient.invalidateQueries({ queryKey: ["fetchOrganizations"] });
+      setDeleteOpen(false);
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
 
   return (
     <>
@@ -52,10 +69,7 @@ export const ActionCell = ({
       <DeleteDialog
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
-        onConfirm={() => {
-          console.log("Delete", organization._id);
-          setDeleteOpen(false);
-        }}
+        onConfirm={handleDelete}
         placeholder="organization"
       />
     </>

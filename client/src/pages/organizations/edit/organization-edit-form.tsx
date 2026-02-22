@@ -1,6 +1,9 @@
 import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { LoaderCircle } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -21,9 +24,12 @@ import {
 
 import { organizationFormSchema } from "../organization-form-schema";
 import type { OrganizationFormValues } from "../organization-form-schema";
-import type { Organization } from "@/types";
+
+import { updateOrganizationById } from "@/api/services/organization.service";
 
 import { countriesFlag } from "@/utils/countries/countries-flag";
+
+import type { Organization } from "@/types";
 
 interface OrganizationEditFormProps {
   organization: Organization;
@@ -32,6 +38,8 @@ interface OrganizationEditFormProps {
 export const OrganizationEditForm: React.FC<OrganizationEditFormProps> = ({
   organization,
 }) => {
+  const queryClient = useQueryClient();
+
   const form = useForm<OrganizationFormValues>({
     resolver: zodResolver(organizationFormSchema),
     mode: "onChange",
@@ -40,9 +48,9 @@ export const OrganizationEditForm: React.FC<OrganizationEditFormProps> = ({
       industry: organization.industry as OrganizationFormValues["industry"],
       size: organization.size as OrganizationFormValues["size"],
       country: organization.country as OrganizationFormValues["country"],
-      email: organization.email ?? "",
-      mobile: organization.mobile ?? "",
-      website: organization.website ?? "",
+      email: organization.email ?? undefined,
+      mobile: organization.mobile ?? undefined,
+      website: organization.website ?? undefined,
     },
   });
 
@@ -52,18 +60,28 @@ export const OrganizationEditForm: React.FC<OrganizationEditFormProps> = ({
       industry: organization.industry as OrganizationFormValues["industry"],
       size: organization.size as OrganizationFormValues["size"],
       country: organization.country as OrganizationFormValues["country"],
-      email: organization.email ?? "",
-      mobile: organization.mobile ?? "",
-      website: organization.website ?? "",
+      email: organization.email ?? undefined,
+      mobile: organization.mobile ?? undefined,
+      website: organization.website ?? undefined,
     });
   }, [organization, form]);
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: (data: OrganizationFormValues) =>
+      updateOrganizationById({ id: organization._id, ...data }),
+    onSuccess: ({ message }) => {
+      toast.success(message);
+      queryClient.invalidateQueries({
+        queryKey: ["fetchOrganization", organization._id],
+      });
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
   const onSubmit = (data: OrganizationFormValues) => {
-    try {
-      console.log("Organization updated:", data);
-    } catch (error) {
-      console.error(error);
-    }
+    mutate(data);
   };
 
   return (
@@ -288,8 +306,19 @@ export const OrganizationEditForm: React.FC<OrganizationEditFormProps> = ({
         >
           Reset
         </Button>
-        <Button type="submit" form="organization-edit-form">
-          Save Changes
+        <Button
+          type="submit"
+          form="organization-edit-form"
+          disabled={isPending}
+        >
+          {isPending ? (
+            <>
+              <LoaderCircle className="h-4 w-4 animate-spin" />
+              <span>Saving...</span>
+            </>
+          ) : (
+            "Save"
+          )}
         </Button>
       </div>
     </form>

@@ -1,5 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import { v7 as uuidv7 } from "uuid";
+import { LoaderCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -23,6 +27,10 @@ import type { OrganizationFormValues } from "./organization-form-schema";
 
 import { countriesFlag } from "@/utils/countries/countries-flag";
 
+import { createOrganization } from "@/api/services/organization.service";
+
+import { useUser } from "@/hooks/use-user";
+
 interface OrganizationCreateFormProps {
   setOpen: (open: boolean) => void;
 }
@@ -30,12 +38,14 @@ interface OrganizationCreateFormProps {
 export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
   setOpen,
 }) => {
+  const { user } = useUser();
+
   const form = useForm<OrganizationFormValues>({
     resolver: zodResolver(organizationFormSchema),
     mode: "onChange",
     defaultValues: {
       name: undefined,
-      industary: undefined,
+      industry: undefined,
       size: undefined,
       country: undefined,
       email: undefined,
@@ -44,15 +54,30 @@ export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
     },
   });
 
-  const onSubmit = (data: OrganizationFormValues) => {
-    try {
-      console.log("Form submitted:", data);
-    } catch (error) {
-      console.error(error);
-    } finally {
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: (data: OrganizationFormValues) =>
+      createOrganization({
+        idempotentId: uuidv7(),
+        userId: user!._id,
+        ...data,
+      }),
+    onSuccess: ({ message }) => {
+      toast.success(message);
+      queryClient.invalidateQueries({ queryKey: ["fetchOrganizations"] });
       form.reset();
       setOpen(false);
-    }
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  if (!user) return null;
+
+  const onSubmit = async (data: OrganizationFormValues) => {
+    mutate(data);
   };
 
   return (
@@ -81,7 +106,7 @@ export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
           )}
         />
         <Controller
-          name="industary"
+          name="industry"
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
@@ -152,7 +177,12 @@ export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="country">Country</FieldLabel>
+              <FieldLabel htmlFor="country">
+                Country{" "}
+                <span className="text-muted-foreground text-xs">
+                  (optional)
+                </span>
+              </FieldLabel>
               <Select onValueChange={field.onChange} value={field.value ?? ""}>
                 <SelectTrigger
                   className="w-full"
@@ -193,7 +223,12 @@ export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="email">Email</FieldLabel>
+              <FieldLabel htmlFor="email">
+                Email{" "}
+                <span className="text-muted-foreground text-xs">
+                  (optional)
+                </span>
+              </FieldLabel>
               <Input
                 {...field}
                 id="email"
@@ -215,7 +250,12 @@ export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="mobile">Mobile</FieldLabel>
+              <FieldLabel htmlFor="mobile">
+                Mobile{" "}
+                <span className="text-muted-foreground text-xs">
+                  (optional)
+                </span>
+              </FieldLabel>
               <Input
                 {...field}
                 id="mobile"
@@ -237,7 +277,12 @@ export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="website">Website</FieldLabel>
+              <FieldLabel htmlFor="website">
+                Website{" "}
+                <span className="text-muted-foreground text-xs">
+                  (optional)
+                </span>
+              </FieldLabel>
               <Input
                 {...field}
                 id="website"
@@ -257,11 +302,27 @@ export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
       </FieldGroup>
 
       <div className="space-x-2 mt-4 flex justify-end">
-        <Button type="button" variant="outline" onClick={() => form.reset()}>
+        <Button
+          type="button"
+          variant="outline"
+          disabled={isPending}
+          onClick={() => form.reset()}
+        >
           Reset
         </Button>
-        <Button type="submit" form="organization-create-form">
-          Submit
+        <Button
+          type="submit"
+          form="organization-create-form"
+          disabled={!form.formState.isValid || isPending}
+        >
+          {isPending ? (
+            <>
+              <LoaderCircle className="h-4 w-4 animate-spin" />
+              <span>Submitting...</span>
+            </>
+          ) : (
+            "Submit"
+          )}
         </Button>
       </div>
     </form>

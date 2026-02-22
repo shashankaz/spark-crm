@@ -45,7 +45,7 @@ export const columns: ColumnDef<Organization>[] = [
     ),
   },
   {
-    accessorKey: "industary",
+    accessorKey: "industry",
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -55,6 +55,9 @@ export const columns: ColumnDef<Organization>[] = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
+    cell: ({ row }) => {
+      return <span className="capitalize">{row.getValue("industry")}</span>;
+    },
   },
   {
     accessorKey: "country",
@@ -67,6 +70,13 @@ export const columns: ColumnDef<Organization>[] = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
+    cell: ({ row }) => {
+      const country = row.getValue("country") as string;
+
+      if (!country) return <span className="text-muted-foreground">—</span>;
+
+      return <span>{country}</span>;
+    },
   },
   {
     accessorKey: "size",
@@ -79,6 +89,9 @@ export const columns: ColumnDef<Organization>[] = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
+    cell: ({ row }) => {
+      return <span className="uppercase">{row.getValue("size")}</span>;
+    },
   },
   {
     accessorKey: "website",
@@ -93,6 +106,9 @@ export const columns: ColumnDef<Organization>[] = [
     ),
     cell: ({ row }) => {
       const website = row.getValue("website") as string;
+
+      if (!website) return <span className="text-muted-foreground">—</span>;
+
       return (
         <a
           href={website.startsWith("http") ? website : `https://${website}`}
