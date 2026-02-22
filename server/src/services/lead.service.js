@@ -24,7 +24,7 @@ export const fetchLeadsService = async ({
 
   const [totalCount, leads] = await Promise.all([
     Lead.countDocuments(countQuery).exec(),
-    Lead.find(whereQuery).sort({ _id: 1 }).limit(limit).exec(),
+    Lead.find(whereQuery).sort({ createdAt: -1 }).limit(limit).exec(),
   ]);
 
   const formattedLeads = leads.map((lead) => ({

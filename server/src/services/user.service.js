@@ -24,7 +24,7 @@ export const fetchUsersService = async ({
 
   const [totalCount, users] = await Promise.all([
     User.countDocuments(countQuery).exec(),
-    User.find(whereQuery).sort({ _id: 1 }).limit(limit).exec(),
+    User.find(whereQuery).sort({ createdAt: 1 }).limit(limit).exec(),
   ]);
 
   const formattedUsers = users.map((user) => ({

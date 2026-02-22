@@ -19,7 +19,7 @@ export const fetchDealsService = async ({
 
   const [totalCount, deals] = await Promise.all([
     Deal.countDocuments(countQuery).exec(),
-    Deal.find(whereQuery).sort({ _id: 1 }).limit(limit).exec(),
+    Deal.find(whereQuery).sort({ createdAt: -1 }).limit(limit).exec(),
   ]);
 
   const formattedDeals = deals.map((deal) => ({

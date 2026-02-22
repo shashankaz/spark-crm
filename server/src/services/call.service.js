@@ -20,7 +20,7 @@ export const fetchCallsByLeadService = async ({
 
   const [totalCount, calls] = await Promise.all([
     Call.countDocuments(countQuery).exec(),
-    Call.find(whereQuery).sort({ _id: 1 }).limit(limit).exec(),
+    Call.find(whereQuery).sort({ createdAt: -1 }).limit(limit).exec(),
   ]);
 
   return { calls, totalCount };
