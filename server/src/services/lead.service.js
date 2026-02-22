@@ -1,5 +1,7 @@
 import { formatDate } from "date-fns";
+import mongoose from "mongoose";
 import { Lead } from "../models/lead.model.js";
+import { Deal } from "../models/deal.model.js";
 import { AppError } from "../utils/app-error.js";
 import { calculateLeadScore } from "../utils/calculate-score.js";
 
@@ -98,6 +100,13 @@ export const updateLeadByIdService = async ({
     throw new AppError("Lead not found", 404);
   }
 
+  if (lead.dealId || lead.status === "converted") {
+    throw new AppError(
+      "Cannot update a lead that has been converted to a deal",
+      400,
+    );
+  }
+
   lead.orgId = orgId || lead.orgId;
   lead.orgName = orgName || lead.orgName;
   lead.dealId = dealId || lead.dealId;
@@ -119,6 +128,13 @@ export const deleteLeadByIdService = async ({ id, tenantId }) => {
   const lead = await Lead.findOne({ _id: id, tenantId }).exec();
   if (!lead) {
     throw new AppError("Lead not found", 404);
+  }
+
+  if (lead.dealId || lead.status === "converted") {
+    throw new AppError(
+      "Cannot delete a lead that has been converted to a deal",
+      400,
+    );
   }
 
   return await Lead.deleteOne({ _id: id, tenantId }).exec();
@@ -147,6 +163,59 @@ export const bulkWriteLeadsService = async ({ tenantId, leads }) => {
   });
 
   return await Lead.bulkWrite(operations, { ordered: false });
+};
+
+export const convertLeadToDealService = async ({
+  id,
+  tenantId,
+  userId,
+  idempotentId,
+  dealName,
+  value,
+  probability,
+}) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const lead = await Lead.findOne({ _id: id, tenantId })
+      .session(session)
+      .exec();
+    if (!lead) {
+      throw new AppError("Lead not found", 404);
+    }
+
+    if (lead.status === "converted") {
+      throw new AppError("Lead has already been converted to a deal", 400);
+    }
+
+    const deal = new Deal({
+      idempotentId,
+      tenantId,
+      leadId: lead._id,
+      userId: userId,
+      name: dealName || "Untitled Deal",
+      value: value ?? 0,
+      probability: probability ?? 0,
+    });
+
+    await deal.save({ session });
+
+    lead.status = "converted";
+    lead.dealId = deal._id;
+    lead.score = calculateLeadScore(lead);
+
+    await lead.save({ session });
+
+    await session.commitTransaction();
+
+    return { deal };
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    session.endSession();
+  }
 };
 
 export const fetchOrganizationsService = async ({

@@ -4,13 +4,14 @@ import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
-import type { User } from "@/types";
-
 import { UserEditForm } from "./user-edit-form";
 import { Heading } from "@/components/shared/typography/heading";
 import { Description } from "@/components/shared/typography/description";
 import { useQuery } from "@tanstack/react-query";
-import { getUserById, type GetUserByIdResponse } from "@/api/services/user.service";
+import {
+  getUserById,
+  type GetUserByIdResponse,
+} from "@/api/services/user.service";
 
 const UsersEditPage = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -39,8 +40,8 @@ const UsersEditPage = () => {
   return (
     <>
       <Helmet>
-        <title>Edit {user.name} | Users</title>
-        <meta name="description" content={`Edit user ${user.name}`} />
+        <title>Edit {user.firstName} | Users</title>
+        <meta name="description" content={`Edit user ${user.firstName}`} />
       </Helmet>
 
       <div className="space-y-6">
@@ -48,9 +49,9 @@ const UsersEditPage = () => {
           <div className="flex items-start justify-between">
             <div>
               <div className="flex items-center gap-3">
-                <Heading title={user.name} />
+                <Heading title={user.firstName} />
                 <Badge
-                  variant={user.role === "Admin" ? "default" : "secondary"}
+                  variant={user.role === "admin" ? "default" : "secondary"}
                 >
                   {user.role}
                 </Badge>

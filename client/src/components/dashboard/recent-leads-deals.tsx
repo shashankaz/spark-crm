@@ -23,9 +23,11 @@ const statusVariant: Record<
   string,
   "default" | "secondary" | "destructive" | "outline"
 > = {
-  Won: "default",
-  "In Progress": "secondary",
-  Lost: "destructive",
+  new: "outline",
+  contacted: "secondary",
+  qualified: "default",
+  converted: "default",
+  lost: "destructive",
 };
 
 const scoreColor = (score: number) => {

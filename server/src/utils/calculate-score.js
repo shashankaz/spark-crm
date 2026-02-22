@@ -71,6 +71,9 @@ export const calculateLeadScore = (lead) => {
   }
 
   switch (lead.status) {
+    case "converted":
+      score += 35;
+      break;
     case "qualified":
       score += 25;
       break;

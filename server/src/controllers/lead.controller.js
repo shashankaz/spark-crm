@@ -6,6 +6,7 @@ import {
   deleteLeadByIdService,
   fetchOrganizationsService,
   bulkWriteLeadsService,
+  convertLeadToDealService,
 } from "../services/lead.service.js";
 
 export const getAllLeads = async (req, res, next) => {
@@ -259,6 +260,52 @@ export const bulkWriteLeads = async (req, res, next) => {
       success: true,
       message: `${result.insertedCount} lead(s) created successfully`,
       data: { insertedCount: result.insertedCount },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const convertLeadToDeal = async (req, res, next) => {
+  try {
+    const { tenantId, _id: userId } = req.user;
+    if (!tenantId) {
+      return res.status(400).json({
+        success: false,
+        message: "Tenant ID is missing in user data",
+      });
+    }
+
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "Lead ID is required",
+      });
+    }
+
+    const { idempotentId, dealName, value, probability } = req.body;
+    if (!idempotentId) {
+      return res.status(400).json({
+        success: false,
+        message: "Idempotent ID is required for deal creation",
+      });
+    }
+
+    const { deal } = await convertLeadToDealService({
+      id,
+      tenantId,
+      userId,
+      idempotentId,
+      dealName,
+      value,
+      probability,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Lead converted to deal successfully",
+      data: { deal },
     });
   } catch (error) {
     next(error);

@@ -10,6 +10,10 @@ interface RetryRequestConfig extends AxiosRequestConfig {
   _retry?: boolean;
 }
 
+const refreshToken = async (signal?: AbortSignal): Promise<void> => {
+  await api.post("/auth/refresh", null, { signal });
+};
+
 let isRefreshing = false;
 
 let requestQueue: {
@@ -78,9 +82,7 @@ api.interceptors.response.use(
     const timeoutId = setTimeout(() => activeController.abort(), 5000);
 
     try {
-      await api.post("/auth/refresh", null, {
-        signal: activeController.signal,
-      });
+      await refreshToken(activeController.signal);
 
       processQueue();
       return api(originalRequest);

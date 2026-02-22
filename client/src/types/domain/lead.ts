@@ -22,7 +22,7 @@ export type Lead = {
 
   score: number;
 
-  status: "new" | "contacted" | "qualified" | "lost";
+  status: "new" | "contacted" | "qualified" | "converted" | "lost";
 
   createdAt: string;
   updatedAt: string;
