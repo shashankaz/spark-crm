@@ -24,6 +24,15 @@ export type GetSessionsResponse = {
   sessions: Session[];
 };
 
+export type EditProfileResponse = {
+  message: string;
+  user: User;
+};
+
+export type ChangePasswordResponse = {
+  message: string;
+};
+
 export const login = async ({
   email,
   password,
@@ -97,6 +106,54 @@ export const getSessions = async (): Promise<GetSessionsResponse> => {
     return { message, sessions };
   } catch (error) {
     console.error("Get sessions error:", error);
+    throw error;
+  }
+};
+
+export const editProfile = async ({
+  firstName,
+  lastName,
+  mobile,
+}: {
+  firstName?: string;
+  lastName?: string;
+  mobile?: string;
+}): Promise<EditProfileResponse> => {
+  try {
+    const response = await api.patch("/auth/profile", {
+      firstName,
+      lastName,
+      mobile,
+    });
+
+    const { message } = response.data;
+    const { user } = response.data.data;
+
+    return { message, user };
+  } catch (error) {
+    console.error("Edit profile error:", error);
+    throw error;
+  }
+};
+
+export const changePassword = async ({
+  currentPassword,
+  newPassword,
+}: {
+  currentPassword: string;
+  newPassword: string;
+}): Promise<ChangePasswordResponse> => {
+  try {
+    const response = await api.post("/auth/change-password", {
+      currentPassword,
+      newPassword,
+    });
+
+    const { message } = response.data;
+
+    return { message };
+  } catch (error) {
+    console.error("Change password error:", error);
     throw error;
   }
 };

@@ -4,6 +4,8 @@ import {
   logoutService,
   getUserProfileService,
   getUserSessionsService,
+  editProfileService,
+  changePasswordService,
 } from "../services/auth.service.js";
 import { isProduction } from "../config/env.js";
 
@@ -116,6 +118,66 @@ export const getSessions = async (req, res, next) => {
       success: true,
       message: "Sessions retrieved successfully",
       data: { sessions },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const editProfile = async (req, res, next) => {
+  try {
+    const { firstName, lastName, mobile } = req.body;
+    if (!firstName && !lastName && !mobile) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "At least one field (firstName, lastName, or mobile) is required",
+      });
+    }
+
+    const updatedUser = await editProfileService({
+      id: req.user._id,
+      firstName,
+      lastName,
+      mobile,
+    });
+
+    res.json({
+      success: true,
+      message: "Profile updated successfully",
+      data: { user: updatedUser },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const changePassword = async (req, res, next) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Current password and new password are required",
+      });
+    }
+
+    if (currentPassword === newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "New password must be different from current password",
+      });
+    }
+
+    await changePasswordService({
+      id: req.user._id,
+      currentPassword,
+      newPassword,
+    });
+
+    res.json({
+      success: true,
+      message: "Password changed successfully",
     });
   } catch (error) {
     next(error);

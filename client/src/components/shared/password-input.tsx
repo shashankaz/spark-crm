@@ -11,12 +11,14 @@ interface PasswordInputProps<T extends FieldValues> {
   form: UseFormReturn<T>;
   name?: Path<T>;
   placeholder?: string;
+  label?: string;
 }
 
 export const PasswordInput = <T extends FieldValues>({
   form,
   name = "password" as Path<T>,
   placeholder = "Enter password",
+  label = "Password",
 }: PasswordInputProps<T>) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -26,11 +28,11 @@ export const PasswordInput = <T extends FieldValues>({
       control={form.control}
       render={({ field, fieldState }) => (
         <Field data-invalid={fieldState.invalid} className="-space-y-2">
-          <FieldLabel htmlFor="password">Password</FieldLabel>
+          <FieldLabel htmlFor={name}>{label}</FieldLabel>
           <div className="relative">
             <Input
               {...field}
-              id="password"
+              id={name}
               aria-invalid={fieldState.invalid}
               placeholder={placeholder}
               type={showPassword ? "text" : "password"}

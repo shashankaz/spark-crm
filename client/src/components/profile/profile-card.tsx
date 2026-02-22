@@ -1,21 +1,14 @@
-import { Mail, Phone, ShieldCheck, Calendar } from "lucide-react";
+import { Mail, Phone, Calendar } from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
+import type { User } from "@/types";
+
 interface ProfileCardProps {
-  user: {
-    name: string;
-    jobTitle: string;
-    email: string;
-    mobile: string;
-    department: string;
-    joinedAt: string;
-    role: "Admin" | "User";
-    avatarUrl?: string;
-  };
+  user: User;
 }
 
 export const ProfileCard: React.FC<ProfileCardProps> = ({ user }) => {
@@ -24,17 +17,19 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({ user }) => {
       <Card className="h-full">
         <CardContent className="pt-6 flex flex-col items-center text-center gap-3">
           <Avatar className="size-20 text-2xl">
-            <AvatarImage src={user.avatarUrl} />
             <AvatarFallback className="text-xl">
-              {user.name.charAt(0)}
+              {user.firstName.charAt(0)}
             </AvatarFallback>
           </Avatar>
           <div>
-            <p className="font-semibold text-lg leading-tight">{user.name}</p>
-            <p className="text-sm text-muted-foreground">{user.jobTitle}</p>
+            <p className="font-semibold text-lg leading-tight">
+              {user.firstName} {user.lastName}
+            </p>
           </div>
-          <Badge variant={user.role === "Admin" ? "default" : "secondary"}>
-            {user.role}
+          <Badge variant={user.role === "user" ? "secondary" : "default"}>
+            {user.role === "super_admin"
+              ? "Super Admin"
+              : user.role.charAt(0).toUpperCase() + user.role.slice(1)}
           </Badge>
 
           <Separator />
@@ -49,18 +44,8 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({ user }) => {
               <span>{user.mobile}</span>
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
-              <ShieldCheck className="h-4 w-4 shrink-0" />
-              <span>{user.department}</span>
-            </div>
-            <div className="flex items-center gap-2 text-muted-foreground">
               <Calendar className="h-4 w-4 shrink-0" />
-              <span>
-                Joined{" "}
-                {new Date(user.joinedAt).toLocaleDateString("en-US", {
-                  month: "short",
-                  year: "numeric",
-                })}
-              </span>
+              <span>Joined {user.createdAt}</span>
             </div>
           </div>
         </CardContent>

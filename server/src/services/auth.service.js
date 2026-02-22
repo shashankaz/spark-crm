@@ -1,7 +1,9 @@
+import { formatDate } from "date-fns";
 import { Session } from "../models/session.model.js";
 import { User } from "../models/user.model.js";
 import { AppError } from "../utils/app-error.js";
 import {
+  hashPassword,
   hashRefreshToken,
   verifyPassword,
   verifyRefreshTokenHash,
@@ -86,9 +88,65 @@ export const getUserProfileService = async ({ id }) => {
     throw new AppError("User not found", 404);
   }
 
-  return user;
+  return {
+    _id: user._id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    mobile: user.mobile,
+    role: user.role,
+    createdAt: formatDate(user.createdAt, "dd/MM/yyyy"),
+    updatedAt: formatDate(user.updatedAt, "dd/MM/yyyy"),
+  };
 };
 
 export const getUserSessionsService = async ({ id }) => {
   return await Session.find({ userId: id }).sort({ createdAt: -1 }).limit(10);
+};
+
+export const editProfileService = async ({
+  id,
+  firstName,
+  lastName,
+  mobile,
+}) => {
+  const user = await User.findById(id);
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
+  if (firstName) user.firstName = firstName;
+  if (lastName) user.lastName = lastName;
+  if (mobile) user.mobile = mobile;
+
+  await user.save();
+
+  return {
+    _id: user._id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    mobile: user.mobile,
+    role: user.role,
+    updatedAt: formatDate(user.updatedAt, "dd/MM/yyyy"),
+  };
+};
+
+export const changePasswordService = async ({
+  id,
+  currentPassword,
+  newPassword,
+}) => {
+  const user = await User.findById(id).select("+password");
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
+  const isMatch = await verifyPassword(currentPassword, user.password);
+  if (!isMatch) {
+    throw new AppError("Current password is incorrect", 401);
+  }
+
+  user.password = await hashPassword(newPassword);
+  await user.save();
 };

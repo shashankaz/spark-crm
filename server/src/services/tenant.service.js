@@ -96,10 +96,20 @@ export const fetchTenantByIdService = async ({ id }) => {
     throw new AppError("Tenant not found", 404);
   }
 
+  const formattedUsers = users.map((user) => ({
+    _id: user._id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    mobile: user.mobile,
+    role: user.role,
+    updatedAt: formatDate(user.updatedAt, "dd/MM/yyyy"),
+  }));
+
   return {
     tenant,
     usersCount,
-    users,
+    users: formattedUsers,
   };
 };
 
