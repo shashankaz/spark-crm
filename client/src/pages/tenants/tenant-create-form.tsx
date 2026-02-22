@@ -64,11 +64,13 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
     onSuccess: ({ message }) => {
       toast.success(message);
       queryClient.invalidateQueries({ queryKey: ["getAllTenants"] });
-      form.reset();
-      setOpen(false);
     },
     onError: (error) => {
       toast.error(error.message);
+    },
+    onSettled: () => {
+      form.reset();
+      setOpen(false);
     },
   });
 

@@ -117,6 +117,29 @@ export const deleteLeadByIdService = async ({ id, tenantId }) => {
   return await Lead.deleteOne({ _id: id, tenantId }).exec();
 };
 
+export const bulkWriteLeadsService = async ({ tenantId, leads }) => {
+  const operations = leads.map((lead) => ({
+    insertOne: {
+      document: {
+        idempotentId: lead.idempotentId,
+        tenantId,
+        orgId: lead.orgId || null,
+        orgName: lead.orgName || "",
+        dealId: null,
+        userId: lead.userId || null,
+        firstName: lead.firstName || "",
+        lastName: lead.lastName || "",
+        email: lead.email || "",
+        mobile: lead.mobile || "",
+        gender: lead.gender || "",
+        source: lead.source || "",
+      },
+    },
+  }));
+
+  return await Lead.bulkWrite(operations, { ordered: false });
+};
+
 export const fetchOrganizationsService = async ({
   tenantId,
   limit,

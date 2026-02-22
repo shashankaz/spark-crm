@@ -21,10 +21,13 @@ import { TenantCreateForm } from "./tenant-create-form";
 
 import { getAllTenants } from "@/api/services/tenant.service";
 
+import { exportTenantsToExcel } from "@/utils/export/tenant-excel";
+
 import type { Tenant } from "@/types";
 
 const TenantsPage = () => {
   const [open, setOpen] = useState(false);
+  const [selectedTenants, setSelectedTenants] = useState<Tenant[]>([]);
 
   const { isPending, data: tenants = [] } = useQuery<Tenant[]>({
     queryKey: ["getAllTenants"],
@@ -47,7 +50,11 @@ const TenantsPage = () => {
             <Description description="Manage your CRM tenants and their subscriptions" />
           </div>
           <div className="space-x-2">
-            <Button type="button" disabled>
+            <Button
+              type="button"
+              onClick={() => exportTenantsToExcel(selectedTenants)}
+              disabled={selectedTenants.length === 0}
+            >
               <Download />
               Export
             </Button>
@@ -58,7 +65,12 @@ const TenantsPage = () => {
           </div>
         </div>
 
-        <DataTable columns={columns} data={tenants} placeholder="tenants" />
+        <DataTable
+          columns={columns}
+          data={tenants}
+          placeholder="tenants"
+          onSelectionChange={(rows) => setSelectedTenants(rows as Tenant[])}
+        />
 
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogContent className="sm:max-w-3xl">

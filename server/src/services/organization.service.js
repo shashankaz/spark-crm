@@ -31,9 +31,9 @@ export const fetchOrganizationsService = async ({
     _id: org._id,
     name: org.name,
     industry: org.industry || "",
-    size: org.size || "",
     country: org.country || "",
-    email: org.email || "",
+    size: org.size || "",
+    website: org.website || "",
     updatedAt: formatDate(org.updatedAt, "dd/MM/yyyy"),
   }));
 

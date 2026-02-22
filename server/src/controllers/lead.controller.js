@@ -5,6 +5,7 @@ import {
   updateLeadByIdService,
   deleteLeadByIdService,
   fetchOrganizationsService,
+  bulkWriteLeadsService,
 } from "../services/lead.service.js";
 
 export const getAllLeads = async (req, res, next) => {
@@ -228,6 +229,36 @@ export const deleteLeadById = async (req, res, next) => {
       success: true,
       message: "Lead deleted successfully",
       data: { id },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const bulkWriteLeads = async (req, res, next) => {
+  try {
+    const { tenantId } = req.user;
+    if (!tenantId) {
+      return res.status(400).json({
+        success: false,
+        message: "Tenant ID is missing in user data",
+      });
+    }
+
+    const { leads } = req.body;
+    if (!Array.isArray(leads) || leads.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "leads must be a non-empty array",
+      });
+    }
+
+    const result = await bulkWriteLeadsService({ tenantId, leads });
+
+    res.status(201).json({
+      success: true,
+      message: `${result.insertedCount} lead(s) created successfully`,
+      data: { insertedCount: result.insertedCount },
     });
   } catch (error) {
     next(error);
