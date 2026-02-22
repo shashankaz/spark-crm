@@ -79,8 +79,8 @@ const tenantSchema = Schema(
 
 tenantSchema.index({ createdAt: -1 });
 
-// tenantSchema.pre("find", function () {
-//   this.where({ isDeleted: false });
-// });
+tenantSchema.pre("save", async function () {
+  this.email = this.email.toLowerCase();
+});
 
 export const Tenant = model("Tenant", tenantSchema);

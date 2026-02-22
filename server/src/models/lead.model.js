@@ -76,4 +76,8 @@ const leadSchema = Schema(
 
 leadSchema.index({ tenantId: 1, userId: 1 });
 
+leadSchema.pre("save", async function () {
+  this.email = this.email.toLowerCase();
+});
+
 export const Lead = model("Lead", leadSchema);

@@ -75,4 +75,9 @@ const organizationSchema = Schema(
   },
 );
 
+organizationSchema.pre("save", async function () {
+  this.email = this.email.toLowerCase();
+  this.contactEmail = this.contactEmail.toLowerCase();
+});
+
 export const Organization = model("Organization", organizationSchema);
