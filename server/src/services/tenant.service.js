@@ -5,7 +5,7 @@ import { User } from "../models/user.model.js";
 import { hashPassword } from "../utils/auth/bcrypt.js";
 import { AppError } from "../utils/app-error.js";
 import { PLAN_PRICES } from "../utils/plans.js";
-import { calcChange } from "../utils/stats-helper.js";
+import { WorkerService } from "./worker.service.js";
 
 export const fetchTenantDashboardStatsService = async () => {
   const now = new Date();
@@ -42,61 +42,16 @@ export const fetchTenantDashboardStatsService = async () => {
       .exec(),
   ]);
 
-  const currentRevenue = planCounts.reduce(
-    (sum, p) => sum + (PLAN_PRICES[p._id] || 0) * p.count,
-    0,
-  );
-  const lastMonthRevenue = lastMonthPlanCounts.reduce(
-    (sum, p) => sum + (PLAN_PRICES[p._id] || 0) * p.count,
-    0,
-  );
-
-  const paidPlans = planCounts
-    .filter((p) => p._id !== "free")
-    .reduce((sum, p) => sum + p.count, 0);
-  const lastMonthPaidPlans = lastMonthPlanCounts
-    .filter((p) => p._id !== "free")
-    .reduce((sum, p) => sum + p.count, 0);
-
-  const stats = {
-    totalTenants: {
-      value: totalTenants,
-      change: calcChange(totalTenants, tenantsLastMonth),
-      trend: totalTenants >= tenantsLastMonth ? "up" : "down",
-    },
-    totalUsers: {
-      value: totalUsers,
-      change: calcChange(totalUsers, usersLastMonth),
-      trend: totalUsers >= usersLastMonth ? "up" : "down",
-    },
-    monthlyRevenue: {
-      value: currentRevenue,
-      change: calcChange(currentRevenue, lastMonthRevenue),
-      trend: currentRevenue >= lastMonthRevenue ? "up" : "down",
-    },
-    paidPlans: {
-      value: paidPlans,
-      change: calcChange(paidPlans, lastMonthPaidPlans),
-      trend: paidPlans >= lastMonthPaidPlans ? "up" : "down",
-    },
-  };
-
-  const recentTenants = recentTenantsRaw.map((t) => ({
-    _id: t._id,
-    name: t.name,
-    email: t.email,
-    plan: t.plan,
-    city: t.address?.city || "",
-    country: t.address?.country || "",
-    createdAt: formatDate(t.createdAt, "yyyy-MM-dd"),
-  }));
-
-  const planDistribution = planCounts.map((p) => ({
-    plan: p._id,
-    count: p.count,
-  }));
-
-  return { stats, recentTenants, planDistribution };
+  return WorkerService.run("calcTenantDashboardStats", {
+    totalTenants,
+    tenantsLastMonth,
+    totalUsers,
+    usersLastMonth,
+    planCounts,
+    lastMonthPlanCounts,
+    recentTenantsRaw,
+    planPrices: PLAN_PRICES,
+  });
 };
 
 export const fetchTenantsService = async ({ cursor, limit, search }) => {
