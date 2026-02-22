@@ -5,12 +5,12 @@ import type { Lead } from "@/types";
 export const exportLeadsToExcel = (leads: Lead[], filename = "leads") => {
   const rows = leads.map((lead) => ({
     ID: lead._id,
-    "First Name": lead.firstName,
+    "First Name": lead.firstName ?? "",
     "Last Name": lead.lastName ?? "",
-    Organization: lead.orgName,
-    Email: lead.email,
-    Score: lead.score,
-    "Last Modified": lead.updatedAt,
+    Organization: lead.orgName ?? "",
+    Email: lead.email ?? "",
+    Score: lead.score ?? 0,
+    "Last Modified": lead.updatedAt ?? "",
   }));
 
   const worksheet = XLSX.utils.json_to_sheet(rows);

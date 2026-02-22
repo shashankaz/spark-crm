@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Download } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
@@ -13,9 +14,13 @@ import { columns } from "./columns";
 
 import { getAllDeals } from "@/api/services/deal.service";
 
+import { exportDealsToExcel } from "@/utils/export/deal-excel";
+
 import type { Deal } from "@/types";
 
 const DealPage = () => {
+  const [selectedDeals, setSelectedDeals] = useState<Deal[]>([]);
+
   const { isPending, data: deals = [] } = useQuery<Deal[]>({
     queryKey: ["fetchDeals"],
     queryFn: () => getAllDeals({}).then((response) => response.deals),
@@ -36,13 +41,22 @@ const DealPage = () => {
             <Heading title="Deals" />
             <Description description="Manage your CRM deals and their status" />
           </div>
-          <Button type="button" disabled>
+          <Button
+            type="button"
+            onClick={() => exportDealsToExcel(selectedDeals)}
+            disabled={selectedDeals.length === 0}
+          >
             <Download />
             Export
           </Button>
         </div>
 
-        <DataTable columns={columns} data={deals} placeholder="deals" />
+        <DataTable
+          columns={columns}
+          data={deals}
+          placeholder="deals"
+          onSelectionChange={(rows) => setSelectedDeals(rows as Deal[])}
+        />
       </div>
     </>
   );

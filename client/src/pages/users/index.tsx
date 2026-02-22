@@ -20,10 +20,13 @@ import { Heading } from "@/components/shared/typography/heading";
 import { Description } from "@/components/shared/typography/description";
 
 import { getAllUsers } from "@/api/services/user.service";
+
+import { exportUsersToExcel } from "@/utils/export/user";
 import type { User } from "@/types";
 
 const UsersPage = () => {
   const [open, setOpen] = useState(false);
+  const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
 
   const { isPending, data: users = [] } = useQuery<User[]>({
     queryKey: ["getAllUsers"],
@@ -46,7 +49,11 @@ const UsersPage = () => {
             <Description description="Manage your CRM users and their permissions" />
           </div>
           <div className="space-x-2">
-            <Button type="button" disabled>
+            <Button
+              type="button"
+              onClick={() => exportUsersToExcel(selectedUsers)}
+              disabled={selectedUsers.length === 0}
+            >
               <Download />
               Export
             </Button>
@@ -57,7 +64,12 @@ const UsersPage = () => {
           </div>
         </div>
 
-        <DataTable columns={columns} data={users} placeholder="users" />
+        <DataTable
+          columns={columns}
+          data={users}
+          placeholder="users"
+          onSelectionChange={(rows) => setSelectedUsers(rows as User[])}
+        />
 
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogContent className="sm:max-w-2xl">

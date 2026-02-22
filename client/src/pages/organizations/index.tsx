@@ -21,10 +21,15 @@ import { OrganizationCreateForm } from "./organization-create-form";
 
 import { getAllOrganizations } from "@/api/services/organization.service";
 
+import { exportOrganizationsToExcel } from "@/utils/export/organization-excel";
+
 import type { Organization } from "@/types";
 
 const OrganizationsPage = () => {
   const [open, setOpen] = useState(false);
+  const [selectedOrganizations, setSelectedOrganizations] = useState<
+    Organization[]
+  >([]);
 
   const { isPending, data: organizations = [] } = useQuery<Organization[]>({
     queryKey: ["fetchOrganizations"],
@@ -48,7 +53,11 @@ const OrganizationsPage = () => {
             <Description description="Manage your CRM organizations and their details" />
           </div>
           <div className="space-x-2">
-            <Button type="button" disabled>
+            <Button
+              type="button"
+              onClick={() => exportOrganizationsToExcel(selectedOrganizations)}
+              disabled={selectedOrganizations.length === 0}
+            >
               <Download />
               Export
             </Button>
@@ -63,6 +72,9 @@ const OrganizationsPage = () => {
           columns={columns}
           data={organizations}
           placeholder="organizations"
+          onSelectionChange={(rows) =>
+            setSelectedOrganizations(rows as Organization[])
+          }
         />
 
         <Dialog open={open} onOpenChange={setOpen}>
