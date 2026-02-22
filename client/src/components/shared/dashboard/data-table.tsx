@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   flexRender,
   getCoreRowModel,
@@ -30,12 +30,14 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   placeholder: string;
+  onSelectionChange?: (selectedRows: TData[]) => void;
 }
 
 export const DataTable = <TData, TValue>({
   columns,
   data,
   placeholder,
+  onSelectionChange,
 }: DataTableProps<TData, TValue>) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -48,7 +50,12 @@ export const DataTable = <TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
+    onRowSelectionChange: (updater) => {
+      setRowSelection((prev) => {
+        const next = typeof updater === "function" ? updater(prev) : updater;
+        return next;
+      });
+    },
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     state: {
@@ -57,6 +64,16 @@ export const DataTable = <TData, TValue>({
       sorting,
     },
   });
+
+  useEffect(() => {
+    if (onSelectionChange) {
+      onSelectionChange(
+        table.getFilteredSelectedRowModel().rows.map((row) => row.original),
+      );
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rowSelection]);
 
   return (
     <>

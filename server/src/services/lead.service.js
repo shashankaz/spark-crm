@@ -32,7 +32,7 @@ export const fetchLeadsService = async ({
     firstName: lead.firstName,
     lastName: lead.lastName || "",
     email: lead.email,
-    organization: lead.orgName,
+    orgName: lead.orgName,
     score: lead.score || 0,
     updatedAt: formatDate(lead.updatedAt, "dd/MM/yyyy"),
   }));

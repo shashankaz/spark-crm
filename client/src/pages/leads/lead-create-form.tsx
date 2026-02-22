@@ -59,7 +59,7 @@ export const LeadCreateForm: React.FC<LeadCreateFormProps> = ({ setOpen }) => {
 
   const organizations = organizationsData?.organizations ?? [];
 
-  const { mutate: submitLead } = useMutation({
+  const { mutate: submitLead, isPending } = useMutation({
     mutationFn: (data: LeadFormValues) => {
       const org = organizations.find((o) => o._id === data.organization);
       return createLead({
@@ -80,8 +80,7 @@ export const LeadCreateForm: React.FC<LeadCreateFormProps> = ({ setOpen }) => {
       queryClient.invalidateQueries({ queryKey: ["fetchLeads"] });
     },
     onError: (error) => {
-      console.error(error);
-      toast.error((error as Error).message);
+      toast.error(error.message);
     },
     onSettled: () => {
       form.reset();
@@ -298,10 +297,19 @@ export const LeadCreateForm: React.FC<LeadCreateFormProps> = ({ setOpen }) => {
       </FieldGroup>
 
       <div className="space-x-2 mt-4 flex justify-end">
-        <Button type="button" variant="outline" onClick={() => form.reset()}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => form.reset()}
+          disabled={isPending}
+        >
           Reset
         </Button>
-        <Button type="submit" form="lead-create-form">
+        <Button
+          type="submit"
+          form="lead-create-form"
+          disabled={!form.formState.isValid || isPending}
+        >
           Submit
         </Button>
       </div>

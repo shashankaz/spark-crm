@@ -68,7 +68,7 @@ export const columns: ColumnDef<Lead>[] = [
     },
   },
   {
-    accessorKey: "organization",
+    accessorKey: "orgName",
     header: ({ column }) => {
       return (
         <Button

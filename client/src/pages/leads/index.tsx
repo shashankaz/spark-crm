@@ -19,11 +19,15 @@ import { Description } from "@/components/shared/typography/description";
 import { columns } from "./columns";
 import { LeadCreateForm } from "./lead-create-form";
 
-import type { Lead } from "@/types";
 import { getAllLeads } from "@/api/services/lead.service";
+
+import { exportLeadsToExcel } from "@/utils/export/lead-excel";
+
+import type { Lead } from "@/types";
 
 const LeadPage = () => {
   const [open, setOpen] = useState(false);
+  const [selectedLeads, setSelectedLeads] = useState<Lead[]>([]);
 
   const { isPending, data: leads = [] } = useQuery<Lead[]>({
     queryKey: ["fetchLeads"],
@@ -46,7 +50,11 @@ const LeadPage = () => {
             <Description description="Manage your CRM leads and their status" />
           </div>
           <div className="space-x-2">
-            <Button type="button" disabled>
+            <Button
+              type="button"
+              onClick={() => exportLeadsToExcel(selectedLeads)}
+              disabled={selectedLeads.length === 0}
+            >
               <Download />
               Export
             </Button>
@@ -57,7 +65,12 @@ const LeadPage = () => {
           </div>
         </div>
 
-        <DataTable columns={columns} data={leads} placeholder="leads" />
+        <DataTable
+          columns={columns}
+          data={leads}
+          placeholder="leads"
+          onSelectionChange={(rows) => setSelectedLeads(rows as Lead[])}
+        />
 
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogContent>
