@@ -1,8 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Helmet } from "react-helmet-async";
-import { LoaderCircle } from "lucide-react";
 import toast from "react-hot-toast";
 
 import {
@@ -12,21 +11,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
 
 import { Heading } from "@/components/shared/typography/heading";
 import { Description } from "@/components/shared/typography/description";
 import { ProfileCard } from "@/components/profile/profile-card";
-import { PasswordInput } from "@/components/shared/password-input";
+import { EditProfile } from "@/components/profile/edit-profile";
+import { ChangePassword } from "@/components/profile/change-password";
 
 import { editProfileSchema, changePasswordSchema } from "./profile-form-schema";
 import type {
@@ -184,174 +175,19 @@ const ProfilePage = () => {
             </TabsContent>
 
             <TabsContent value="edit">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-base">Edit Profile</CardTitle>
-                  <CardDescription>
-                    Update your personal information.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <form
-                    id="edit-profile-form"
-                    onSubmit={editForm.handleSubmit(onEditProfileSubmit)}
-                  >
-                    <FieldGroup className="grid grid-cols-1 sm:grid-cols-2 gap-8 -space-y-4">
-                      <Controller
-                        name="firstName"
-                        control={editForm.control}
-                        render={({ field, fieldState }) => (
-                          <Field
-                            data-invalid={fieldState.invalid}
-                            className="-space-y-2"
-                          >
-                            <FieldLabel htmlFor="firstName">
-                              First Name
-                            </FieldLabel>
-                            <Input
-                              {...field}
-                              id="firstName"
-                              aria-invalid={fieldState.invalid}
-                              placeholder="Enter first name"
-                              autoComplete="off"
-                            />
-                            {fieldState.invalid && (
-                              <FieldError
-                                className="text-destructive text-xs"
-                                errors={[fieldState.error]}
-                              />
-                            )}
-                          </Field>
-                        )}
-                      />
-                      <Controller
-                        name="lastName"
-                        control={editForm.control}
-                        render={({ field, fieldState }) => (
-                          <Field
-                            data-invalid={fieldState.invalid}
-                            className="-space-y-2"
-                          >
-                            <FieldLabel htmlFor="lastName">
-                              Last Name{" "}
-                              <span className="text-muted-foreground text-xs">
-                                (optional)
-                              </span>
-                            </FieldLabel>
-                            <Input
-                              {...field}
-                              id="lastName"
-                              aria-invalid={fieldState.invalid}
-                              placeholder="Enter last name"
-                              autoComplete="off"
-                            />
-                            {fieldState.invalid && (
-                              <FieldError
-                                className="text-destructive text-xs"
-                                errors={[fieldState.error]}
-                              />
-                            )}
-                          </Field>
-                        )}
-                      />
-                      <Controller
-                        name="mobile"
-                        control={editForm.control}
-                        render={({ field, fieldState }) => (
-                          <Field
-                            data-invalid={fieldState.invalid}
-                            className="-space-y-2"
-                          >
-                            <FieldLabel htmlFor="mobile">
-                              Mobile{" "}
-                              <span className="text-muted-foreground text-xs">
-                                (optional)
-                              </span>
-                            </FieldLabel>
-                            <Input
-                              {...field}
-                              id="mobile"
-                              aria-invalid={fieldState.invalid}
-                              placeholder="Enter 10-digit mobile number"
-                              autoComplete="off"
-                            />
-                            {fieldState.invalid && (
-                              <FieldError
-                                className="text-destructive text-xs"
-                                errors={[fieldState.error]}
-                              />
-                            )}
-                          </Field>
-                        )}
-                      />
-                      <div className="sm:col-span-2">
-                        <Separator className="mb-4" />
-                        <Button
-                          type="submit"
-                          disabled={isProfilePending}
-                          size="sm"
-                        >
-                          {isProfilePending && (
-                            <LoaderCircle className="h-4 w-4 animate-spin" />
-                          )}
-                          Save Changes
-                        </Button>
-                      </div>
-                    </FieldGroup>
-                  </form>
-                </CardContent>
-              </Card>
+              <EditProfile
+                editForm={editForm}
+                onEditProfileSubmit={onEditProfileSubmit}
+                isProfilePending={isProfilePending}
+              />
             </TabsContent>
 
             <TabsContent value="security">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-base">Change Password</CardTitle>
-                  <CardDescription>
-                    Update your password to keep your account secure.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <form
-                    id="change-password-form"
-                    onSubmit={passwordForm.handleSubmit(onChangePasswordSubmit)}
-                  >
-                    <FieldGroup className="max-w-sm -space-y-4">
-                      <PasswordInput
-                        form={passwordForm}
-                        name="currentPassword"
-                        placeholder="Enter current password"
-                        label="Current Password"
-                      />
-                      <PasswordInput
-                        form={passwordForm}
-                        name="newPassword"
-                        placeholder="Enter new password"
-                        label="New Password"
-                      />
-                      <PasswordInput
-                        form={passwordForm}
-                        name="confirmPassword"
-                        placeholder="Confirm new password"
-                        label="Confirm New Password"
-                      />
-                      <div>
-                        <Separator className="mb-4" />
-                        <Button
-                          type="submit"
-                          disabled={isPasswordPending}
-                          size="sm"
-                        >
-                          {isPasswordPending && (
-                            <LoaderCircle className="h-4 w-4 animate-spin" />
-                          )}
-                          Update Password
-                        </Button>
-                      </div>
-                    </FieldGroup>
-                  </form>
-                </CardContent>
-              </Card>
+              <ChangePassword
+                passwordForm={passwordForm}
+                onChangePasswordSubmit={onChangePasswordSubmit}
+                isPasswordPending={isPasswordPending}
+              />
             </TabsContent>
           </Tabs>
         </div>
