@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { v7 as uuidv7 } from "uuid";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -24,6 +25,8 @@ import { leadFormSchema } from "./lead-form-schema";
 import type { LeadFormValues } from "./lead-form-schema";
 
 import { createLead } from "@/api/services/lead.service";
+import { getAllOrganizations } from "@/api/services/organization.service";
+
 import { useUser } from "@/hooks/use-user";
 
 interface LeadCreateFormProps {
@@ -46,27 +49,50 @@ export const LeadCreateForm: React.FC<LeadCreateFormProps> = ({ setOpen }) => {
   });
 
   const { user } = useUser();
-  if (!user) return null;
 
-  const onSubmit = async (data: LeadFormValues) => {
-    try {
-      const payload = {
+  const queryClient = useQueryClient();
+
+  const { data: organizationsData } = useQuery({
+    queryKey: ["fetchOrganizations"],
+    queryFn: () => getAllOrganizations({}),
+  });
+
+  const organizations = organizationsData?.organizations ?? [];
+
+  const { mutate: submitLead } = useMutation({
+    mutationFn: (data: LeadFormValues) => {
+      const org = organizations.find((o) => o._id === data.organization);
+      return createLead({
         idempotentId: uuidv7(),
-        tenantId: user.tenantId,
-        userId: user._id,
+        userId: user!._id,
         orgId: data.organization,
-        ...data,
-      };
-
-      const { message } = await createLead(payload);
+        orgName: org?.name ?? "",
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        mobile: data.mobile,
+        gender: data.gender,
+        source: data.source,
+      });
+    },
+    onSuccess: ({ message }) => {
       toast.success(message);
-    } catch (error) {
+      queryClient.invalidateQueries({ queryKey: ["fetchLeads"] });
+    },
+    onError: (error) => {
       console.error(error);
       toast.error((error as Error).message);
-    } finally {
+    },
+    onSettled: () => {
       form.reset();
       setOpen(false);
-    }
+    },
+  });
+
+  if (!user) return null;
+
+  const onSubmit = (data: LeadFormValues) => {
+    submitLead(data);
   };
 
   return (
@@ -99,7 +125,12 @@ export const LeadCreateForm: React.FC<LeadCreateFormProps> = ({ setOpen }) => {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="lastName">Last Name</FieldLabel>
+              <FieldLabel htmlFor="lastName">
+                Last Name{" "}
+                <span className="text-muted-foreground text-xs">
+                  (optional)
+                </span>
+              </FieldLabel>
               <Input
                 {...field}
                 id="lastName"
@@ -207,9 +238,11 @@ export const LeadCreateForm: React.FC<LeadCreateFormProps> = ({ setOpen }) => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="507f1f77bcf86cd799439011">
-                      Test Orgs
-                    </SelectItem>
+                    {organizations.map((org) => (
+                      <SelectItem key={org._id} value={org._id}>
+                        {org.name}
+                      </SelectItem>
+                    ))}
                   </SelectGroup>
                 </SelectContent>
               </Select>

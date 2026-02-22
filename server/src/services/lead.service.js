@@ -116,3 +116,21 @@ export const deleteLeadByIdService = async ({ id, tenantId }) => {
 
   return await Lead.deleteOne({ _id: id, tenantId }).exec();
 };
+
+export const fetchOrganizationsService = async ({
+  tenantId,
+  limit,
+  search,
+}) => {
+  const whereQuery = { tenantId };
+  if (search) {
+    whereQuery.name = { $regex: search, $options: "i" };
+  }
+
+  const organizations = await Organization.find(whereQuery)
+    .select("_id name")
+    .limit(limit)
+    .exec();
+
+  return organizations.filter((org) => org.name);
+};

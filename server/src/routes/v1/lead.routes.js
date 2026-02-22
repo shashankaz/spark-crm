@@ -5,6 +5,7 @@ import {
   createLead,
   updateLeadById,
   deleteLeadById,
+  getAllOrganizations,
 } from "../../controllers/lead.controller.js";
 import { requireAuth } from "../../middlewares/auth.middleware.js";
 
@@ -15,5 +16,7 @@ router.get("/:id", requireAuth, getLeadById);
 router.post("/", requireAuth, createLead);
 router.patch("/:id", requireAuth, updateLeadById);
 router.delete("/:id", requireAuth, deleteLeadById);
+
+router.get("/organizations", requireAuth, getAllOrganizations);
 
 export default router;

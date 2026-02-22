@@ -27,6 +27,11 @@ export type DeleteLeadResponse = {
   id: string;
 };
 
+export type GetAllOrganizationsResponse = {
+  message: string;
+  organizations: { _id: string; name: string }[];
+};
+
 export const getAllLeads = async ({
   cursor,
   limit = 10,
@@ -182,6 +187,28 @@ export const deleteLeadById = async ({
     return { message, id: deletedId };
   } catch (error) {
     console.error("Delete lead error:", error);
+    throw error;
+  }
+};
+
+export const getAllOrganizations = async ({
+  limit = 10,
+  search,
+}: {
+  limit?: number;
+  search?: string;
+}): Promise<GetAllOrganizationsResponse> => {
+  try {
+    const response = await api.get("/lead/organization", {
+      params: { limit, search },
+    });
+
+    const { message } = response.data;
+    const { organizations } = response.data.data;
+
+    return { message, organizations };
+  } catch (error) {
+    console.error("Get all organizations error:", error);
     throw error;
   }
 };

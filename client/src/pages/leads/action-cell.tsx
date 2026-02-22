@@ -1,5 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { EllipsisVertical, Pencil, Trash2 } from "lucide-react";
+import toast from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -11,10 +14,31 @@ import {
 
 import { DeleteDialog } from "@/components/shared/dashboard/delete-dialog";
 
+import { deleteLeadById } from "@/api/services/lead.service";
+
 import type { Lead } from "@/types";
 
 export const ActionCell = ({ lead }: { lead: Lead }) => {
   const [deleteOpen, setDeleteOpen] = useState(false);
+
+  const navigate = useNavigate();
+
+  const queryClient = useQueryClient();
+
+  const { mutate: handleDelete } = useMutation({
+    mutationFn: () => deleteLeadById({ id: lead._id }),
+    onSuccess: ({ message }) => {
+      toast.success(message);
+      queryClient.invalidateQueries({ queryKey: ["fetchLeads"] });
+    },
+    onError: (error) => {
+      console.error(error);
+      toast.error((error as Error).message);
+    },
+    onSettled: () => {
+      setDeleteOpen(false);
+    },
+  });
 
   return (
     <>
@@ -25,7 +49,9 @@ export const ActionCell = ({ lead }: { lead: Lead }) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => console.log("Edit", lead._id)}>
+          <DropdownMenuItem
+            onClick={() => navigate(`/dashboard/leads/${lead._id}/edit`)}
+          >
             <Pencil className="mr-2 h-4 w-4" />
             Edit
           </DropdownMenuItem>
@@ -42,10 +68,7 @@ export const ActionCell = ({ lead }: { lead: Lead }) => {
       <DeleteDialog
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
-        onConfirm={() => {
-          console.log("Delete", lead._id);
-          setDeleteOpen(false);
-        }}
+        onConfirm={handleDelete}
         placeholder="lead"
       />
     </>

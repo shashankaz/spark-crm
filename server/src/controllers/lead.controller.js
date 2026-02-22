@@ -4,6 +4,7 @@ import {
   createLeadService,
   updateLeadByIdService,
   deleteLeadByIdService,
+  fetchOrganizationsService,
 } from "../services/lead.service.js";
 
 export const getAllLeads = async (req, res, next) => {
@@ -227,6 +228,35 @@ export const deleteLeadById = async (req, res, next) => {
       success: true,
       message: "Lead deleted successfully",
       data: { id },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getAllOrganizations = async (req, res, next) => {
+  try {
+    const { tenantId } = req.user;
+    if (!tenantId) {
+      return res.status(400).json({
+        success: false,
+        message: "Tenant ID is missing in user data",
+      });
+    }
+
+    const limit = Number(req.query.limit) || 10;
+    const search = req.query.search;
+
+    const { organizations } = await fetchOrganizationsService({
+      tenantId,
+      limit,
+      search,
+    });
+
+    res.json({
+      success: true,
+      message: "Organizations retrieved successfully",
+      data: { organizations },
     });
   } catch (error) {
     next(error);

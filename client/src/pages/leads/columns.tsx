@@ -59,6 +59,13 @@ export const columns: ColumnDef<Lead>[] = [
         </Button>
       );
     },
+    cell: ({ row }) => {
+      const lastName = row.getValue("lastName") as string;
+
+      if (!lastName) return <span className="text-muted-foreground">—</span>;
+
+      return <span>{lastName}</span>;
+    },
   },
   {
     accessorKey: "organization",

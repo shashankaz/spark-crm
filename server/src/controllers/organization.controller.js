@@ -98,10 +98,11 @@ export const createOrganization = async (req, res, next) => {
       contactMobile,
     } = req.body;
 
-    if (!idempotentId || !userId || !name) {
+    if (!idempotentId || !userId || !name || !industry || !size) {
       return res.status(400).json({
         success: false,
-        message: "Idempotent ID, User ID, and Organization Name are required",
+        message:
+          "Idempotent ID, User ID, Organization Name, Industry, and Size are required",
       });
     }
 
