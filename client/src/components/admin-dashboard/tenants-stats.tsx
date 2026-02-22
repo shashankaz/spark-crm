@@ -131,7 +131,7 @@ export const TenantsStats = ({
                 return (
                   <div key={item.plan} className="space-y-1">
                     <div className="flex items-center justify-between text-sm">
-                      <span className="font-medium">{item.plan}</span>
+                      <span className="font-medium capitalize">{item.plan}</span>
                       <span className="text-muted-foreground">
                         {item.count} <span className="text-xs">({pct}%)</span>
                       </span>

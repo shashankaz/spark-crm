@@ -52,7 +52,7 @@ export const StatsSection = ({ stats, isLoading }: Props) => {
 
         const displayValue =
           meta.key === "monthlyRevenue"
-            ? `$${stat?.value?.toLocaleString() ?? 0}`
+            ? `₹${stat?.value?.toLocaleString() ?? 0}`
             : (stat?.value?.toLocaleString() ?? 0);
 
         return (
