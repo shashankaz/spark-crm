@@ -1,62 +1,27 @@
 import { Helmet } from "react-helmet-async";
 import { Download } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 
 import { Heading } from "@/components/shared/typography/heading";
 import { Description } from "@/components/shared/typography/description";
 import { DataTable } from "@/components/shared/dashboard/data-table";
+import { TableSkeleton } from "@/components/shared/dashboard/skeleton";
 
 import { columns } from "./columns";
 
+import { getAllDeals } from "@/api/services/deal.service";
+
+import type { Deal } from "@/types";
+
 const DealPage = () => {
-  const deals = [
-    {
-      id: "1",
-      firstName: "John",
-      lastName: "Doe",
-      organization: "Acme Corp",
-      email: "john.doe@example.com",
-      score: 85,
-      updatedAt: "2024-06-01",
-    },
-    {
-      id: "2",
-      firstName: "Jane",
-      lastName: "Smith",
-      organization: "Globex Inc",
-      email: "jane.smith@example.com",
-      score: 75,
-      updatedAt: "2024-06-02",
-    },
-    {
-      id: "3",
-      firstName: "Carlos",
-      lastName: "Martinez",
-      organization: "Initech",
-      email: "carlos.martinez@initech.com",
-      score: 92,
-      updatedAt: "2024-06-03",
-    },
-    {
-      id: "4",
-      firstName: "Priya",
-      lastName: "Sharma",
-      organization: "Umbrella Corp",
-      email: "priya.sharma@umbrella.com",
-      score: 68,
-      updatedAt: "2024-06-04",
-    },
-    {
-      id: "5",
-      firstName: "Liam",
-      lastName: "O'Brien",
-      organization: "Stark Industries",
-      email: "liam.obrien@stark.com",
-      score: 81,
-      updatedAt: "2024-06-05",
-    },
-  ];
+  const { isPending, data: deals = [] } = useQuery<Deal[]>({
+    queryKey: ["fetchDeals"],
+    queryFn: () => getAllDeals({}).then((response) => response.deals),
+  });
+
+  if (isPending) return <TableSkeleton />;
 
   return (
     <>
