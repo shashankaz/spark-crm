@@ -20,6 +20,7 @@
 
 ::-webkit-scrollbar {
     width: 6px;
+    height: 6px;
     background-color: var(--muted);
 }
 
@@ -31,6 +32,19 @@
 
 ::-webkit-scrollbar-thumb:hover {
     background-color: var(--ring);
+}
+
+::-webkit-scrollbar:horizontal {
+    height: 6px;
+}
+
+::-webkit-scrollbar-thumb:horizontal {
+    background-color: var(--primary);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: var(--muted);
 }
 
 :root {

@@ -244,4 +244,4 @@ export const countries = [
   "South Africa",
   "Zambia",
   "Zimbabwe",
-];
+].sort((a, b) => a.localeCompare(b));

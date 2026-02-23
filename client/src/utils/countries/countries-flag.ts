@@ -413,4 +413,4 @@ export const countriesFlag = [
   { code: "ZA", label: "South Africa", flag: "https://flagcdn.com/w40/za.png" },
   { code: "ZM", label: "Zambia", flag: "https://flagcdn.com/w40/zm.png" },
   { code: "ZW", label: "Zimbabwe", flag: "https://flagcdn.com/w40/zw.png" },
-];
+].sort((a, b) => a.label.localeCompare(b.label));
