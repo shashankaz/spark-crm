@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { useQuery } from "@tanstack/react-query";
 import { Download, Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -19,7 +18,7 @@ import { Description } from "@/components/shared/typography/description";
 import { columns } from "./columns";
 import { OrganizationCreateForm } from "./organization-create-form";
 
-import { getAllOrganizations } from "@/api/services/organization.service";
+import { useOrganizations } from "@/hooks/use-organization";
 
 import { exportOrganizationsToExcel } from "@/utils/export/organization-excel";
 
@@ -31,11 +30,8 @@ const OrganizationsPage = () => {
     Organization[]
   >([]);
 
-  const { isPending, data: organizations = [] } = useQuery<Organization[]>({
-    queryKey: ["fetchOrganizations"],
-    queryFn: () =>
-      getAllOrganizations({}).then((response) => response.organizations),
-  });
+  const { data, isPending } = useOrganizations({});
+  const organizations = data?.organizations ?? [];
 
   if (isPending) return <TableSkeleton />;
 

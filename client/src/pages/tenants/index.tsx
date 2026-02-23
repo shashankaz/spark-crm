@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Download, Plus } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
 
 import {
   Dialog,
@@ -19,7 +18,7 @@ import { DataTable } from "@/components/shared/dashboard/data-table";
 import { columns } from "./columns";
 import { TenantCreateForm } from "./tenant-create-form";
 
-import { getAllTenants } from "@/api/services/tenant.service";
+import { useTenants } from "@/hooks/use-tenant";
 
 import { exportTenantsToExcel } from "@/utils/export/tenant-excel";
 
@@ -29,10 +28,8 @@ const TenantsPage = () => {
   const [open, setOpen] = useState(false);
   const [selectedTenants, setSelectedTenants] = useState<Tenant[]>([]);
 
-  const { isPending, data: tenants = [] } = useQuery<Tenant[]>({
-    queryKey: ["getAllTenants"],
-    queryFn: () => getAllTenants({}).then((response) => response.tenants),
-  });
+  const { data, isPending } = useTenants({});
+  const tenants = data?.tenants ?? [];
 
   if (isPending) return <TableSkeleton />;
 

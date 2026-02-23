@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { useQuery } from "@tanstack/react-query";
 import { Download, Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -19,7 +18,7 @@ import { Description } from "@/components/shared/typography/description";
 import { columns } from "./columns";
 import { LeadCreateForm } from "./lead-create-form";
 
-import { getAllLeads } from "@/api/services/lead.service";
+import { useLeads } from "@/hooks/use-lead";
 
 import { exportLeadsToExcel } from "@/utils/export/lead-excel";
 
@@ -29,10 +28,8 @@ const LeadPage = () => {
   const [open, setOpen] = useState(false);
   const [selectedLeads, setSelectedLeads] = useState<Lead[]>([]);
 
-  const { isPending, data: leads = [] } = useQuery<Lead[]>({
-    queryKey: ["fetchLeads"],
-    queryFn: () => getAllLeads({}).then((response) => response.leads),
-  });
+  const { isPending, data } = useLeads({});
+  const leads = data?.leads ?? [];
 
   if (isPending) return <TableSkeleton />;
 

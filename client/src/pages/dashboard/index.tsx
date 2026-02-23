@@ -1,18 +1,14 @@
 import { Helmet } from "react-helmet-async";
-import { useQuery } from "@tanstack/react-query";
 
 import { Stats } from "@/components/dashboard/stats";
 import { RecentLeadsDeals } from "@/components/dashboard/recent-leads-deals";
 import { Heading } from "@/components/shared/typography/heading";
 import { Description } from "@/components/shared/typography/description";
 
-import { getDashboardStats } from "@/api/services/dashboard.service";
+import { useDashboardStats } from "@/hooks/use-dashboard";
 
 const DashboardPage = () => {
-  const { isPending, data } = useQuery({
-    queryKey: ["getDashboardStats"],
-    queryFn: getDashboardStats,
-  });
+  const { data, isPending } = useDashboardStats();
 
   return (
     <>

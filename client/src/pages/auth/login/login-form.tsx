@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { LoaderCircle } from "lucide-react";
@@ -21,7 +20,7 @@ import { useUser } from "@/hooks/use-user";
 import { loginFormSchema } from "./login-form-schema";
 import type { LoginFormValues } from "./login-form-schema";
 
-import { login } from "@/api/services/auth.service";
+import { useLogin } from "@/hooks/use-auth";
 
 export const LoginForm = () => {
   const form = useForm<LoginFormValues>({
@@ -36,22 +35,21 @@ export const LoginForm = () => {
   const navigate = useNavigate();
   const { setUser } = useUser();
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: login,
-    onSuccess: ({ user }) => {
-      setUser(user);
-      toast.success("Logged in successfully!");
-      if (user.role === "super_admin") navigate("/admin", { replace: true });
-      else navigate("/dashboard", { replace: true });
-    },
-    onError: (error) => {
-      toast.error(error.message);
-      form.reset();
-    },
-  });
+  const { mutate, isPending } = useLogin();
 
   const onSubmit = (data: LoginFormValues) => {
-    mutate(data);
+    mutate(data, {
+      onSuccess: ({ user, message }) => {
+        setUser(user);
+        toast.success(message);
+        if (user.role === "super_admin") navigate("/admin", { replace: true });
+        else navigate("/dashboard", { replace: true });
+      },
+      onError: ({ message }) => {
+        toast.error(message);
+        form.reset();
+      },
+    });
   };
 
   return (

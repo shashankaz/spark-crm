@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useParams } from "react-router";
 import { Helmet } from "react-helmet-async";
-import { useQuery } from "@tanstack/react-query";
 
 import {
   Dialog,
@@ -18,28 +17,15 @@ import { DataTable } from "@/components/shared/dashboard/data-table";
 import { columns as userColumns } from "@/pages/users/columns";
 import { UserCreateForm } from "@/pages/users/user-create-form";
 
-import type { Tenant } from "@/types";
-import type { User } from "@/types";
+import { useTenant } from "@/hooks/use-tenant";
 
 import { TenantEditForm } from "./tenant-edit-form";
-import { getTenantById } from "@/api/services/tenant.service";
-
-interface TenantDetailsResponse {
-  tenant: Tenant;
-  usersCount: number;
-  users: User[];
-}
 
 const TenantsEditPage = () => {
   const { tenantId } = useParams<{ tenantId: string }>();
   const [userDialogOpen, setUserDialogOpen] = useState(false);
 
-  const { isPending, data } = useQuery<TenantDetailsResponse>({
-    queryKey: ["getTenantById", tenantId],
-    queryFn: () =>
-      getTenantById({ id: tenantId! }).then((response) => response),
-    enabled: !!tenantId,
-  });
+  const { data, isPending } = useTenant({ id: tenantId! });
 
   if (isPending) return null;
 

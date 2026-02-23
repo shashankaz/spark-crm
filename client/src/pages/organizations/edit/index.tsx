@@ -1,6 +1,5 @@
 import { useParams, Link } from "react-router";
 import { Helmet } from "react-helmet-async";
-import { useQuery } from "@tanstack/react-query";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,21 +11,13 @@ import { TableSkeleton } from "@/components/shared/dashboard/skeleton";
 
 import { OrganizationEditForm } from "./organization-edit-form";
 
-import { getOrganizationById } from "@/api/services/organization.service";
-
-import type { Organization } from "@/types";
+import { useOrganization } from "@/hooks/use-organization";
 
 const OrganizationsEditPage = () => {
   const { organizationId } = useParams<{ organizationId: string }>();
 
-  const { isPending, data: org } = useQuery<Organization>({
-    queryKey: ["fetchOrganization", organizationId],
-    queryFn: () =>
-      getOrganizationById({ id: organizationId! }).then(
-        (response) => response.organization,
-      ),
-    enabled: !!organizationId,
-  });
+  const { data, isPending } = useOrganization({ id: organizationId! });
+  const org = data?.organization;
 
   if (isPending) return <TableSkeleton />;
 

@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { v7 as uuidv7 } from "uuid";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -25,7 +25,7 @@ import { leadFormSchema } from "./lead-form-schema";
 import type { LeadFormValues } from "./lead-form-schema";
 
 import { createLead } from "@/api/services/lead.service";
-import { getAllOrganizations } from "@/api/services/organization.service";
+import { useOrganizations } from "@/hooks/use-lead";
 
 import { useUser } from "@/hooks/use-user";
 
@@ -52,12 +52,8 @@ export const LeadCreateForm: React.FC<LeadCreateFormProps> = ({ setOpen }) => {
 
   const queryClient = useQueryClient();
 
-  const { data: organizationsData } = useQuery({
-    queryKey: ["fetchOrganizations"],
-    queryFn: () => getAllOrganizations({}),
-  });
-
-  const organizations = organizationsData?.organizations ?? [];
+  const { data } = useOrganizations({});
+  const organizations = data?.organizations ?? [];
 
   const { mutate: submitLead, isPending } = useMutation({
     mutationFn: (data: LeadFormValues) => {

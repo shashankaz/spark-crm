@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Download } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 
@@ -12,7 +11,7 @@ import { TableSkeleton } from "@/components/shared/dashboard/skeleton";
 
 import { columns } from "./columns";
 
-import { getAllDeals } from "@/api/services/deal.service";
+import { useDeals } from "@/hooks/use-deal";
 
 import { exportDealsToExcel } from "@/utils/export/deal-excel";
 
@@ -21,10 +20,8 @@ import type { Deal } from "@/types";
 const DealPage = () => {
   const [selectedDeals, setSelectedDeals] = useState<Deal[]>([]);
 
-  const { isPending, data: deals = [] } = useQuery<Deal[]>({
-    queryKey: ["fetchDeals"],
-    queryFn: () => getAllDeals({}).then((response) => response.deals),
-  });
+  const { data, isPending } = useDeals({});
+  const deals = data?.deals ?? [];
 
   if (isPending) return <TableSkeleton />;
 
