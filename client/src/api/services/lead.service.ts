@@ -1,5 +1,5 @@
 import { api } from "@/api";
-import type { Lead } from "@/types";
+import type { Lead, LeadActionHistory } from "@/types";
 
 export type GetAllLeadsResponse = {
   message: string;
@@ -30,6 +30,11 @@ export type DeleteLeadResponse = {
 export type GetAllOrganizationsResponse = {
   message: string;
   organizations: { _id: string; name: string }[];
+};
+
+export type GetLeadActivityByLeadIdResponse = {
+  message: string;
+  activities: LeadActionHistory[];
 };
 
 export const getAllLeads = async ({
@@ -185,6 +190,24 @@ export const deleteLeadById = async ({
   }
 };
 
+export const getLeadActivityByLeadId = async ({
+  id,
+}: {
+  id: string;
+}): Promise<GetLeadActivityByLeadIdResponse> => {
+  try {
+    const response = await api.get(`/lead/activity/${id}`);
+
+    const { message } = response.data;
+    const { activities } = response.data.data;
+
+    return { message, activities };
+  } catch (error) {
+    console.error("Get lead activity by lead ID error:", error);
+    throw error;
+  }
+};
+
 export const getAllOrganizations = async ({
   limit = 10,
   search,
@@ -193,7 +216,7 @@ export const getAllOrganizations = async ({
   search?: string;
 }): Promise<GetAllOrganizationsResponse> => {
   try {
-    const response = await api.get("/lead/organization", {
+    const response = await api.get("/lead/organizations", {
       params: { limit, search },
     });
 

@@ -1,6 +1,9 @@
 import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+import { updateLeadById } from "@/api/services/lead.service";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -45,9 +48,32 @@ export interface LeadEditData {
 
 interface LeadEditFormProps {
   lead: LeadEditData;
+  organizations: { _id: string; name: string }[];
 }
 
-export const LeadEditForm: React.FC<LeadEditFormProps> = ({ lead }) => {
+export const LeadEditForm: React.FC<LeadEditFormProps> = ({
+  lead,
+  organizations,
+}) => {
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: (data: LeadFormValues) =>
+      updateLeadById({
+        id: lead.id,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        mobile: data.mobile,
+        gender: data.gender,
+        orgId: data.organization,
+        source: data.source,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getLeadById", lead.id] });
+    },
+  });
+
   const form = useForm<LeadFormValues>({
     resolver: zodResolver(leadFormSchema),
     mode: "onChange",
@@ -75,11 +101,7 @@ export const LeadEditForm: React.FC<LeadEditFormProps> = ({ lead }) => {
   }, [lead, form]);
 
   const onSubmit = (data: LeadFormValues) => {
-    try {
-      console.log("Lead updated:", data);
-    } catch (error) {
-      console.error(error);
-    }
+    mutate(data);
   };
 
   return (
@@ -220,15 +242,11 @@ export const LeadEditForm: React.FC<LeadEditFormProps> = ({ lead }) => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="f81d4fae-7dec-11d0-a765-00a0c91e6bf6">
-                      Acme Corp
-                    </SelectItem>
-                    <SelectItem value="f81d4fae-7dec-11d0-a765-00a0c91e6bf7">
-                      Globex Inc
-                    </SelectItem>
-                    <SelectItem value="f81d4fae-7dec-11d0-a765-00a0c91e6bf8">
-                      Initech
-                    </SelectItem>
+                    {organizations.map((org) => (
+                      <SelectItem key={org._id} value={org._id}>
+                        {org.name}
+                      </SelectItem>
+                    ))}
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -301,8 +319,8 @@ export const LeadEditForm: React.FC<LeadEditFormProps> = ({ lead }) => {
         >
           Reset
         </Button>
-        <Button type="submit" form="lead-edit-form">
-          Save Changes
+        <Button type="submit" form="lead-edit-form" disabled={isPending}>
+          {isPending ? "Saving..." : "Save Changes"}
         </Button>
       </div>
     </form>

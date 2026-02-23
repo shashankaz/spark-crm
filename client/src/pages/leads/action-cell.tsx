@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { EllipsisVertical, Pencil, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -14,7 +13,7 @@ import {
 
 import { DeleteDialog } from "@/components/shared/dashboard/delete-dialog";
 
-import { deleteLeadById } from "@/api/services/lead.service";
+import { useDeleteLead } from "@/hooks/use-lead";
 
 import type { Lead } from "@/types";
 
@@ -23,34 +22,42 @@ export const ActionCell = ({ lead }: { lead: Lead }) => {
 
   const navigate = useNavigate();
 
-  const queryClient = useQueryClient();
+  const { mutate, isPending } = useDeleteLead();
 
-  const { mutate: handleDelete } = useMutation({
-    mutationFn: () => deleteLeadById({ id: lead._id }),
-    onSuccess: ({ message }) => {
-      toast.success(message);
-      queryClient.invalidateQueries({ queryKey: ["fetchLeads"] });
-    },
-    onError: (error) => {
-      console.error(error);
-      toast.error((error as Error).message);
-    },
-    onSettled: () => {
-      setDeleteOpen(false);
-    },
-  });
+  const deleteLead = () => {
+    mutate(
+      { id: lead._id },
+      {
+        onSuccess: ({ message }) => {
+          toast.success(message);
+        },
+        onError: ({ message }) => {
+          toast.error(message);
+        },
+        onSettled: () => {
+          setDeleteOpen(false);
+        },
+      },
+    );
+  };
 
   return (
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="h-8 w-8">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            disabled={isPending}
+          >
             <EllipsisVertical className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem
             onClick={() => navigate(`/dashboard/leads/${lead._id}/edit`)}
+            disabled={isPending}
           >
             <Pencil className="mr-2 h-4 w-4" />
             Edit
@@ -58,6 +65,7 @@ export const ActionCell = ({ lead }: { lead: Lead }) => {
           <DropdownMenuItem
             className="text-destructive focus:text-destructive"
             onClick={() => setDeleteOpen(true)}
+            disabled={isPending}
           >
             <Trash2 className="mr-2 h-4 w-4" />
             Delete
@@ -68,7 +76,7 @@ export const ActionCell = ({ lead }: { lead: Lead }) => {
       <DeleteDialog
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
-        onConfirm={handleDelete}
+        onConfirm={deleteLead}
         placeholder="lead"
       />
     </>

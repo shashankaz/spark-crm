@@ -7,6 +7,7 @@ import {
   fetchOrganizationsService,
   bulkWriteLeadsService,
   convertLeadToDealService,
+  fetchLeadActivityByLeadIdService,
 } from "../services/lead.service.js";
 
 export const getAllLeads = async (req, res, next) => {
@@ -218,7 +219,12 @@ export const deleteLeadById = async (req, res, next) => {
       });
     }
 
-    const deleted = await deleteLeadByIdService({ id, tenantId });
+    const deleted = await deleteLeadByIdService({
+      id,
+      tenantId,
+      userId: req.user._id,
+      userName: req.user.firstName,
+    });
     if (!deleted) {
       return res.status(404).json({
         success: false,
@@ -336,6 +342,30 @@ export const getAllOrganizations = async (req, res, next) => {
       success: true,
       message: "Organizations retrieved successfully",
       data: { organizations },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getLeadActivityByLeadId = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "Lead ID is required",
+      });
+    }
+
+    const activities = await fetchLeadActivityByLeadIdService({
+      leadId: id,
+    });
+
+    res.json({
+      success: true,
+      message: "Lead activities retrieved successfully",
+      data: { activities },
     });
   } catch (error) {
     next(error);

@@ -6,6 +6,7 @@ import {
   updateLeadById,
   deleteLeadById,
   getAllOrganizations,
+  getLeadActivityByLeadId,
 } from "@/api/services/lead.service";
 
 export const useLeads = ({
@@ -50,6 +51,9 @@ export const useUpdateLead = () => {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["leads"] });
       queryClient.invalidateQueries({ queryKey: ["lead", variables.id] });
+      queryClient.invalidateQueries({
+        queryKey: ["lead-activity", variables.id],
+      });
     },
   });
 };
@@ -62,6 +66,9 @@ export const useDeleteLead = () => {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["leads"] });
       queryClient.removeQueries({ queryKey: ["lead", variables.id] });
+      queryClient.removeQueries({
+        queryKey: ["lead-activity", variables.id],
+      });
     },
   });
 };
@@ -76,5 +83,13 @@ export const useOrganizations = ({
   return useQuery({
     queryKey: ["lead-organizations", { limit, search }],
     queryFn: () => getAllOrganizations({ limit, search }),
+  });
+};
+
+export const useLeadActivity = ({ id }: { id: string }) => {
+  return useQuery({
+    queryKey: ["lead-activity", id],
+    queryFn: () => getLeadActivityByLeadId({ id }),
+    enabled: !!id,
   });
 };

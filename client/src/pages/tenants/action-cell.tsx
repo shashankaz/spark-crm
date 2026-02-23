@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
 import { EllipsisVertical, Pencil, Trash2 } from "lucide-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,7 +13,7 @@ import {
 
 import { DeleteDialog } from "@/components/shared/dashboard/delete-dialog";
 
-import { deleteTenantById } from "@/api/services/tenant.service";
+import { useDeleteTenant } from "@/hooks/use-tenant";
 
 import type { Tenant } from "@/types";
 
@@ -22,19 +21,25 @@ export const ActionCell = ({ tenant }: { tenant: Tenant }) => {
   const [deleteOpen, setDeleteOpen] = useState(false);
 
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
-  const { mutate: deleteTenant, isPending } = useMutation({
-    mutationFn: () => deleteTenantById({ id: tenant._id }),
-    onSuccess: ({ message }) => {
-      toast.success(message);
-      queryClient.invalidateQueries({ queryKey: ["getAllTenants"] });
-      setDeleteOpen(false);
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-  });
+  const { mutate, isPending } = useDeleteTenant();
+
+  const deleteTenant = () => {
+    mutate(
+      { id: tenant._id },
+      {
+        onSuccess: ({ message }) => {
+          toast.success(message);
+        },
+        onError: ({ message }) => {
+          toast.error(message);
+        },
+        onSettled: () => {
+          setDeleteOpen(false);
+        },
+      },
+    );
+  };
 
   return (
     <>
@@ -71,7 +76,7 @@ export const ActionCell = ({ tenant }: { tenant: Tenant }) => {
       <DeleteDialog
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
-        onConfirm={() => deleteTenant()}
+        onConfirm={deleteTenant}
         placeholder="tenant"
       />
     </>

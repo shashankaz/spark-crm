@@ -2,9 +2,11 @@ import { formatDate } from "date-fns";
 import mongoose from "mongoose";
 import { Lead } from "../models/lead.model.js";
 import { Deal } from "../models/deal.model.js";
+import { Organization } from "../models/organization.model.js";
 import { AppError } from "../utils/app-error.js";
 import { calculateLeadScore } from "../utils/calculate-score.js";
 import { createLeadActionHistoryService } from "./lead-action-history.service.js";
+import { LeadActionHistory } from "../models/lead-action-history.model.js";
 
 export const fetchLeadsService = async ({
   tenantId,
@@ -143,7 +145,12 @@ export const updateLeadByIdService = async ({
   return await lead.save();
 };
 
-export const deleteLeadByIdService = async ({ id, tenantId }) => {
+export const deleteLeadByIdService = async ({
+  id,
+  tenantId,
+  userId,
+  userName,
+}) => {
   const lead = await Lead.findOne({ _id: id, tenantId }).exec();
   if (!lead) {
     throw new AppError("Lead not found", 404);
@@ -269,5 +276,11 @@ export const fetchOrganizationsService = async ({
     .limit(limit)
     .exec();
 
-  return organizations.filter((org) => org.name);
+  return { organizations };
+};
+
+export const fetchLeadActivityByLeadIdService = async ({ leadId }) => {
+  return await LeadActionHistory.find({ leadId })
+    .sort({ createdAt: -1 })
+    .exec();
 };

@@ -1,3 +1,10 @@
+export type LeadStatus =
+  | "new"
+  | "contacted"
+  | "qualified"
+  | "converted"
+  | "lost";
+
 export type Lead = {
   _id: string;
 
@@ -22,7 +29,7 @@ export type Lead = {
 
   score: number;
 
-  status: "new" | "contacted" | "qualified" | "converted" | "lost";
+  status: LeadStatus;
 
   createdAt: string;
   updatedAt: string;

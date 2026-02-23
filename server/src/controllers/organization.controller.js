@@ -85,7 +85,6 @@ export const createOrganization = async (req, res, next) => {
 
     const {
       idempotentId,
-      userId,
       name,
       industry,
       size,
@@ -98,18 +97,18 @@ export const createOrganization = async (req, res, next) => {
       contactMobile,
     } = req.body;
 
-    if (!idempotentId || !userId || !name || !industry || !size) {
+    if (!idempotentId || !name || !industry || !size) {
       return res.status(400).json({
         success: false,
         message:
-          "Idempotent ID, User ID, Organization Name, Industry, and Size are required",
+          "Idempotent ID, Organization Name, Industry, and Size are required",
       });
     }
 
     const organization = await createOrganizationService({
       idempotentId,
       tenantId,
-      userId,
+      userId: req.user._id,
       name,
       industry,
       size,
@@ -157,7 +156,6 @@ export const updateOrganizationById = async (req, res, next) => {
     }
 
     const {
-      userId,
       name,
       industry,
       size,
@@ -173,7 +171,7 @@ export const updateOrganizationById = async (req, res, next) => {
     const updatedOrganization = await updateOrganizationByIdService({
       id,
       tenantId,
-      userId,
+      userId: req.user._id,
       name,
       industry,
       size,

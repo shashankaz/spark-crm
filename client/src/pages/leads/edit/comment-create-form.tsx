@@ -1,5 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useParams } from "react-router";
 import { Controller, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { SendHorizonal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -9,13 +11,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { commentFormSchema } from "./comment-form-schema";
 import type { CommentFormValues } from "./comment-form-schema";
 
-interface CommentCreateFormProps {
-  onAdd: (data: CommentFormValues) => void;
-}
+import { useCreateComment } from "@/hooks/use-comment";
 
-export const CommentCreateForm: React.FC<CommentCreateFormProps> = ({
-  onAdd,
-}) => {
+export const CommentCreateForm = () => {
+  const { leadId } = useParams<{ leadId: string }>();
+
   const form = useForm<CommentFormValues>({
     resolver: zodResolver(commentFormSchema),
     mode: "onChange",
@@ -24,20 +24,32 @@ export const CommentCreateForm: React.FC<CommentCreateFormProps> = ({
     },
   });
 
-  const onSubmit = (data: CommentFormValues) => {
-    try {
-      onAdd(data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      form.reset();
-    }
+  const { mutate, isPending } = useCreateComment();
+
+  const createComment = (data: CommentFormValues) => {
+    mutate(
+      {
+        leadId: leadId!,
+        comment: data.comment,
+      },
+      {
+        onSuccess: ({ message }) => {
+          toast.success(message);
+        },
+        onError: ({ message }) => {
+          toast.error(message);
+        },
+        onSettled: () => {
+          form.reset();
+        },
+      },
+    );
   };
 
   return (
     <form
       id="comment-create-form"
-      onSubmit={form.handleSubmit(onSubmit)}
+      onSubmit={form.handleSubmit(createComment)}
       className="flex flex-col gap-2"
     >
       <Controller
@@ -50,8 +62,7 @@ export const CommentCreateForm: React.FC<CommentCreateFormProps> = ({
               id="comment"
               aria-invalid={fieldState.invalid}
               placeholder="Write a comment…"
-              rows={3}
-              className="resize-none"
+              className="resize-none min-h-40"
             />
             {fieldState.invalid && (
               <FieldError
@@ -63,7 +74,12 @@ export const CommentCreateForm: React.FC<CommentCreateFormProps> = ({
         )}
       />
       <div className="flex justify-end">
-        <Button type="submit" form="comment-create-form" size="sm">
+        <Button
+          type="submit"
+          form="comment-create-form"
+          size="sm"
+          disabled={!form.formState.isValid || isPending}
+        >
           <SendHorizonal className="h-4 w-4" />
           Post Comment
         </Button>

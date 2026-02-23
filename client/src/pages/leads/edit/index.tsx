@@ -1,18 +1,17 @@
 import { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router";
 import { Helmet } from "react-helmet-async";
+import toast from "react-hot-toast";
 import {
   ArrowRightCircle,
   Clock,
-  FileEdit,
   MessageSquare,
   Phone,
   PhoneIncoming,
-  PhoneOff,
   PhoneOutgoing,
   Plus,
-  Trash2,
 } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
 
 import { cn } from "@/lib/utils";
 
@@ -32,198 +31,88 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 import { Heading } from "@/components/shared/typography/heading";
 import { Description } from "@/components/shared/typography/description";
+
 import { LeadEditForm } from "./lead-edit-form";
 import type { LeadEditData } from "./lead-edit-form";
 import { CallLogCreateForm } from "./call-log-create-form";
-import type { CallLogFormValues } from "./call-log-form-schema";
 import { CommentCreateForm } from "./comment-create-form";
-import type { CommentFormValues } from "./comment-form-schema";
+import { getActivityStyle } from "./helper";
 
-interface CallLog extends CallLogFormValues {
-  id: string;
-  createdAt: string;
-}
+import { useOrganizations } from "@/hooks/use-organization";
+import { useCalls } from "@/hooks/use-call";
+import { useComments } from "@/hooks/use-comment";
+import { useLead, useLeadActivity, useUpdateLead } from "@/hooks/use-lead";
 
-interface Comment extends CommentFormValues {
-  id: string;
-  createdAt: string;
-}
+import type { LeadStatus } from "@/types/domain/lead";
 
-function formatDuration(seconds: number): string {
+const formatDuration = (seconds: number): string => {
   if (seconds === 0) return "—";
   const m = Math.floor(seconds / 60);
   const s = seconds % 60;
   if (m === 0) return `${s}s`;
   return s === 0 ? `${m}m` : `${m}m ${s}s`;
-}
-
-type ActivityEventType =
-  | "lead_opened"
-  | "call_logged"
-  | "call_deleted"
-  | "comment_added"
-  | "comment_deleted";
-
-interface ActivityEvent {
-  id: string;
-  type: ActivityEventType;
-  description: string;
-  createdAt: string;
-}
-
-function timeAgo(iso: string): string {
-  const secs = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
-  if (secs < 5) return "just now";
-  if (secs < 60) return `${secs}s ago`;
-  const mins = Math.floor(secs / 60);
-  if (mins < 60) return `${mins}m ago`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.floor(hours / 24);
-  return `${days}d ago`;
-}
-
-type LeadStatus =
-  | "new"
-  | "contacted"
-  | "qualified"
-  | "proposal"
-  | "negotiation"
-  | "won"
-  | "lost";
+};
 
 const LEAD_STATUS_OPTIONS: { value: LeadStatus; label: string }[] = [
   { value: "new", label: "New" },
   { value: "contacted", label: "Contacted" },
   { value: "qualified", label: "Qualified" },
-  { value: "proposal", label: "Proposal Sent" },
-  { value: "negotiation", label: "Negotiation" },
-  { value: "won", label: "Won" },
+  { value: "converted", label: "Converted" },
   { value: "lost", label: "Lost" },
-];
-
-function getActivityStyle(type: ActivityEventType): {
-  dot: string;
-  icon: React.ReactNode;
-} {
-  switch (type) {
-    case "lead_opened":
-      return {
-        dot: "bg-emerald-500 border-emerald-500",
-        icon: <FileEdit className="h-2 w-2 text-white" />,
-      };
-    case "call_logged":
-      return {
-        dot: "bg-violet-500 border-violet-500",
-        icon: <Phone className="h-2 w-2 text-white" />,
-      };
-    case "call_deleted":
-      return {
-        dot: "bg-destructive border-destructive",
-        icon: <PhoneOff className="h-2 w-2 text-white" />,
-      };
-    case "comment_added":
-      return {
-        dot: "bg-blue-500 border-blue-500",
-        icon: <MessageSquare className="h-2 w-2 text-white" />,
-      };
-    case "comment_deleted":
-      return {
-        dot: "bg-destructive border-destructive",
-        icon: <Trash2 className="h-2 w-2 text-white" />,
-      };
-  }
-}
-
-const MOCK_LEADS: LeadEditData[] = [
-  {
-    id: "1",
-    firstName: "John",
-    lastName: "Doe",
-    email: "john.doe@example.com",
-    mobile: "9876543210",
-    gender: "Male",
-    organization: "f81d4fae-7dec-11d0-a765-00a0c91e6bf6",
-    source: "Website",
-  },
-  {
-    id: "2",
-    firstName: "Jane",
-    lastName: "Smith",
-    email: "jane.smith@example.com",
-    mobile: "9001234567",
-    gender: "Female",
-    organization: "f81d4fae-7dec-11d0-a765-00a0c91e6bf7",
-    source: "LinkedIn",
-  },
-  {
-    id: "3",
-    firstName: "Carlos",
-    lastName: "Martinez",
-    email: "carlos.martinez@initech.com",
-    mobile: "9123456780",
-    gender: "Male",
-    organization: "f81d4fae-7dec-11d0-a765-00a0c91e6bf8",
-    source: "Referral",
-  },
-  {
-    id: "4",
-    firstName: "Priya",
-    lastName: "Sharma",
-    email: "priya.sharma@umbrella.com",
-    mobile: "9988776655",
-    gender: "Female",
-    organization: "f81d4fae-7dec-11d0-a765-00a0c91e6bf6",
-    source: "Cold Call",
-  },
-  {
-    id: "5",
-    firstName: "Liam",
-    lastName: "O'Brien",
-    email: "liam.obrien@stark.com",
-    mobile: "9871234560",
-    gender: "Male",
-    organization: "f81d4fae-7dec-11d0-a765-00a0c91e6bf7",
-    source: "Google Ads",
-  },
 ];
 
 const LeadsEditPage = () => {
   const { leadId } = useParams<{ leadId: string }>();
+
   const navigate = useNavigate();
 
-  const lead = MOCK_LEADS.find((l) => l.id === leadId);
-  const [leadStatus, setLeadStatus] = useState<LeadStatus>("new");
-  const [callLogs, setCallLogs] = useState<CallLog[]>([]);
   const [callDialogOpen, setCallDialogOpen] = useState(false);
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [activities, setActivities] = useState<ActivityEvent[]>(() => [
-    {
-      id: "activity-init",
-      type: "lead_opened",
-      description: "Lead record opened",
-      createdAt: new Date().toISOString(),
-    },
-  ]);
+  const [pendingStatus, setPendingStatus] = useState<LeadStatus | null>(null);
 
-  const pushActivity = (event: Omit<ActivityEvent, "id" | "createdAt">) => {
-    setActivities((prev) => [
+  const { data: leadData, isPending } = useLead({ id: leadId! });
+  const lead = leadData?.lead;
+
+  const leadStatus: LeadStatus =
+    pendingStatus ?? (lead?.status as LeadStatus) ?? "new";
+
+  const { data: organizationsData } = useOrganizations({});
+  const organizations = organizationsData?.organizations ?? [];
+
+  const { data: callsData } = useCalls({ leadId: leadId! });
+  const calls = callsData?.calls ?? [];
+
+  const { data: commentsData } = useComments({ leadId: leadId! });
+  const comments = commentsData?.comments ?? [];
+
+  const { data: leadActivityData } = useLeadActivity({ id: leadId! });
+  const activities = leadActivityData?.activities ?? [];
+
+  const { mutate } = useUpdateLead();
+
+  const updateStatus = (status: string) => {
+    mutate(
+      { id: leadId!, status },
       {
-        id: `activity-${Date.now()}`,
-        createdAt: new Date().toISOString(),
-        ...event,
+        onSuccess: ({ message }) => {
+          toast.success(message);
+        },
+        onError: ({ message }) => {
+          toast.error(message);
+        },
       },
-      ...prev,
-    ]);
+    );
   };
+
+  if (isPending) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <p className="text-muted-foreground">Loading lead...</p>
+      </div>
+    );
+  }
 
   if (!lead) {
     return (
@@ -238,37 +127,20 @@ const LeadsEditPage = () => {
 
   const fullName = [lead.firstName, lead.lastName].filter(Boolean).join(" ");
 
-  const handleAddCallLog = (data: CallLogFormValues) => {
-    const newLog: CallLog = {
-      id: `call-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      ...data,
-    };
-    setCallLogs((prev) => [newLog, ...prev]);
-    pushActivity({
-      type: "call_logged",
-      description: `${data.type === "inbound" ? "Inbound" : "Outbound"} call logged · ${data.status}`,
-    });
+  const leadEditData: LeadEditData = {
+    id: lead._id,
+    firstName: lead.firstName,
+    lastName: lead.lastName,
+    email: lead.email,
+    mobile: lead.mobile,
+    gender: lead.gender as LeadEditData["gender"],
+    organization: lead.orgId ?? "",
+    source: (lead.source ?? "") as LeadEditData["source"],
   };
 
-  const handleDeleteCallLog = (id: string) => {
-    setCallLogs((prev) => prev.filter((c) => c.id !== id));
-    pushActivity({ type: "call_deleted", description: "Call log removed" });
-  };
-
-  const handleAddComment = (data: CommentFormValues) => {
-    const newComment: Comment = {
-      id: `comment-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      ...data,
-    };
-    setComments((prev) => [newComment, ...prev]);
-    pushActivity({ type: "comment_added", description: "Comment posted" });
-  };
-
-  const handleDeleteComment = (id: string) => {
-    setComments((prev) => prev.filter((c) => c.id !== id));
-    pushActivity({ type: "comment_deleted", description: "Comment deleted" });
+  const handleStatusChange = (value: string) => {
+    setPendingStatus(value as LeadStatus);
+    updateStatus(value);
   };
 
   return (
@@ -302,10 +174,7 @@ const LeadsEditPage = () => {
                   <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">
                     Status
                   </span>
-                  <Select
-                    value={leadStatus}
-                    onValueChange={(v) => setLeadStatus(v as LeadStatus)}
-                  >
+                  <Select value={leadStatus} onValueChange={handleStatusChange}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -341,7 +210,7 @@ const LeadsEditPage = () => {
               <TabsTrigger value="calls">
                 Calls
                 <span className="ml-1.5 rounded-full bg-muted text-muted-foreground text-xs px-1.5 py-0.5">
-                  {callLogs.length}
+                  {calls.length}
                 </span>
               </TabsTrigger>
               <TabsTrigger value="comments">
@@ -350,11 +219,10 @@ const LeadsEditPage = () => {
                   {comments.length}
                 </span>
               </TabsTrigger>
-              <TabsTrigger value="activity">Activity</TabsTrigger>
             </TabsList>
 
             <TabsContent value="details" className="mt-6">
-              <LeadEditForm lead={lead} />
+              <LeadEditForm lead={leadEditData} organizations={organizations} />
             </TabsContent>
 
             <TabsContent value="calls" className="mt-6">
@@ -372,7 +240,7 @@ const LeadsEditPage = () => {
                   </Button>
                 </div>
 
-                {callLogs.length === 0 ? (
+                {calls.length === 0 ? (
                   <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-16 text-center gap-2">
                     <Phone className="h-8 w-8 text-muted-foreground/50" />
                     <p className="text-muted-foreground text-sm">
@@ -389,14 +257,14 @@ const LeadsEditPage = () => {
                   </div>
                 ) : (
                   <div className="rounded-lg border divide-y">
-                    {callLogs.map((log) => (
+                    {calls.map((call) => (
                       <div
-                        key={log.id}
+                        key={call._id}
                         className="flex items-center justify-between px-4 py-3 gap-4"
                       >
                         <div className="flex items-center gap-3 min-w-0">
                           <div className="shrink-0">
-                            {log.type === "inbound" ? (
+                            {call.type === "inbound" ? (
                               <PhoneIncoming className="h-4 w-4 text-blue-500" />
                             ) : (
                               <PhoneOutgoing className="h-4 w-4 text-violet-500" />
@@ -404,13 +272,13 @@ const LeadsEditPage = () => {
                           </div>
                           <div className="min-w-0">
                             <p className="text-sm font-medium truncate">
-                              {log.from}{" "}
+                              {call.from}{" "}
                               <span className="text-muted-foreground font-normal">
-                                → {log.to}
+                                → {call.to}
                               </span>
                             </p>
                             <p className="text-xs text-muted-foreground">
-                              {new Date(log.createdAt).toLocaleString()}
+                              {new Date(call.createdAt).toLocaleString()}
                             </p>
                           </div>
                         </div>
@@ -418,40 +286,27 @@ const LeadsEditPage = () => {
                         <div className="flex items-center gap-3 shrink-0">
                           <Badge
                             variant={
-                              log.type === "inbound" ? "secondary" : "outline"
+                              call.type === "inbound" ? "secondary" : "outline"
                             }
                             className="capitalize text-xs"
                           >
-                            {log.type}
+                            {call.type}
                           </Badge>
                           <Badge
                             variant={
-                              log.status === "completed"
+                              call.status === "completed"
                                 ? "default"
-                                : log.status === "missed"
+                                : call.status === "missed"
                                   ? "destructive"
                                   : "secondary"
                             }
                             className="capitalize text-xs"
                           >
-                            {log.status}
+                            {call.status}
                           </Badge>
                           <span className="text-xs text-muted-foreground w-12 text-right">
-                            {formatDuration(log.duration)}
+                            {formatDuration(call.duration)}
                           </span>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-7 w-7 text-destructive hover:text-destructive"
-                                onClick={() => handleDeleteCallLog(log.id)}
-                              >
-                                <Trash2 className="h-3.5 w-3.5" />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>Delete log</TooltipContent>
-                          </Tooltip>
                         </div>
                       </div>
                     ))}
@@ -469,7 +324,7 @@ const LeadsEditPage = () => {
                   </p>
                 </div>
 
-                <CommentCreateForm onAdd={handleAddComment} />
+                <CommentCreateForm />
 
                 {comments.length === 0 ? (
                   <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-12 text-center gap-2">
@@ -481,39 +336,21 @@ const LeadsEditPage = () => {
                 ) : (
                   <div className="space-y-3">
                     {comments.map((c) => (
-                      <div
-                        key={c.id}
-                        className="rounded-lg border px-4 py-3 flex items-start justify-between gap-3"
-                      >
+                      <div key={c._id} className="rounded-lg border px-4 py-3">
                         <div className="space-y-1 min-w-0">
-                          <p className="text-sm whitespace-pre-wrap break-words">
+                          <p className="text-sm whitespace-pre-wrap wrap-break-word">
                             {c.comment}
                           </p>
                           <p className="text-xs text-muted-foreground">
                             {new Date(c.createdAt).toLocaleString()}
                           </p>
                         </div>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-7 w-7 shrink-0 text-destructive hover:text-destructive"
-                              onClick={() => handleDeleteComment(c.id)}
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>Delete comment</TooltipContent>
-                        </Tooltip>
                       </div>
                     ))}
                   </div>
                 )}
               </div>
             </TabsContent>
-
-            <TabsContent value="activity" className="mt-6" />
           </Tabs>
         </div>
 
@@ -533,9 +370,12 @@ const LeadsEditPage = () => {
             ) : (
               <ol className="space-y-0">
                 {activities.map((event, idx) => {
-                  const { dot, icon } = getActivityStyle(event.type);
+                  const { dot, icon } = getActivityStyle(event.actionType);
                   return (
-                    <li key={event.id} className="relative pl-6 pb-5 last:pb-0">
+                    <li
+                      key={event._id}
+                      className="relative pl-6 pb-5 last:pb-0"
+                    >
                       {idx < activities.length - 1 && (
                         <span className="absolute left-[9px] top-4 h-full w-px bg-border" />
                       )}
@@ -548,10 +388,10 @@ const LeadsEditPage = () => {
                         {icon}
                       </span>
                       <p className="text-xs font-medium leading-snug">
-                        {event.description}
+                        {event.message}
                       </p>
                       <p className="text-[11px] text-muted-foreground mt-0.5">
-                        {timeAgo(event.createdAt)}
+                        {formatDistanceToNow(event.createdAt)}
                       </p>
                     </li>
                   );
@@ -567,10 +407,7 @@ const LeadsEditPage = () => {
           <DialogHeader>
             <DialogTitle className="text-2xl">Log a Call</DialogTitle>
           </DialogHeader>
-          <CallLogCreateForm
-            setOpen={setCallDialogOpen}
-            onAdd={handleAddCallLog}
-          />
+          <CallLogCreateForm setOpen={setCallDialogOpen} />
         </DialogContent>
       </Dialog>
     </>

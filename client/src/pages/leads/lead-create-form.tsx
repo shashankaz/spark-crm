@@ -2,7 +2,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { v7 as uuidv7 } from "uuid";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -24,8 +23,7 @@ import {
 import { leadFormSchema } from "./lead-form-schema";
 import type { LeadFormValues } from "./lead-form-schema";
 
-import { createLead } from "@/api/services/lead.service";
-import { useOrganizations } from "@/hooks/use-lead";
+import { useCreateLead, useOrganizations } from "@/hooks/use-lead";
 
 import { useUser } from "@/hooks/use-user";
 
@@ -50,44 +48,41 @@ export const LeadCreateForm: React.FC<LeadCreateFormProps> = ({ setOpen }) => {
 
   const { user } = useUser();
 
-  const queryClient = useQueryClient();
-
   const { data } = useOrganizations({});
   const organizations = data?.organizations ?? [];
 
-  const { mutate: submitLead, isPending } = useMutation({
-    mutationFn: (data: LeadFormValues) => {
-      const org = organizations.find((o) => o._id === data.organization);
-      return createLead({
+  const { mutate, isPending } = useCreateLead();
+
+  if (!user) return null;
+
+  const onSubmit = (data: LeadFormValues) => {
+    const organization = organizations.find((o) => o._id === data.organization);
+
+    mutate(
+      {
         idempotentId: uuidv7(),
-        userId: user!._id,
-        orgId: data.organization,
-        orgName: org?.name ?? "",
+        orgId: organization?._id ?? "",
+        orgName: organization?.name ?? "",
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
         mobile: data.mobile,
         gender: data.gender,
         source: data.source,
-      });
-    },
-    onSuccess: ({ message }) => {
-      toast.success(message);
-      queryClient.invalidateQueries({ queryKey: ["fetchLeads"] });
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-    onSettled: () => {
-      form.reset();
-      setOpen(false);
-    },
-  });
-
-  if (!user) return null;
-
-  const onSubmit = (data: LeadFormValues) => {
-    submitLead(data);
+      },
+      {
+        onSuccess: ({ message }) => {
+          toast.success(message);
+        },
+        onError: ({ message }) => {
+          toast.error(message);
+        },
+        onSettled: () => {
+          form.reset();
+          setOpen(false);
+        },
+      },
+    );
   };
 
   return (

@@ -1,5 +1,7 @@
+import { useParams } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -21,40 +23,52 @@ import {
 import { callLogFormSchema } from "./call-log-form-schema";
 import type { CallLogFormValues } from "./call-log-form-schema";
 
+import { useCreateCall } from "@/hooks/use-call";
+
 interface CallLogCreateFormProps {
   setOpen: (open: boolean) => void;
-  onAdd: (data: CallLogFormValues) => void;
 }
 
 export const CallLogCreateForm: React.FC<CallLogCreateFormProps> = ({
   setOpen,
-  onAdd,
 }) => {
+  const { leadId } = useParams<{ leadId: string }>();
+
   const form = useForm<CallLogFormValues>({
     resolver: zodResolver(callLogFormSchema),
     mode: "onChange",
     defaultValues: {
       type: undefined,
-      to: "",
-      from: "",
       status: undefined,
       duration: 0,
     },
   });
 
-  const onSubmit = (data: CallLogFormValues) => {
-    try {
-      onAdd(data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      form.reset();
-      setOpen(false);
-    }
+  const { mutate, isPending } = useCreateCall();
+
+  const createCallLog = (data: CallLogFormValues) => {
+    mutate(
+      {
+        leadId: leadId!,
+        ...data,
+      },
+      {
+        onSuccess: ({ message }) => {
+          toast.success(message);
+        },
+        onError: ({ message }) => {
+          toast.error(message);
+        },
+        onSettled: () => {
+          form.reset();
+          setOpen(false);
+        },
+      },
+    );
   };
 
   return (
-    <form id="call-log-create-form" onSubmit={form.handleSubmit(onSubmit)}>
+    <form id="call-log-create-form" onSubmit={form.handleSubmit(createCallLog)}>
       <FieldGroup className="grid grid-cols-2 gap-8 -space-y-4">
         <Controller
           name="type"
@@ -118,55 +132,13 @@ export const CallLogCreateForm: React.FC<CallLogCreateFormProps> = ({
           )}
         />
         <Controller
-          name="from"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="call-from">From</FieldLabel>
-              <Input
-                {...field}
-                id="call-from"
-                aria-invalid={fieldState.invalid}
-                placeholder="e.g. +91 98765 43210"
-                autoComplete="off"
-              />
-              {fieldState.invalid && (
-                <FieldError
-                  className="text-destructive text-xs"
-                  errors={[fieldState.error]}
-                />
-              )}
-            </Field>
-          )}
-        />
-        <Controller
-          name="to"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="call-to">To</FieldLabel>
-              <Input
-                {...field}
-                id="call-to"
-                aria-invalid={fieldState.invalid}
-                placeholder="e.g. +91 90012 34567"
-                autoComplete="off"
-              />
-              {fieldState.invalid && (
-                <FieldError
-                  className="text-destructive text-xs"
-                  errors={[fieldState.error]}
-                />
-              )}
-            </Field>
-          )}
-        />
-        <Controller
           name="duration"
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="call-duration">Duration (seconds)</FieldLabel>
+              <FieldLabel htmlFor="call-duration">
+                Duration (seconds)
+              </FieldLabel>
               <Input
                 {...field}
                 id="call-duration"
@@ -199,7 +171,11 @@ export const CallLogCreateForm: React.FC<CallLogCreateFormProps> = ({
         >
           Cancel
         </Button>
-        <Button type="submit" form="call-log-create-form">
+        <Button
+          type="submit"
+          form="call-log-create-form"
+          disabled={!form.formState.isValid || isPending}
+        >
           Add Call Log
         </Button>
       </div>

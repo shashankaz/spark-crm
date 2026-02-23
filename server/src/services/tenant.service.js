@@ -1,4 +1,5 @@
 import { randomBytes } from "node:crypto";
+import mongoose from "mongoose";
 import { formatDate } from "date-fns";
 import { Tenant } from "../models/tenant.model.js";
 import { User } from "../models/user.model.js";
