@@ -2,11 +2,6 @@ import { Schema, model } from "mongoose";
 
 const callSchema = Schema(
   {
-    tenantId: {
-      type: Schema.Types.ObjectId,
-      ref: "Tenant",
-      required: true,
-    },
     leadId: {
       type: Schema.Types.ObjectId,
       ref: "Lead",
@@ -46,6 +41,6 @@ const callSchema = Schema(
   },
 );
 
-callSchema.index({ tenantId: 1, leadId: 1 });
+callSchema.index({ leadId: 1 });
 
 export const Call = model("Call", callSchema);

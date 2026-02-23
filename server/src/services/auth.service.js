@@ -38,12 +38,14 @@ export const loginService = async ({ email, password }) => {
     accessToken,
     refreshToken,
     user: {
-      id: user._id,
+      _id: user._id,
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
+      mobile: user.mobile,
       role: user.role,
-      tenantId: user.tenantId,
+      createdAt: formatDate(user.createdAt, "dd/MM/yyyy"),
+      updatedAt: formatDate(user.updatedAt, "dd/MM/yyyy"),
     },
   };
 };

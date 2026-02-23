@@ -2,11 +2,6 @@ import { Schema, model } from "mongoose";
 
 const commentSchema = Schema(
   {
-    tenantId: {
-      type: Schema.Types.ObjectId,
-      ref: "Tenant",
-      required: true,
-    },
     leadId: {
       type: Schema.Types.ObjectId,
       ref: "Lead",
@@ -23,6 +18,6 @@ const commentSchema = Schema(
     versionKey: "version",
   },
 );
-commentSchema.index({ tenantId: 1, leadId: 1 });
+commentSchema.index({ leadId: 1 });
 
 export const Comment = model("Comment", commentSchema);
