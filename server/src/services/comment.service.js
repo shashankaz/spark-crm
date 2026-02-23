@@ -1,6 +1,7 @@
 import { Comment } from "../models/comment.model.js";
 import { Lead } from "../models/lead.model.js";
 import { AppError } from "../utils/app-error.js";
+import { createLeadActionHistoryService } from "./lead-action-history.service.js";
 
 export const fetchCommentsByLeadService = async ({
   leadId,
@@ -29,6 +30,8 @@ export const fetchCommentsByLeadService = async ({
 export const createCommentForLeadService = async ({
   tenantId,
   leadId,
+  userId,
+  userName,
   comment,
 }) => {
   const lead = await Lead.findById(leadId).exec();
@@ -36,9 +39,19 @@ export const createCommentForLeadService = async ({
     throw new AppError("Lead not found", 404);
   }
 
-  return await Comment.create({
+  const newComment = await Comment.create({
     tenantId,
     leadId,
     comment,
   });
+
+  await createLeadActionHistoryService({
+    leadId,
+    actionType: "lead_commented",
+    message: `Comment added by ${userName}: "${comment}"`,
+    userId,
+    userName,
+  });
+
+  return newComment;
 };

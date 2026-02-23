@@ -78,7 +78,6 @@ export const createLead = async ({
   idempotentId,
   orgId,
   orgName,
-  userId,
   firstName,
   lastName,
   email,
@@ -89,7 +88,6 @@ export const createLead = async ({
   idempotentId: string;
   orgId: string;
   orgName: string;
-  userId: string;
   firstName?: string;
   lastName?: string;
   email?: string;
@@ -102,7 +100,6 @@ export const createLead = async ({
       idempotentId,
       orgId,
       orgName,
-      userId,
       firstName,
       lastName,
       email,
@@ -126,7 +123,6 @@ export const updateLeadById = async ({
   orgId,
   orgName,
   dealId,
-  userId,
   firstName,
   lastName,
   email,
@@ -139,7 +135,6 @@ export const updateLeadById = async ({
   orgId?: string;
   orgName?: string;
   dealId?: string;
-  userId?: string;
   firstName?: string;
   lastName?: string;
   email?: string;
@@ -153,7 +148,6 @@ export const updateLeadById = async ({
       orgId,
       orgName,
       dealId,
-      userId,
       firstName,
       lastName,
       email,

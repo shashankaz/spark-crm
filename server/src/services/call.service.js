@@ -1,6 +1,7 @@
 import { Call } from "../models/call.model.js";
 import { Lead } from "../models/lead.model.js";
 import { AppError } from "../utils/app-error.js";
+import { createLeadActionHistoryService } from "./lead-action-history.service.js";
 
 export const fetchCallsByLeadService = async ({
   leadId,
@@ -29,6 +30,8 @@ export const fetchCallsByLeadService = async ({
 export const createCallForLeadService = async ({
   tenantId,
   leadId,
+  userId,
+  userName,
   type,
   from,
   status,
@@ -39,7 +42,7 @@ export const createCallForLeadService = async ({
     throw new AppError("Lead not found", 404);
   }
 
-  return await Call.create({
+  const call = await Call.create({
     tenantId,
     leadId,
     type,
@@ -48,4 +51,14 @@ export const createCallForLeadService = async ({
     status,
     duration,
   });
+
+  await createLeadActionHistoryService({
+    leadId,
+    actionType: "lead_call_logged",
+    message: `Call logged by ${userName} — type: ${type}, status: ${status}, duration: ${duration}s`,
+    userId,
+    userName,
+  });
+
+  return call;
 };

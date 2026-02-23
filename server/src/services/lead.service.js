@@ -4,6 +4,7 @@ import { Lead } from "../models/lead.model.js";
 import { Deal } from "../models/deal.model.js";
 import { AppError } from "../utils/app-error.js";
 import { calculateLeadScore } from "../utils/calculate-score.js";
+import { createLeadActionHistoryService } from "./lead-action-history.service.js";
 
 export const fetchLeadsService = async ({
   tenantId,
@@ -53,6 +54,7 @@ export const createLeadService = async ({
   orgId,
   orgName,
   userId,
+  userName,
   firstName,
   lastName,
   email,
@@ -77,6 +79,14 @@ export const createLeadService = async ({
 
   lead.score = calculateLeadScore(lead);
 
+  await createLeadActionHistoryService({
+    leadId: lead._id,
+    actionType: "lead_created",
+    message: `Lead created by ${userName}`,
+    userId,
+    userName,
+  });
+
   return await lead.save();
 };
 
@@ -87,6 +97,7 @@ export const updateLeadByIdService = async ({
   orgName,
   dealId,
   userId,
+  userName,
   firstName,
   lastName,
   email,
@@ -121,6 +132,14 @@ export const updateLeadByIdService = async ({
 
   lead.score = calculateLeadScore(lead);
 
+  await createLeadActionHistoryService({
+    leadId: lead._id,
+    actionType: "lead_updated",
+    message: `Lead updated by ${userName}`,
+    userId,
+    userName,
+  });
+
   return await lead.save();
 };
 
@@ -136,6 +155,14 @@ export const deleteLeadByIdService = async ({ id, tenantId }) => {
       400,
     );
   }
+
+  await createLeadActionHistoryService({
+    leadId: lead._id,
+    actionType: "lead_deleted",
+    message: `Lead deleted by ${userName}`,
+    userId,
+    userName,
+  });
 
   return await Lead.deleteOne({ _id: id, tenantId }).exec();
 };
@@ -169,6 +196,7 @@ export const convertLeadToDealService = async ({
   id,
   tenantId,
   userId,
+  userName,
   idempotentId,
   dealName,
   value,
@@ -206,6 +234,14 @@ export const convertLeadToDealService = async ({
     lead.score = calculateLeadScore(lead);
 
     await lead.save({ session });
+
+    await createLeadActionHistoryService({
+      leadId: lead._id,
+      actionType: "lead_converted",
+      message: `Lead converted to deal "${deal.name}" by ${userName}`,
+      userId,
+      userName,
+    });
 
     await session.commitTransaction();
 

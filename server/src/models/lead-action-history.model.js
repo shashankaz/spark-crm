@@ -2,11 +2,6 @@ import { Schema, model } from "mongoose";
 
 const leadActionHistorySchema = Schema(
   {
-    tenantId: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      ref: "Tenant",
-    },
     leadId: {
       type: Schema.Types.ObjectId,
       required: true,
@@ -44,7 +39,7 @@ const leadActionHistorySchema = Schema(
   },
 );
 
-leadActionHistorySchema.index({ tenantId: 1, leadId: 1 });
+leadActionHistorySchema.index({ leadId: 1 });
 
 export const LeadActionHistory = model(
   "LeadActionHistory",

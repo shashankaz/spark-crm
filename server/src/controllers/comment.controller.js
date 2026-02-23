@@ -44,7 +44,7 @@ export const createCommentForLead = async (req, res, next) => {
       });
     }
 
-    const { tenantId } = req.user;
+    const { tenantId, _id: userId, firstName: userName } = req.user;
     if (!tenantId) {
       return res.status(400).json({
         success: false,
@@ -63,6 +63,8 @@ export const createCommentForLead = async (req, res, next) => {
     const newComment = await createCommentForLeadService({
       tenantId,
       leadId,
+      userId,
+      userName,
       comment,
     });
     if (!newComment) {

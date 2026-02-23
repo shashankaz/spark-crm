@@ -44,7 +44,7 @@ export const createCallForLead = async (req, res, next) => {
       });
     }
 
-    const { tenantId, firstName } = req.user;
+    const { tenantId, _id: userId, firstName: userName } = req.user;
     if (!tenantId) {
       return res.status(400).json({
         success: false,
@@ -63,8 +63,10 @@ export const createCallForLead = async (req, res, next) => {
     const call = await createCallForLeadService({
       tenantId,
       leadId,
+      userId,
+      userName,
       type,
-      from: firstName,
+      from: userName,
       status,
       duration,
     });

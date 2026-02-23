@@ -90,7 +90,6 @@ export const createLead = async (req, res, next) => {
       idempotentId,
       orgId,
       orgName,
-      userId,
       firstName,
       lastName,
       email,
@@ -98,11 +97,11 @@ export const createLead = async (req, res, next) => {
       gender,
       source,
     } = req.body;
-    if (!idempotentId || !tenantId || !orgId || !orgName || !userId) {
+    if (!idempotentId || !tenantId || !orgId || !orgName) {
       return res.status(400).json({
         success: false,
         message:
-          "Idempotent ID, Tenant ID, Organization ID, Organization Name, and User ID are required",
+          "Idempotent ID, Tenant ID, Organization ID, and Organization Name are required",
       });
     }
 
@@ -111,7 +110,8 @@ export const createLead = async (req, res, next) => {
       tenantId,
       orgId,
       orgName,
-      userId,
+      userId: req.user._id,
+      userName: req.user.firstName,
       firstName,
       lastName,
       email,
@@ -158,7 +158,6 @@ export const updateLeadById = async (req, res, next) => {
       orgId,
       orgName,
       dealId,
-      userId,
       firstName,
       lastName,
       email,
@@ -174,7 +173,8 @@ export const updateLeadById = async (req, res, next) => {
       orgId,
       orgName,
       dealId,
-      userId,
+      userId: req.user._id,
+      userName: req.user.firstName,
       firstName,
       lastName,
       email,
@@ -268,7 +268,7 @@ export const bulkWriteLeads = async (req, res, next) => {
 
 export const convertLeadToDeal = async (req, res, next) => {
   try {
-    const { tenantId, _id: userId } = req.user;
+    const { tenantId } = req.user;
     if (!tenantId) {
       return res.status(400).json({
         success: false,
@@ -295,7 +295,8 @@ export const convertLeadToDeal = async (req, res, next) => {
     const { deal } = await convertLeadToDealService({
       id,
       tenantId,
-      userId,
+      userId: req.user._id,
+      userName: req.user.firstName,
       idempotentId,
       dealName,
       value,
