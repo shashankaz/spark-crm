@@ -1,6 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { v7 as uuidv7 } from "uuid";
 import { LoaderCircle } from "lucide-react";
@@ -27,7 +26,7 @@ import type { OrganizationFormValues } from "./organization-form-schema";
 
 import { countriesFlag } from "@/utils/countries/countries-flag";
 
-import { createOrganization } from "@/api/services/organization.service";
+import { useCreateOrganization } from "@/hooks/use-organization";
 
 import { useUser } from "@/hooks/use-user";
 
@@ -54,31 +53,30 @@ export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
     },
   });
 
-  const queryClient = useQueryClient();
-
-  const { mutate, isPending } = useMutation({
-    mutationFn: (data: OrganizationFormValues) =>
-      createOrganization({
-        idempotentId: uuidv7(),
-        userId: user!._id,
-        ...data,
-      }),
-    onSuccess: ({ message }) => {
-      toast.success(message);
-      queryClient.invalidateQueries({ queryKey: ["fetchOrganizations"] });
-      form.reset();
-      setOpen(false);
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-  });
-
-  if (!user) return null;
+  const { mutate, isPending } = useCreateOrganization();
 
   const onSubmit = async (data: OrganizationFormValues) => {
-    mutate(data);
+    mutate(
+      {
+        idempotentId: uuidv7(),
+        ...data,
+      },
+      {
+        onSuccess: ({ message }) => {
+          toast.success(message);
+        },
+        onError: ({ message }) => {
+          toast.error(message);
+        },
+        onSettled: () => {
+          form.reset();
+          setOpen(false);
+        },
+      },
+    );
   };
+
+  if (!user) return null;
 
   return (
     <form id="organization-create-form" onSubmit={form.handleSubmit(onSubmit)}>

@@ -71,7 +71,6 @@ export const getOrganizationById = async ({
 
 export const createOrganization = async ({
   idempotentId,
-  userId,
   name,
   industry,
   size,
@@ -84,7 +83,6 @@ export const createOrganization = async ({
   contactMobile,
 }: {
   idempotentId: string;
-  userId: string;
   name: string;
   industry?: string;
   size?: string;
@@ -99,7 +97,6 @@ export const createOrganization = async ({
   try {
     const response = await api.post("/organization", {
       idempotentId,
-      userId,
       name,
       industry,
       size,
@@ -124,7 +121,6 @@ export const createOrganization = async ({
 
 export const updateOrganizationById = async ({
   id,
-  userId,
   name,
   industry,
   size,
@@ -137,7 +133,6 @@ export const updateOrganizationById = async ({
   contactMobile,
 }: {
   id: string;
-  userId?: string;
   name?: string;
   industry?: string;
   size?: string;
@@ -151,7 +146,6 @@ export const updateOrganizationById = async ({
 }): Promise<UpdateOrganizationResponse> => {
   try {
     const response = await api.patch(`/organization/${id}`, {
-      userId,
       name,
       industry,
       size,

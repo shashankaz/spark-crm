@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { LoaderCircle } from "lucide-react";
 import toast from "react-hot-toast";
@@ -27,7 +26,7 @@ import { countriesFlag } from "@/utils/countries/countries-flag";
 import { tenantFormSchema } from "./tenant-form-schema";
 import type { TenantFormValues } from "./tenant-form-schema";
 
-import { createTenant } from "@/api/services/tenant.service";
+import { useCreateTenant } from "@/hooks/use-tenant";
 
 interface TenantCreateFormProps {
   setOpen: (open: boolean) => void;
@@ -57,25 +56,21 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
     },
   });
 
-  const queryClient = useQueryClient();
-
-  const { mutate, isPending } = useMutation({
-    mutationFn: createTenant,
-    onSuccess: ({ message }) => {
-      toast.success(message);
-      queryClient.invalidateQueries({ queryKey: ["getAllTenants"] });
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-    onSettled: () => {
-      form.reset();
-      setOpen(false);
-    },
-  });
+  const { mutate, isPending } = useCreateTenant();
 
   const onSubmit = (data: TenantFormValues) => {
-    mutate(data);
+    mutate(data, {
+      onSuccess: ({ message }) => {
+        toast.success(message);
+      },
+      onError: ({ message }) => {
+        toast.error(message);
+      },
+      onSettled: () => {
+        form.reset();
+        setOpen(false);
+      },
+    });
   };
 
   return (
