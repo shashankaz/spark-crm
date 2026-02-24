@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getAllDeals } from "../../controllers/deal.controller.js";
+import { deleteDealById, getAllDeals } from "../../controllers/deal.controller.js";
 import { requireAuth } from "../../middlewares/auth.middleware.js";
 
 const router = Router();

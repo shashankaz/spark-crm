@@ -69,14 +69,14 @@ export const createLeadService = async ({
     tenantId,
     orgId,
     orgName,
-    dealId: null,
+    dealId: undefined,
     userId,
-    firstName: firstName || "",
-    lastName: lastName || "",
-    email: email || "",
-    mobile: mobile || "",
-    gender: gender || "",
-    source: source || "",
+    firstName: firstName || undefined,
+    lastName: lastName || undefined,
+    email: email || undefined,
+    mobile: mobile || undefined,
+    gender: gender || undefined,
+    source: source || undefined,
   });
 
   lead.score = calculateLeadScore(lead);
@@ -98,7 +98,6 @@ export const updateLeadByIdService = async ({
   orgId,
   orgName,
   dealId,
-  userId,
   userName,
   firstName,
   lastName,
@@ -122,7 +121,6 @@ export const updateLeadByIdService = async ({
 
   lead.orgId = orgId || lead.orgId;
   lead.orgName = orgName || lead.orgName;
-  lead.dealId = dealId || lead.dealId;
   lead.userId = userId || lead.userId;
   lead.firstName = firstName || lead.firstName;
   lead.lastName = lastName || lead.lastName;
@@ -179,16 +177,16 @@ export const bulkWriteLeadsService = async ({ tenantId, leads }) => {
     const document = {
       idempotentId: lead.idempotentId,
       tenantId,
-      orgId: lead.orgId || null,
-      orgName: lead.orgName || "",
-      dealId: null,
-      userId: lead.userId || null,
-      firstName: lead.firstName || "",
-      lastName: lead.lastName || "",
-      email: lead.email || "",
-      mobile: lead.mobile || "",
-      gender: lead.gender || "",
-      source: lead.source || "",
+      orgId: lead.orgId || undefined,
+      orgName: lead.orgName || undefined,
+      dealId: undefined,
+      userId: lead.userId || undefined,
+      firstName: lead.firstName || undefined,
+      lastName: lead.lastName || undefined,
+      email: lead.email || undefined,
+      mobile: lead.mobile || undefined,
+      gender: lead.gender || undefined,
+      source: lead.source || undefined,
     };
 
     document.score = calculateLeadScore(document);

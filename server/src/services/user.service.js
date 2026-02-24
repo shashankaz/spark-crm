@@ -57,9 +57,9 @@ export const createUserService = async ({
 
   const newUser = new User({
     firstName,
-    lastName: lastName || "",
+    lastName: lastName || undefined,
     email,
-    mobile: mobile || "",
+    mobile: mobile || undefined,
     password: hashedPassword,
     role: role || "user",
     tenantId,

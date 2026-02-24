@@ -53,10 +53,10 @@ export const createCallForLead = async (req, res, next) => {
     }
 
     const { type, status, duration } = req.body;
-    if (!type || !status || !duration) {
+    if (!type || !status) {
       return res.status(400).json({
         success: false,
-        message: "Type, status, and duration are required to create a call",
+        message: "Type and status are required to create a call",
       });
     }
 

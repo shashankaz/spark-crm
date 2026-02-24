@@ -30,10 +30,10 @@ export const fetchOrganizationsService = async ({
   const formattedOrganizations = organizations.map((org) => ({
     _id: org._id,
     name: org.name,
-    industry: org.industry || "",
-    country: org.country || "",
-    size: org.size || "",
-    website: org.website || "",
+    industry: org.industry || undefined,
+    country: org.country || undefined,
+    size: org.size || undefined,
+    website: org.website || undefined,
     updatedAt: formatDate(org.updatedAt, "dd/MM/yyyy"),
   }));
 

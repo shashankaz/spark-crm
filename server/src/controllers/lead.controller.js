@@ -158,7 +158,6 @@ export const updateLeadById = async (req, res, next) => {
     const {
       orgId,
       orgName,
-      dealId,
       firstName,
       lastName,
       email,
@@ -173,7 +172,6 @@ export const updateLeadById = async (req, res, next) => {
       tenantId,
       orgId,
       orgName,
-      dealId,
       userId: req.user._id,
       userName: req.user.firstName,
       firstName,

@@ -49,13 +49,13 @@ export const createCallForLeadService = async ({
     to: lead.firstName,
     from,
     status,
-    duration,
+    duration: duration || 0,
   });
 
   await createLeadActionHistoryService({
     leadId,
     actionType: "lead_call_logged",
-    message: `Call logged by ${userName} — type: ${type}, status: ${status}, duration: ${duration}s`,
+    message: `Call logged by ${userName} — type: ${type}, status: ${status}, duration: ${duration || 0}s`,
     userId,
     userName,
   });
