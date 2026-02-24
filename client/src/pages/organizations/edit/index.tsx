@@ -59,14 +59,11 @@ const OrganizationsEditPage = () => {
         <Tabs defaultValue="details">
           <TabsList>
             <TabsTrigger value="details">Details</TabsTrigger>
-            <TabsTrigger value="pocs">Points of Contact</TabsTrigger>
           </TabsList>
 
           <TabsContent value="details" className="mt-6">
             <OrganizationEditForm organization={org} />
           </TabsContent>
-
-          <TabsContent value="pocs" className="mt-6" />
         </Tabs>
       </div>
     </>

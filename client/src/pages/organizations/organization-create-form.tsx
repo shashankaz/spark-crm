@@ -181,7 +181,9 @@ export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="country">Country</FieldLabel>
+              <FieldLabel htmlFor="country">
+                Country <span className="text-error">*</span>
+              </FieldLabel>
               <Select onValueChange={field.onChange} value={field.value ?? ""}>
                 <SelectTrigger
                   className="w-full"
