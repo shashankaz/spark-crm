@@ -80,7 +80,7 @@ const tenantSchema = Schema(
 tenantSchema.index({ createdAt: -1 });
 
 tenantSchema.pre("save", async function () {
-  this.email = this.email.toLowerCase();
+  if (this.email) this.email = this.email.toLowerCase();
 });
 
 export const Tenant = model("Tenant", tenantSchema);

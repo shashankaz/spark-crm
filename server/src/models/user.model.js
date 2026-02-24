@@ -50,7 +50,7 @@ const userSchema = Schema(
 userSchema.index({ tenantId: 1 });
 
 userSchema.pre("save", async function () {
-  this.email = this.email.toLowerCase();
+  if (this.email) this.email = this.email.toLowerCase();
 });
 
 export const User = model("User", userSchema);
