@@ -31,6 +31,8 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   placeholder: string;
   onSelectionChange?: (selectedRows: TData[]) => void;
+  search: string;
+  onSearchChange: (value: string) => void;
 }
 
 export const DataTable = <TData, TValue>({
@@ -38,6 +40,8 @@ export const DataTable = <TData, TValue>({
   data,
   placeholder,
   onSelectionChange,
+  search,
+  onSearchChange,
 }: DataTableProps<TData, TValue>) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -78,7 +82,11 @@ export const DataTable = <TData, TValue>({
   return (
     <>
       <div className="flex justify-end mb-4">
-        <SearchInput placeholder={`Search ${placeholder}`} />
+        <SearchInput
+          placeholder={`Search ${placeholder}`}
+          value={search}
+          onChange={onSearchChange}
+        />
         <SelectVisibleCols table={table} columnVisibility={columnVisibility} />
       </div>
 

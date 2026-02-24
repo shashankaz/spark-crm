@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { buildQueryParams } from "@/api/query-params";
 import {
   getAllLeads,
   getLeadById,
@@ -19,8 +20,10 @@ export const useLeads = ({
   limit?: number;
   search?: string;
 }) => {
+  const query = buildQueryParams({ cursor, limit, search });
+
   return useQuery({
-    queryKey: ["leads", { cursor, limit, search }],
+    queryKey: ["leads", query],
     queryFn: () => getAllLeads({ cursor, limit, search }),
   });
 };
@@ -81,8 +84,10 @@ export const useOrganizations = ({
   limit?: number;
   search?: string;
 }) => {
+  const query = buildQueryParams({ limit, search });
+
   return useQuery({
-    queryKey: ["lead-organizations", { limit, search }],
+    queryKey: ["lead-organizations", query],
     queryFn: () => getAllOrganizations({ limit, search }),
   });
 };
