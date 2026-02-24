@@ -24,7 +24,7 @@ export const fetchOrganizationsService = async ({
 
   const [totalCount, organizations] = await Promise.all([
     Organization.countDocuments(countQuery).exec(),
-    Organization.find(whereQuery).sort({ createdAt: -1 }).limit(limit).exec(),
+    Organization.find(whereQuery).sort({ _id: -1 }).limit(limit).exec(),
   ]);
 
   const formattedOrganizations = organizations.map((org) => ({

@@ -77,8 +77,6 @@ const tenantSchema = Schema(
   },
 );
 
-tenantSchema.index({ createdAt: -1 });
-
 tenantSchema.pre("save", async function () {
   if (this.email) this.email = this.email.toLowerCase();
 });

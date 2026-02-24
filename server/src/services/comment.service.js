@@ -21,7 +21,7 @@ export const fetchCommentsByLeadService = async ({
 
   const [totalCount, comments] = await Promise.all([
     Comment.countDocuments(countQuery).exec(),
-    Comment.find(whereQuery).sort({ createdAt: -1 }).limit(limit).exec(),
+    Comment.find(whereQuery).sort({ _id: -1 }).limit(limit).exec(),
   ]);
 
   return { comments, totalCount };

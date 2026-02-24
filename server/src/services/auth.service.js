@@ -103,7 +103,7 @@ export const getUserProfileService = async ({ id }) => {
 };
 
 export const getUserSessionsService = async ({ id }) => {
-  return await Session.find({ userId: id }).sort({ createdAt: -1 }).limit(10);
+  return await Session.find({ userId: id }).sort({ _id: -1 }).limit(10);
 };
 
 export const editProfileService = async ({

@@ -30,7 +30,7 @@ export const fetchLeadsService = async ({
 
   const [totalCount, leads] = await Promise.all([
     Lead.countDocuments(countQuery).exec(),
-    Lead.find(whereQuery).sort({ createdAt: -1 }).limit(limit).exec(),
+    Lead.find(whereQuery).sort({ _id: -1 }).limit(limit).exec(),
   ]);
 
   const formattedLeads = leads.map((lead) => ({
@@ -278,7 +278,5 @@ export const fetchOrganizationsService = async ({
 };
 
 export const fetchLeadActivityByLeadIdService = async ({ leadId }) => {
-  return await LeadActionHistory.find({ leadId })
-    .sort({ createdAt: -1 })
-    .exec();
+  return await LeadActionHistory.find({ leadId }).sort({ _id: -1 }).exec();
 };
