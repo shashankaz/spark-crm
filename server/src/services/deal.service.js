@@ -32,3 +32,7 @@ export const fetchDealsService = async ({
 
   return { deals: formattedDeals, totalCount };
 };
+
+export const deleteDealByIdService = async ({ id, tenantId }) => {
+  return await Deal.deleteOne({ _id: id, tenantId }).exec();
+};

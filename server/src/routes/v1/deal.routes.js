@@ -5,5 +5,6 @@ import { requireAuth } from "../../middlewares/auth.middleware.js";
 const router = Router();
 
 router.get("/", requireAuth, getAllDeals);
+router.delete("/:id", requireAuth, deleteDealById);
 
 export default router;
