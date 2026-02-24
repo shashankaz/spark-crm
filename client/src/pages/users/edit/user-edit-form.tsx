@@ -108,7 +108,7 @@ export const UserEditForm: React.FC<UserEditFormProps> = ({ user }) => {
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -130,7 +130,7 @@ export const UserEditForm: React.FC<UserEditFormProps> = ({ user }) => {
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -153,7 +153,7 @@ export const UserEditForm: React.FC<UserEditFormProps> = ({ user }) => {
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -175,7 +175,7 @@ export const UserEditForm: React.FC<UserEditFormProps> = ({ user }) => {
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -205,7 +205,7 @@ export const UserEditForm: React.FC<UserEditFormProps> = ({ user }) => {
               </Select>
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}

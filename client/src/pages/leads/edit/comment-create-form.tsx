@@ -66,7 +66,7 @@ export const CommentCreateForm = () => {
             />
             {fieldState.invalid && (
               <FieldError
-                className="text-destructive text-xs"
+                className="text-error text-xs"
                 errors={[fieldState.error]}
               />
             )}

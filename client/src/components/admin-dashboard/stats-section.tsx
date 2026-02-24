@@ -75,7 +75,7 @@ export const StatsSection = ({ stats, isLoading }: Props) => {
                 {isUp ? (
                   <ArrowUpRight className="h-4 w-4 text-green-500" />
                 ) : (
-                  <ArrowDownRight className="h-4 w-4 text-red-500" />
+                  <ArrowDownRight className="h-4 w-4 text-error" />
                 )}
                 <span
                   className={`text-sm font-medium ${

@@ -54,7 +54,7 @@ export const PasswordInput = <T extends FieldValues>({
           </div>
           {fieldState.invalid && (
             <FieldError
-              className="text-destructive text-xs"
+              className="text-error text-xs"
               errors={[fieldState.error]}
             />
           )}

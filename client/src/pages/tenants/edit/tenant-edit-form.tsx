@@ -117,7 +117,7 @@ export const TenantEditForm: React.FC<TenantEditFormProps> = ({ tenant }) => {
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -140,7 +140,7 @@ export const TenantEditForm: React.FC<TenantEditFormProps> = ({ tenant }) => {
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -162,7 +162,7 @@ export const TenantEditForm: React.FC<TenantEditFormProps> = ({ tenant }) => {
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -194,7 +194,7 @@ export const TenantEditForm: React.FC<TenantEditFormProps> = ({ tenant }) => {
               </Select>
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -221,7 +221,7 @@ export const TenantEditForm: React.FC<TenantEditFormProps> = ({ tenant }) => {
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -248,7 +248,7 @@ export const TenantEditForm: React.FC<TenantEditFormProps> = ({ tenant }) => {
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -276,7 +276,7 @@ export const TenantEditForm: React.FC<TenantEditFormProps> = ({ tenant }) => {
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -303,7 +303,7 @@ export const TenantEditForm: React.FC<TenantEditFormProps> = ({ tenant }) => {
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -325,7 +325,7 @@ export const TenantEditForm: React.FC<TenantEditFormProps> = ({ tenant }) => {
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -347,7 +347,7 @@ export const TenantEditForm: React.FC<TenantEditFormProps> = ({ tenant }) => {
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -369,7 +369,7 @@ export const TenantEditForm: React.FC<TenantEditFormProps> = ({ tenant }) => {
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -410,7 +410,7 @@ export const TenantEditForm: React.FC<TenantEditFormProps> = ({ tenant }) => {
               </Select>
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}

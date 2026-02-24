@@ -96,7 +96,7 @@ export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -132,7 +132,7 @@ export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
               </Select>
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -163,7 +163,7 @@ export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
               </Select>
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -209,7 +209,7 @@ export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
               </Select>
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -236,7 +236,7 @@ export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -263,7 +263,7 @@ export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -290,7 +290,7 @@ export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}

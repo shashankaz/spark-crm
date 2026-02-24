@@ -68,7 +68,7 @@ export const ActionCell = ({
             Edit
           </DropdownMenuItem>
           <DropdownMenuItem
-            className="text-destructive focus:text-destructive"
+            className="text-error focus:text-error"
             onClick={() => setDeleteOpen(true)}
             disabled={isPending}
           >

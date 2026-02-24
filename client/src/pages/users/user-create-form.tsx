@@ -92,7 +92,7 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = ({ setOpen }) => {
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -119,7 +119,7 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = ({ setOpen }) => {
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -142,7 +142,7 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = ({ setOpen }) => {
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -164,7 +164,7 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = ({ setOpen }) => {
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -194,7 +194,7 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = ({ setOpen }) => {
               </Select>
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}

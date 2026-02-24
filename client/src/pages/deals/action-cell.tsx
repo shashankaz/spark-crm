@@ -30,7 +30,7 @@ export const ActionCell = ({ deal }: { deal: Deal }) => {
             Edit
           </DropdownMenuItem>
           <DropdownMenuItem
-            className="text-destructive focus:text-destructive"
+            className="text-error focus:text-error"
             onClick={() => setDeleteOpen(true)}
           >
             <Trash2 className="mr-2 h-4 w-4" />

@@ -91,7 +91,7 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -114,7 +114,7 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -136,7 +136,7 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -168,7 +168,7 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
               </Select>
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -195,7 +195,7 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -222,7 +222,7 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -250,7 +250,7 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -277,7 +277,7 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -299,7 +299,7 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -321,7 +321,7 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -343,7 +343,7 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -384,7 +384,7 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
               </Select>
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}

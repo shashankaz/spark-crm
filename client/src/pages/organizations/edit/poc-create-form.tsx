@@ -65,7 +65,7 @@ export const POCCreateForm: React.FC<POCCreateFormProps> = ({
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -87,7 +87,7 @@ export const POCCreateForm: React.FC<POCCreateFormProps> = ({
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -110,7 +110,7 @@ export const POCCreateForm: React.FC<POCCreateFormProps> = ({
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -132,7 +132,7 @@ export const POCCreateForm: React.FC<POCCreateFormProps> = ({
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}

@@ -103,7 +103,7 @@ export const LeadCreateForm: React.FC<LeadCreateFormProps> = ({ setOpen }) => {
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -130,7 +130,7 @@ export const LeadCreateForm: React.FC<LeadCreateFormProps> = ({ setOpen }) => {
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -152,7 +152,7 @@ export const LeadCreateForm: React.FC<LeadCreateFormProps> = ({ setOpen }) => {
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -174,7 +174,7 @@ export const LeadCreateForm: React.FC<LeadCreateFormProps> = ({ setOpen }) => {
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -205,7 +205,7 @@ export const LeadCreateForm: React.FC<LeadCreateFormProps> = ({ setOpen }) => {
               </Select>
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -238,7 +238,7 @@ export const LeadCreateForm: React.FC<LeadCreateFormProps> = ({ setOpen }) => {
               </Select>
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -278,7 +278,7 @@ export const LeadCreateForm: React.FC<LeadCreateFormProps> = ({ setOpen }) => {
               </Select>
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
