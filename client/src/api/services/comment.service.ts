@@ -1,4 +1,5 @@
 import { api } from "@/api";
+import { buildQueryParams } from "@/api/query-params";
 import type { Comment } from "@/types";
 
 export type GetAllCommentsByLeadIdResponse = {
@@ -24,9 +25,8 @@ export const getAllCommentsByLeadId = async ({
   search?: string;
 }): Promise<GetAllCommentsByLeadIdResponse> => {
   try {
-    const response = await api.get(`/comment/${leadId}`, {
-      params: { cursor, limit, search },
-    });
+    const query = buildQueryParams({ cursor, limit, search });
+    const response = await api.get(`/comment/${leadId}${query ? `?${query}` : ""}`);
 
     const { message } = response.data;
     const { comments, totalCount } = response.data.data;

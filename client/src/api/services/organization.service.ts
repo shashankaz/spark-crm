@@ -1,4 +1,5 @@
 import { api } from "@/api";
+import { buildQueryParams } from "@/api/query-params";
 import type { Organization } from "@/types";
 
 export type GetAllOrganizationsResponse = {
@@ -37,9 +38,8 @@ export const getAllOrganizations = async ({
   search?: string;
 }): Promise<GetAllOrganizationsResponse> => {
   try {
-    const response = await api.get("/organization", {
-      params: { cursor, limit, search },
-    });
+    const query = buildQueryParams({ cursor, limit, search });
+    const response = await api.get(`/organization${query ? `?${query}` : ""}`);
 
     const { message } = response.data;
     const { organizations, totalCount } = response.data.data;

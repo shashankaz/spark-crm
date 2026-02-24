@@ -1,4 +1,5 @@
 import { api } from "@/api";
+import { buildQueryParams } from "@/api/query-params";
 import type { Deal } from "@/types";
 
 export type GetAllDealsResponse = {
@@ -17,9 +18,8 @@ export const getAllDeals = async ({
   search?: string;
 }): Promise<GetAllDealsResponse> => {
   try {
-    const response = await api.get("/deal", {
-      params: { cursor, limit, search },
-    });
+    const query = buildQueryParams({ cursor, limit, search });
+    const response = await api.get(`/deal${query ? `?${query}` : ""}`);
 
     const { message } = response.data;
     const { deals, totalCount } = response.data.data;

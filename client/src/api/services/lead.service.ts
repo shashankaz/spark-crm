@@ -1,4 +1,5 @@
 import { api } from "@/api";
+import { buildQueryParams } from "@/api/query-params";
 import type { Deal, Lead, LeadActionHistory } from "@/types";
 
 export type GetAllLeadsResponse = {
@@ -52,9 +53,8 @@ export const getAllLeads = async ({
   search?: string;
 }): Promise<GetAllLeadsResponse> => {
   try {
-    const response = await api.get("/lead", {
-      params: { cursor, limit, search },
-    });
+    const query = buildQueryParams({ cursor, limit, search });
+    const response = await api.get(`/lead${query ? `?${query}` : ""}`);
 
     const { message } = response.data;
     const { leads, totalCount } = response.data.data;
@@ -249,9 +249,8 @@ export const getAllOrganizations = async ({
   search?: string;
 }): Promise<GetAllOrganizationsResponse> => {
   try {
-    const response = await api.get("/lead/organizations", {
-      params: { limit, search },
-    });
+    const query = buildQueryParams({ limit, search });
+    const response = await api.get(`/lead/organizations${query ? `?${query}` : ""}`);
 
     const { message } = response.data;
     const { organizations } = response.data.data;

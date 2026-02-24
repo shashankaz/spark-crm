@@ -1,4 +1,5 @@
 import { api } from "@/api";
+import { buildQueryParams } from "@/api/query-params";
 import type { Call } from "@/types";
 
 export type GetAllCallsByLeadIdResponse = {
@@ -24,9 +25,8 @@ export const getAllCallsByLeadId = async ({
   search?: string;
 }): Promise<GetAllCallsByLeadIdResponse> => {
   try {
-    const response = await api.get(`/call/${leadId}`, {
-      params: { cursor, limit, search },
-    });
+    const query = buildQueryParams({ cursor, limit, search });
+    const response = await api.get(`/call/${leadId}${query ? `?${query}` : ""}`);
 
     const { message } = response.data;
     const { calls, totalCount } = response.data.data;

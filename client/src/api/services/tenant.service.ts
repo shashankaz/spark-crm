@@ -1,4 +1,5 @@
 import { api } from "@/api";
+import { buildQueryParams } from "@/api/query-params";
 import type { Tenant, User } from "@/types";
 
 export type TenantAddress = {
@@ -105,9 +106,8 @@ export const getAllTenants = async ({
   search?: string;
 }): Promise<GetAllTenantsResponse> => {
   try {
-    const response = await api.get("/tenant", {
-      params: { cursor, limit, search },
-    });
+    const query = buildQueryParams({ cursor, limit, search });
+    const response = await api.get(`/tenant${query ? `?${query}` : ""}`);
 
     const { message } = response.data;
     const { tenants, totalCount } = response.data.data;
