@@ -53,7 +53,6 @@ export type GetTenantByIdResponse = {
   message: string;
   tenant: Tenant;
   usersCount: number;
-  users: User[];
 };
 
 export type CreateTenantResponse = {
@@ -74,6 +73,11 @@ export type DeleteTenantResponse = {
 export type CreateUserForTenantResponse = {
   message: string;
   user: User;
+};
+
+export type GetUsersByTenantIdResponse = {
+  message: string;
+  users: User[];
 };
 
 export const getTenantDashboardStats =
@@ -124,9 +128,9 @@ export const getTenantById = async ({
     const response = await api.get(`/tenant/${id}`);
 
     const { message } = response.data;
-    const { tenant, usersCount, users } = response.data.data;
+    const { tenant, usersCount } = response.data.data;
 
-    return { message, tenant, usersCount, users };
+    return { message, tenant, usersCount };
   } catch (error) {
     console.error("Get tenant by ID error:", error);
     throw error;
@@ -225,6 +229,24 @@ export const deleteTenantById = async ({
     return { message, id: deletedId };
   } catch (error) {
     console.error("Delete tenant error:", error);
+    throw error;
+  }
+};
+
+export const getUsersByTenantId = async ({
+  id,
+}: {
+  id: string;
+}): Promise<GetUsersByTenantIdResponse> => {
+  try {
+    const response = await api.get(`/tenant/${id}/users`);
+
+    const { message } = response.data;
+    const { users } = response.data.data;
+
+    return { message, users };
+  } catch (error) {
+    console.error("Get users by tenant ID error:", error);
     throw error;
   }
 };

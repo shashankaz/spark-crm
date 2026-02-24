@@ -48,7 +48,9 @@ export const EditProfile: React.FC<EditProfileProps> = ({
               control={editForm.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="-space-y-2">
-                  <FieldLabel htmlFor="firstName">First Name</FieldLabel>
+                  <FieldLabel htmlFor="firstName">
+                    First Name <span className="text-error">*</span>
+                  </FieldLabel>
                   <Input
                     {...field}
                     id="firstName"
@@ -70,12 +72,7 @@ export const EditProfile: React.FC<EditProfileProps> = ({
               control={editForm.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="-space-y-2">
-                  <FieldLabel htmlFor="lastName">
-                    Last Name{" "}
-                    <span className="text-muted-foreground text-xs">
-                      (optional)
-                    </span>
-                  </FieldLabel>
+                  <FieldLabel htmlFor="lastName">Last Name</FieldLabel>
                   <Input
                     {...field}
                     id="lastName"
@@ -97,12 +94,7 @@ export const EditProfile: React.FC<EditProfileProps> = ({
               control={editForm.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="-space-y-2">
-                  <FieldLabel htmlFor="mobile">
-                    Mobile{" "}
-                    <span className="text-muted-foreground text-xs">
-                      (optional)
-                    </span>
-                  </FieldLabel>
+                  <FieldLabel htmlFor="mobile">Mobile</FieldLabel>
                   <Input
                     {...field}
                     id="mobile"

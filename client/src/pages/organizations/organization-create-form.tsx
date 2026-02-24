@@ -86,7 +86,9 @@ export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="name">Organization Name</FieldLabel>
+              <FieldLabel htmlFor="name">
+                Organization Name <span className="text-error">*</span>
+              </FieldLabel>
               <Input
                 {...field}
                 id="name"
@@ -108,7 +110,9 @@ export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="industary">Industry</FieldLabel>
+              <FieldLabel htmlFor="industary">
+                Industry <span className="text-error">*</span>
+              </FieldLabel>
               <Select onValueChange={field.onChange} value={field.value ?? ""}>
                 <SelectTrigger
                   className="w-full"
@@ -144,7 +148,9 @@ export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="size">Size</FieldLabel>
+              <FieldLabel htmlFor="size">
+                Size <span className="text-error">*</span>
+              </FieldLabel>
               <Select onValueChange={field.onChange} value={field.value ?? ""}>
                 <SelectTrigger
                   className="w-full"
@@ -175,12 +181,7 @@ export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="country">
-                Country{" "}
-                <span className="text-muted-foreground text-xs">
-                  (optional)
-                </span>
-              </FieldLabel>
+              <FieldLabel htmlFor="country">Country</FieldLabel>
               <Select onValueChange={field.onChange} value={field.value ?? ""}>
                 <SelectTrigger
                   className="w-full"
@@ -221,12 +222,7 @@ export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="email">
-                Email{" "}
-                <span className="text-muted-foreground text-xs">
-                  (optional)
-                </span>
-              </FieldLabel>
+              <FieldLabel htmlFor="email">Email</FieldLabel>
               <Input
                 {...field}
                 id="email"
@@ -248,12 +244,7 @@ export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="mobile">
-                Mobile{" "}
-                <span className="text-muted-foreground text-xs">
-                  (optional)
-                </span>
-              </FieldLabel>
+              <FieldLabel htmlFor="mobile">Mobile</FieldLabel>
               <Input
                 {...field}
                 id="mobile"
@@ -275,12 +266,7 @@ export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="website">
-                Website{" "}
-                <span className="text-muted-foreground text-xs">
-                  (optional)
-                </span>
-              </FieldLabel>
+              <FieldLabel htmlFor="website">Website</FieldLabel>
               <Input
                 {...field}
                 id="website"

@@ -81,7 +81,9 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="name">Name</FieldLabel>
+              <FieldLabel htmlFor="name">
+                Name <span className="text-error">*</span>
+              </FieldLabel>
               <Input
                 {...field}
                 id="name"
@@ -103,7 +105,9 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="email">Email</FieldLabel>
+              <FieldLabel htmlFor="email">
+                Email <span className="text-error">*</span>
+              </FieldLabel>
               <Input
                 {...field}
                 id="email"
@@ -126,7 +130,9 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="mobile">Mobile</FieldLabel>
+              <FieldLabel htmlFor="mobile">
+                Mobile <span className="text-error">*</span>
+              </FieldLabel>
               <Input
                 {...field}
                 id="mobile"
@@ -148,7 +154,9 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="plan">Plan</FieldLabel>
+              <FieldLabel htmlFor="plan">
+                Plan <span className="text-error">*</span>
+              </FieldLabel>
               <Select onValueChange={field.onChange} value={field.value ?? ""}>
                 <SelectTrigger
                   className="w-full"
@@ -180,12 +188,7 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="gstNumber">
-                GST Number{" "}
-                <span className="text-muted-foreground text-xs">
-                  (optional)
-                </span>
-              </FieldLabel>
+              <FieldLabel htmlFor="gstNumber">GST Number</FieldLabel>
               <Input
                 {...field}
                 id="gstNumber"
@@ -207,12 +210,7 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="panNumber">
-                PAN Number{" "}
-                <span className="text-muted-foreground text-xs">
-                  (optional)
-                </span>
-              </FieldLabel>
+              <FieldLabel htmlFor="panNumber">PAN Number</FieldLabel>
               <Input
                 {...field}
                 id="panNumber"
@@ -240,7 +238,9 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="address.line1">Line 1</FieldLabel>
+              <FieldLabel htmlFor="address.line1">
+                Line 1 <span className="text-error">*</span>
+              </FieldLabel>
               <Input
                 {...field}
                 id="address.line1"
@@ -262,12 +262,7 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="address.line2">
-                Line 2{" "}
-                <span className="text-muted-foreground text-xs">
-                  (optional)
-                </span>
-              </FieldLabel>
+              <FieldLabel htmlFor="address.line2">Line 2</FieldLabel>
               <Input
                 {...field}
                 id="address.line2"
@@ -289,7 +284,9 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="address.city">City</FieldLabel>
+              <FieldLabel htmlFor="address.city">
+                City <span className="text-error">*</span>
+              </FieldLabel>
               <Input
                 {...field}
                 id="address.city"
@@ -311,7 +308,9 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="address.state">State</FieldLabel>
+              <FieldLabel htmlFor="address.state">
+                State <span className="text-error">*</span>
+              </FieldLabel>
               <Input
                 {...field}
                 id="address.state"
@@ -333,7 +332,9 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="address.postalCode">Postal Code</FieldLabel>
+              <FieldLabel htmlFor="address.postalCode">
+                Postal Code <span className="text-error">*</span>
+              </FieldLabel>
               <Input
                 {...field}
                 id="address.postalCode"
@@ -355,7 +356,9 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="address.country">Country</FieldLabel>
+              <FieldLabel htmlFor="address.country">
+                Country <span className="text-error">*</span>
+              </FieldLabel>
               <Select onValueChange={field.onChange} value={field.value ?? ""}>
                 <SelectTrigger
                   className="w-full"

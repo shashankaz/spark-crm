@@ -1,5 +1,5 @@
 import { api } from "@/api";
-import type { Lead, LeadActionHistory } from "@/types";
+import type { Deal, Lead, LeadActionHistory } from "@/types";
 
 export type GetAllLeadsResponse = {
   message: string;
@@ -35,6 +35,11 @@ export type GetAllOrganizationsResponse = {
 export type GetLeadActivityByLeadIdResponse = {
   message: string;
   activities: LeadActionHistory[];
+};
+
+export type ConvertLeadToDealResponse = {
+  message: string;
+  deal: Deal;
 };
 
 export const getAllLeads = async ({
@@ -204,6 +209,37 @@ export const getLeadActivityByLeadId = async ({
     return { message, activities };
   } catch (error) {
     console.error("Get lead activity by lead ID error:", error);
+    throw error;
+  }
+};
+
+export const convertLeadToDeal = async ({
+  id,
+  idempotentId,
+  dealName,
+  value,
+  probability,
+}: {
+  id: string;
+  idempotentId: string;
+  dealName?: string;
+  value?: number;
+  probability?: number;
+}): Promise<ConvertLeadToDealResponse> => {
+  try {
+    const response = await api.post(`/lead/${id}/convert`, {
+      idempotentId,
+      dealName,
+      value,
+      probability,
+    });
+
+    const { message } = response.data;
+    const { deal } = response.data.data;
+
+    return { message, deal };
+  } catch (error) {
+    console.error("Convert lead to deal error:", error);
     throw error;
   }
 };

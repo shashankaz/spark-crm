@@ -93,7 +93,9 @@ export const LeadCreateForm: React.FC<LeadCreateFormProps> = ({ setOpen }) => {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="firstName">First Name</FieldLabel>
+              <FieldLabel htmlFor="firstName">
+                First Name <span className="text-error">*</span>
+              </FieldLabel>
               <Input
                 {...field}
                 id="firstName"
@@ -115,12 +117,7 @@ export const LeadCreateForm: React.FC<LeadCreateFormProps> = ({ setOpen }) => {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="lastName">
-                Last Name{" "}
-                <span className="text-muted-foreground text-xs">
-                  (optional)
-                </span>
-              </FieldLabel>
+              <FieldLabel htmlFor="lastName">Last Name</FieldLabel>
               <Input
                 {...field}
                 id="lastName"
@@ -142,7 +139,9 @@ export const LeadCreateForm: React.FC<LeadCreateFormProps> = ({ setOpen }) => {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="email">Email</FieldLabel>
+              <FieldLabel htmlFor="email">
+                Email <span className="text-error">*</span>
+              </FieldLabel>
               <Input
                 {...field}
                 id="email"
@@ -164,7 +163,9 @@ export const LeadCreateForm: React.FC<LeadCreateFormProps> = ({ setOpen }) => {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="mobile">Mobile</FieldLabel>
+              <FieldLabel htmlFor="mobile">
+                Mobile <span className="text-error">*</span>
+              </FieldLabel>
               <Input
                 {...field}
                 id="mobile"
@@ -186,7 +187,9 @@ export const LeadCreateForm: React.FC<LeadCreateFormProps> = ({ setOpen }) => {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="gender">Gender</FieldLabel>
+              <FieldLabel htmlFor="gender">
+                Gender <span className="text-error">*</span>
+              </FieldLabel>
               <Select onValueChange={field.onChange} value={field.value ?? ""}>
                 <SelectTrigger
                   className="w-full"
@@ -217,7 +220,9 @@ export const LeadCreateForm: React.FC<LeadCreateFormProps> = ({ setOpen }) => {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="organization">Organization</FieldLabel>
+              <FieldLabel htmlFor="organization">
+                Organization <span className="text-error">*</span>
+              </FieldLabel>
               <Select onValueChange={field.onChange} value={field.value ?? ""}>
                 <SelectTrigger
                   className="w-full"
@@ -250,7 +255,9 @@ export const LeadCreateForm: React.FC<LeadCreateFormProps> = ({ setOpen }) => {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="source">Source</FieldLabel>
+              <FieldLabel htmlFor="source">
+                Source <span className="text-error">*</span>
+              </FieldLabel>
               <Select onValueChange={field.onChange} value={field.value ?? ""}>
                 <SelectTrigger
                   className="w-full"

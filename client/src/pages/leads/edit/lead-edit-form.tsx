@@ -1,9 +1,7 @@
 import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-
-import { updateLeadById } from "@/api/services/lead.service";
+import toast from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -25,29 +23,12 @@ import {
 import { leadFormSchema } from "../lead-form-schema";
 import type { LeadFormValues } from "../lead-form-schema";
 
-export interface LeadEditData {
-  id: string;
-  firstName: string;
-  lastName?: string;
-  email: string;
-  mobile: string;
-  gender: "Male" | "Female" | "Other";
-  organization: string;
-  source:
-    | "Website"
-    | "Facebook Ads"
-    | "Google Ads"
-    | "Instagram"
-    | "LinkedIn"
-    | "Email Marketing"
-    | "Referral"
-    | "Cold Call"
-    | "WhatsApp"
-    | "Other";
-}
+import { useUpdateLead } from "@/hooks/use-lead";
+
+import type { Lead } from "@/types";
 
 interface LeadEditFormProps {
-  lead: LeadEditData;
+  lead: Lead;
   organizations: { _id: string; name: string }[];
 }
 
@@ -55,25 +36,6 @@ export const LeadEditForm: React.FC<LeadEditFormProps> = ({
   lead,
   organizations,
 }) => {
-  const queryClient = useQueryClient();
-
-  const { mutate, isPending } = useMutation({
-    mutationFn: (data: LeadFormValues) =>
-      updateLeadById({
-        id: lead.id,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        mobile: data.mobile,
-        gender: data.gender,
-        orgId: data.organization,
-        source: data.source,
-      }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["getLeadById", lead.id] });
-    },
-  });
-
   const form = useForm<LeadFormValues>({
     resolver: zodResolver(leadFormSchema),
     mode: "onChange",
@@ -82,9 +44,9 @@ export const LeadEditForm: React.FC<LeadEditFormProps> = ({
       lastName: lead.lastName ?? "",
       email: lead.email,
       mobile: lead.mobile,
-      gender: lead.gender,
-      organization: lead.organization,
-      source: lead.source,
+      gender: lead.gender as LeadFormValues["gender"],
+      organization: lead.orgId ?? "",
+      source: lead.source as LeadFormValues["source"],
     },
   });
 
@@ -94,14 +56,29 @@ export const LeadEditForm: React.FC<LeadEditFormProps> = ({
       lastName: lead.lastName ?? "",
       email: lead.email,
       mobile: lead.mobile,
-      gender: lead.gender,
-      organization: lead.organization,
-      source: lead.source,
+      gender: lead.gender as LeadFormValues["gender"],
+      organization: lead.orgId ?? "",
+      source: lead.source as LeadFormValues["source"],
     });
   }, [lead, form]);
 
+  const { mutate, isPending } = useUpdateLead();
+
   const onSubmit = (data: LeadFormValues) => {
-    mutate(data);
+    mutate(
+      {
+        id: lead._id,
+        ...data,
+      },
+      {
+        onSuccess: ({ message }) => {
+          toast.success(message);
+        },
+        onError: ({ message }) => {
+          toast.error(message);
+        },
+      },
+    );
   };
 
   return (
@@ -122,7 +99,7 @@ export const LeadEditForm: React.FC<LeadEditFormProps> = ({
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -144,7 +121,7 @@ export const LeadEditForm: React.FC<LeadEditFormProps> = ({
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -166,7 +143,7 @@ export const LeadEditForm: React.FC<LeadEditFormProps> = ({
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -188,7 +165,7 @@ export const LeadEditForm: React.FC<LeadEditFormProps> = ({
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -219,7 +196,7 @@ export const LeadEditForm: React.FC<LeadEditFormProps> = ({
               </Select>
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -252,7 +229,7 @@ export const LeadEditForm: React.FC<LeadEditFormProps> = ({
               </Select>
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -292,7 +269,7 @@ export const LeadEditForm: React.FC<LeadEditFormProps> = ({
               </Select>
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -302,21 +279,7 @@ export const LeadEditForm: React.FC<LeadEditFormProps> = ({
       </FieldGroup>
 
       <div className="space-x-2 mt-8 flex justify-end">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() =>
-            form.reset({
-              firstName: lead.firstName,
-              lastName: lead.lastName ?? "",
-              email: lead.email,
-              mobile: lead.mobile,
-              gender: lead.gender,
-              organization: lead.organization,
-              source: lead.source,
-            })
-          }
-        >
+        <Button type="button" variant="outline" onClick={() => form.reset()}>
           Reset
         </Button>
         <Button type="submit" form="lead-edit-form" disabled={isPending}>

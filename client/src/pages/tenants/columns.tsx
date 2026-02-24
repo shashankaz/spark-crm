@@ -82,20 +82,23 @@ export const columns: ColumnDef<Tenant>[] = [
     header: "Location",
     cell: ({ row }) => {
       const address = row.original.address;
-      const countryData = countriesFlag.find(
-        (c) => c.label.toLowerCase() === address.country.toLowerCase(),
-      );
+      const country = address?.country;
+      const countryData = country
+        ? countriesFlag.find(
+            (c) => c.label.toLowerCase() === country.toLowerCase(),
+          )
+        : undefined;
 
       return (
         <span className="flex items-center gap-2">
           {countryData && (
             <img
               src={countryData.flag}
-              alt={address.country}
+              alt={country}
               className="h-4 w-7 rounded inline-block object-cover"
             />
           )}
-          {address.country}
+          {country}
         </span>
       );
     },

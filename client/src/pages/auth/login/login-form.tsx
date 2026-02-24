@@ -64,7 +64,7 @@ export const LoginForm = () => {
                 htmlFor="email"
                 className="text-sm font-medium text-foreground"
               >
-                Email
+                Email <span className="text-error">*</span>
               </FieldLabel>
               <Input
                 {...field}

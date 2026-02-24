@@ -49,7 +49,7 @@ export const ContactForm = () => {
                   htmlFor="name"
                   className="text-sm font-medium text-foreground"
                 >
-                  Name
+                  Name <span className="text-error">*</span>
                 </FieldLabel>
                 <Input
                   {...field}
@@ -77,7 +77,7 @@ export const ContactForm = () => {
                   htmlFor="email"
                   className="text-sm font-medium text-foreground"
                 >
-                  Email
+                  Email <span className="text-error">*</span>
                 </FieldLabel>
                 <Input
                   {...field}
@@ -107,10 +107,7 @@ export const ContactForm = () => {
                 htmlFor="company"
                 className="text-sm font-medium text-foreground"
               >
-                Company{" "}
-                <span className="text-muted-foreground font-normal">
-                  (optional)
-                </span>
+                Company
               </FieldLabel>
               <Input
                 {...field}
@@ -132,7 +129,7 @@ export const ContactForm = () => {
                 htmlFor="message"
                 className="text-sm font-medium text-foreground"
               >
-                Message
+                Message <span className="text-error">*</span>
               </FieldLabel>
               <Textarea
                 {...field}

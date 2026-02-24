@@ -14,11 +14,11 @@ import { Heading } from "@/components/shared/typography/heading";
 import { Description } from "@/components/shared/typography/description";
 import { DataTable } from "@/components/shared/dashboard/data-table";
 
-import { columns as userColumns } from "@/pages/users/columns";
 import { UserCreateForm } from "@/pages/users/user-create-form";
 
-import { useTenant } from "@/hooks/use-tenant";
+import { useTenant, useUsersByTenantId } from "@/hooks/use-tenant";
 
+import { columns as userColumns } from "./columns";
 import { TenantEditForm } from "./tenant-edit-form";
 
 const TenantsEditPage = () => {
@@ -26,14 +26,16 @@ const TenantsEditPage = () => {
   const [userDialogOpen, setUserDialogOpen] = useState(false);
 
   const { data, isPending } = useTenant({ id: tenantId! });
+  const { data: usersData } = useUsersByTenantId({ id: tenantId! });
 
   if (isPending) return null;
 
   if (!data) return null;
 
   const tenant = data?.tenant;
-  const users = data?.users ?? [];
   const usersCount = data?.usersCount ?? 0;
+
+  const users = usersData?.users ?? [];
 
   return (
     <>

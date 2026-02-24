@@ -98,7 +98,9 @@ export const UserEditForm: React.FC<UserEditFormProps> = ({ user }) => {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="firstName">First Name</FieldLabel>
+              <FieldLabel htmlFor="firstName">
+                First Name <span className="text-error">*</span>
+              </FieldLabel>
               <Input
                 {...field}
                 id="firstName"
@@ -125,7 +127,7 @@ export const UserEditForm: React.FC<UserEditFormProps> = ({ user }) => {
                 {...field}
                 id="lastName"
                 aria-invalid={fieldState.invalid}
-                placeholder="Enter last name (optional)"
+                placeholder="Enter last name"
                 autoComplete="off"
               />
               {fieldState.invalid && (
@@ -142,7 +144,9 @@ export const UserEditForm: React.FC<UserEditFormProps> = ({ user }) => {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="email">Email</FieldLabel>
+              <FieldLabel htmlFor="email">
+                Email <span className="text-error">*</span>
+              </FieldLabel>
               <Input
                 {...field}
                 id="email"
@@ -165,7 +169,9 @@ export const UserEditForm: React.FC<UserEditFormProps> = ({ user }) => {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="mobile">Mobile</FieldLabel>
+              <FieldLabel htmlFor="mobile">
+                Mobile <span className="text-error">*</span>
+              </FieldLabel>
               <Input
                 {...field}
                 id="mobile"
@@ -187,7 +193,9 @@ export const UserEditForm: React.FC<UserEditFormProps> = ({ user }) => {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="role">Role</FieldLabel>
+              <FieldLabel htmlFor="role">
+                Role <span className="text-error">*</span>
+              </FieldLabel>
               <Select onValueChange={field.onChange} value={field.value ?? ""}>
                 <SelectTrigger
                   className="w-full"

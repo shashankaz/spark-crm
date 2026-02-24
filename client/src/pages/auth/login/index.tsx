@@ -67,16 +67,6 @@ const LoginPage = () => {
           </div>
 
           <LoginForm />
-
-          <p className="mt-6 text-sm text-center text-muted-foreground">
-            Don&apos;t have an account?{" "}
-            <Link
-              to="/register"
-              className="text-foreground underline underline-offset-4 hover:text-primary transition-colors"
-            >
-              Create one
-            </Link>
-          </p>
         </div>
       </div>
     </div>

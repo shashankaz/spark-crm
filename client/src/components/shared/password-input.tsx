@@ -28,7 +28,9 @@ export const PasswordInput = <T extends FieldValues>({
       control={form.control}
       render={({ field, fieldState }) => (
         <Field data-invalid={fieldState.invalid} className="-space-y-2">
-          <FieldLabel htmlFor={name}>{label}</FieldLabel>
+          <FieldLabel htmlFor={name}>
+            {label} <span className="text-error">*</span>
+          </FieldLabel>
           <div className="relative">
             <Input
               {...field}

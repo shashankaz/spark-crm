@@ -7,6 +7,7 @@ import {
   deleteLeadById,
   getAllOrganizations,
   getLeadActivityByLeadId,
+  convertLeadToDeal,
 } from "@/api/services/lead.service";
 
 export const useLeads = ({
@@ -91,5 +92,21 @@ export const useLeadActivity = ({ id }: { id: string }) => {
     queryKey: ["lead-activity", id],
     queryFn: () => getLeadActivityByLeadId({ id }),
     enabled: !!id,
+  });
+};
+
+export const useConvertLeadToDeal = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: convertLeadToDeal,
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["leads"] });
+      queryClient.invalidateQueries({ queryKey: ["lead", variables.id] });
+      queryClient.invalidateQueries({
+        queryKey: ["lead-activity", variables.id],
+      });
+      queryClient.invalidateQueries({ queryKey: ["deals"] });
+    },
   });
 };

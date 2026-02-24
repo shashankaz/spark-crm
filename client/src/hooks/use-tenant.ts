@@ -3,6 +3,7 @@ import {
   getTenantDashboardStats,
   getAllTenants,
   getTenantById,
+  getUsersByTenantId,
   createTenant,
   updateTenantById,
   deleteTenantById,
@@ -36,6 +37,14 @@ export const useTenant = ({ id }: { id: string }) => {
   return useQuery({
     queryKey: ["tenant", id],
     queryFn: () => getTenantById({ id }),
+    enabled: !!id,
+  });
+};
+
+export const useUsersByTenantId = ({ id }: { id: string }) => {
+  return useQuery({
+    queryKey: ["tenant", id, "users"],
+    queryFn: () => getUsersByTenantId({ id }),
     enabled: !!id,
   });
 };

@@ -12,6 +12,7 @@ import {
   Plus,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { v7 as uuidv7 } from "uuid";
 
 import { cn } from "@/lib/utils";
 
@@ -36,7 +37,6 @@ import { Heading } from "@/components/shared/typography/heading";
 import { Description } from "@/components/shared/typography/description";
 
 import { LeadEditForm } from "./lead-edit-form";
-import type { LeadEditData } from "./lead-edit-form";
 import { CallLogCreateForm } from "./call-log-create-form";
 import { CommentCreateForm } from "./comment-create-form";
 import { getActivityStyle } from "./helper";
@@ -44,9 +44,14 @@ import { getActivityStyle } from "./helper";
 import { useOrganizations } from "@/hooks/use-organization";
 import { useCalls } from "@/hooks/use-call";
 import { useComments } from "@/hooks/use-comment";
-import { useLead, useLeadActivity, useUpdateLead } from "@/hooks/use-lead";
+import {
+  useConvertLeadToDeal,
+  useLead,
+  useLeadActivity,
+  useUpdateLead,
+} from "@/hooks/use-lead";
 
-import type { LeadStatus } from "@/types/domain/lead";
+import type { Lead, LeadStatus } from "@/types/domain/lead";
 
 const formatDuration = (seconds: number): string => {
   if (seconds === 0) return "—";
@@ -106,6 +111,30 @@ const LeadsEditPage = () => {
     );
   };
 
+  const { mutate: convertToDealMutate, isPending: isConvertPending } =
+    useConvertLeadToDeal();
+
+  const convertToDeal = () => {
+    convertToDealMutate(
+      {
+        id: leadId!,
+        idempotentId: uuidv7(),
+        dealName: "",
+        value: 0,
+        probability: 0,
+      },
+      {
+        onSuccess: ({ message }) => {
+          toast.success(message);
+          navigate("/dashboard/deals");
+        },
+        onError: ({ message }) => {
+          toast.error(message);
+        },
+      },
+    );
+  };
+
   if (isPending) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -127,15 +156,16 @@ const LeadsEditPage = () => {
 
   const fullName = [lead.firstName, lead.lastName].filter(Boolean).join(" ");
 
-  const leadEditData: LeadEditData = {
-    id: lead._id,
+  const leadEditData: Lead = {
+    _id: lead._id,
     firstName: lead.firstName,
     lastName: lead.lastName,
     email: lead.email,
     mobile: lead.mobile,
-    gender: lead.gender as LeadEditData["gender"],
-    organization: lead.orgId ?? "",
-    source: (lead.source ?? "") as LeadEditData["source"],
+    gender: lead.gender as Lead["gender"],
+    orgId: lead.orgId ?? "",
+    orgName: lead.orgName ?? "",
+    source: (lead.source ?? "") as Lead["source"],
   };
 
   const handleStatusChange = (value: string) => {
@@ -195,7 +225,7 @@ const LeadsEditPage = () => {
                   <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">
                     &nbsp;
                   </span>
-                  <Button onClick={() => navigate("/dashboard/deals")}>
+                  <Button onClick={convertToDeal} disabled={isConvertPending}>
                     <ArrowRightCircle className="h-4 w-4" />
                     Convert to Deal
                   </Button>
@@ -377,11 +407,11 @@ const LeadsEditPage = () => {
                       className="relative pl-6 pb-5 last:pb-0"
                     >
                       {idx < activities.length - 1 && (
-                        <span className="absolute left-[9px] top-4 h-full w-px bg-border" />
+                        <span className="absolute left-2.25 top-4 h-full w-px bg-border" />
                       )}
                       <span
                         className={cn(
-                          "absolute left-0 top-0.5 flex h-[18px] w-[18px] items-center justify-center rounded-full border-2",
+                          "absolute left-0 top-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full border-2",
                           dot,
                         )}
                       >
