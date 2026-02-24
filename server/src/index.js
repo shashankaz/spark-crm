@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import helmet from "helmet";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
+import dns from "dns";
 import "dotenv/config";
 
 import { AppError } from "./utils/app-error.js";
@@ -25,6 +26,7 @@ app.use(
   }),
 );
 
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
 app.set("trust proxy", 1);
 app.disable("x-powered-by");
 
