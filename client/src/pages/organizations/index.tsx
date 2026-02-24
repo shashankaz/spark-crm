@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { debounce } from "lodash";
 import { Helmet } from "react-helmet-async";
 import { Download, Plus } from "lucide-react";
 
@@ -30,7 +31,18 @@ const OrganizationsPage = () => {
     Organization[]
   >([]);
 
-  const { data, isPending } = useOrganizations({});
+  const [searchInput, setSearchInput] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  const handleSearchChange = useMemo(
+    () =>
+      debounce((value: string) => {
+        setDebouncedSearch(value);
+      }, 500),
+    [],
+  );
+
+  const { data, isPending } = useOrganizations({ search: debouncedSearch });
   const organizations = data?.organizations ?? [];
 
   if (isPending) return <TableSkeleton />;
@@ -68,6 +80,11 @@ const OrganizationsPage = () => {
           columns={columns}
           data={organizations}
           placeholder="organizations"
+          search={searchInput}
+          onSearchChange={(value) => {
+            setSearchInput(value);
+            handleSearchChange(value);
+          }}
           onSelectionChange={(rows) =>
             setSelectedOrganizations(rows as Organization[])
           }

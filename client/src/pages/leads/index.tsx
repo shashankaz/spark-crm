@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { debounce } from "lodash";
 import { Helmet } from "react-helmet-async";
 import { Download, Plus } from "lucide-react";
 
@@ -28,7 +29,18 @@ const LeadPage = () => {
   const [open, setOpen] = useState(false);
   const [selectedLeads, setSelectedLeads] = useState<Lead[]>([]);
 
-  const { isPending, data } = useLeads({});
+  const [searchInput, setSearchInput] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  const handleSearchChange = useMemo(
+    () =>
+      debounce((value: string) => {
+        setDebouncedSearch(value);
+      }, 500),
+    [],
+  );
+
+  const { isPending, data } = useLeads({ search: debouncedSearch });
   const leads = data?.leads ?? [];
 
   if (isPending) return <TableSkeleton />;
@@ -66,6 +78,11 @@ const LeadPage = () => {
           columns={columns}
           data={leads}
           placeholder="leads"
+          search={searchInput}
+          onSearchChange={(value) => {
+            setSearchInput(value);
+            handleSearchChange(value);
+          }}
           onSelectionChange={(rows) => setSelectedLeads(rows as Lead[])}
         />
 

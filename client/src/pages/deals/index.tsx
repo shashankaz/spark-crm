@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { debounce } from "lodash";
 import { Helmet } from "react-helmet-async";
 import { Download } from "lucide-react";
 
@@ -20,7 +21,18 @@ import type { Deal } from "@/types";
 const DealPage = () => {
   const [selectedDeals, setSelectedDeals] = useState<Deal[]>([]);
 
-  const { data, isPending } = useDeals({});
+  const [searchInput, setSearchInput] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  const handleSearchChange = useMemo(
+    () =>
+      debounce((value: string) => {
+        setDebouncedSearch(value);
+      }, 500),
+    [],
+  );
+
+  const { data, isPending } = useDeals({ search: debouncedSearch });
   const deals = data?.deals ?? [];
 
   if (isPending) return <TableSkeleton />;
@@ -52,6 +64,11 @@ const DealPage = () => {
           columns={columns}
           data={deals}
           placeholder="deals"
+          search={searchInput}
+          onSearchChange={(value) => {
+            setSearchInput(value);
+            handleSearchChange(value);
+          }}
           onSelectionChange={(rows) => setSelectedDeals(rows as Deal[])}
         />
       </div>

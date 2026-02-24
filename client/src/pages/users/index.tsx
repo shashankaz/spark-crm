@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { debounce } from "lodash";
 import { Helmet } from "react-helmet-async";
 import { Download, Plus } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
@@ -28,9 +29,21 @@ const UsersPage = () => {
   const [open, setOpen] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
 
-  const { isPending, data: users = [] } = useQuery<User[]>({
+  const [searchInput, setSearchInput] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  const handleSearchChange = useMemo(
+    () =>
+      debounce((value: string) => {
+        setDebouncedSearch(value);
+      }, 500),
+    [],
+  );
+
+  const { data: users = [], isPending } = useQuery<User[]>({
     queryKey: ["getAllUsers"],
-    queryFn: () => getAllUsers({}).then((response) => response.users),
+    queryFn: () =>
+      getAllUsers({ search: debouncedSearch }).then((res) => res.users),
   });
 
   if (isPending) return <TableSkeleton />;
@@ -68,6 +81,11 @@ const UsersPage = () => {
           columns={columns}
           data={users}
           placeholder="users"
+          search={searchInput}
+          onSearchChange={(value) => {
+            setSearchInput(value);
+            handleSearchChange(value);
+          }}
           onSelectionChange={(rows) => setSelectedUsers(rows as User[])}
         />
 
