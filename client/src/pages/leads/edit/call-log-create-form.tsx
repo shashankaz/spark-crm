@@ -67,6 +67,9 @@ export const CallLogCreateForm: React.FC<CallLogCreateFormProps> = ({
     );
   };
 
+  const disableDuration =
+    form.watch("status") === "missed" || form.watch("status") === "cancelled";
+
   return (
     <form id="call-log-create-form" onSubmit={form.handleSubmit(createCallLog)}>
       <FieldGroup className="grid grid-cols-2 gap-8 -space-y-4">
@@ -148,6 +151,7 @@ export const CallLogCreateForm: React.FC<CallLogCreateFormProps> = ({
                 placeholder="0"
                 autoComplete="off"
                 onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                disabled={disableDuration}
               />
               {fieldState.invalid && (
                 <FieldError

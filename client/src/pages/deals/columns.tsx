@@ -63,7 +63,7 @@ export const columns: ColumnDef<Deal>[] = [
       const value = row.getValue<number>("value");
       return new Intl.NumberFormat("en-US", {
         style: "currency",
-        currency: "USD",
+        currency: "INR",
       }).format(value);
     },
   },

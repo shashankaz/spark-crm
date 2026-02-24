@@ -119,7 +119,7 @@ const LeadsEditPage = () => {
       {
         id: leadId!,
         idempotentId: uuidv7(),
-        dealName: "",
+        dealName: lead ? `${lead.firstName} ${lead.lastName}` : "New Deal",
         value: 0,
         probability: 0,
       },
@@ -225,7 +225,10 @@ const LeadsEditPage = () => {
                   <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">
                     &nbsp;
                   </span>
-                  <Button onClick={convertToDeal} disabled={isConvertPending}>
+                  <Button
+                    onClick={convertToDeal}
+                    disabled={isConvertPending || leadStatus === "converted"}
+                  >
                     <ArrowRightCircle className="h-4 w-4" />
                     Convert to Deal
                   </Button>

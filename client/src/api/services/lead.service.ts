@@ -132,7 +132,6 @@ export const updateLeadById = async ({
   id,
   orgId,
   orgName,
-  dealId,
   firstName,
   lastName,
   email,
@@ -144,7 +143,6 @@ export const updateLeadById = async ({
   id: string;
   orgId?: string;
   orgName?: string;
-  dealId?: string;
   firstName?: string;
   lastName?: string;
   email?: string;
@@ -157,7 +155,6 @@ export const updateLeadById = async ({
     const response = await api.patch(`/lead/${id}`, {
       orgId,
       orgName,
-      dealId,
       firstName,
       lastName,
       email,

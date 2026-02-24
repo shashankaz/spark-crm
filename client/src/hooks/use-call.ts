@@ -34,6 +34,9 @@ export const useCreateCall = () => {
       queryClient.invalidateQueries({
         queryKey: ["lead", variables.leadId],
       });
+      queryClient.removeQueries({
+        queryKey: ["lead-activity", variables.leadId],
+      });
     },
   });
 };

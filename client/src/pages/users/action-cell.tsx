@@ -64,7 +64,7 @@ export const ActionCell = ({ user }: { user: User }) => {
             onClick={() => setDeleteOpen(true)}
             disabled={isPending}
           >
-            <Trash2 className="mr-2 h-4 w-4" />
+            <Trash2 className="mr-2 h-4 w-4 text-error" />
             Delete
           </DropdownMenuItem>
         </DropdownMenuContent>

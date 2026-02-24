@@ -25,15 +25,11 @@ export const ActionCell = ({ deal }: { deal: Deal }) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => console.log("Edit", deal._id)}>
-            <Pencil className="mr-2 h-4 w-4" />
-            Edit
-          </DropdownMenuItem>
           <DropdownMenuItem
             className="text-error focus:text-error"
             onClick={() => setDeleteOpen(true)}
           >
-            <Trash2 className="mr-2 h-4 w-4" />
+            <Trash2 className="mr-2 h-4 w-4 text-error" />
             Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
