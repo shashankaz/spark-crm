@@ -26,8 +26,11 @@ export const fetchTenantDashboardStatsService = async () => {
       isDeleted: false,
       createdAt: { $lt: startOfThisMonth },
     }),
-    User.countDocuments({}),
-    User.countDocuments({ createdAt: { $lt: startOfThisMonth } }),
+    User.countDocuments({ role: { $ne: "super_admin" } }),
+    User.countDocuments({
+      role: { $ne: "super_admin" },
+      createdAt: { $lt: startOfThisMonth },
+    }),
     Tenant.aggregate([
       { $match: { isDeleted: false } },
       { $group: { _id: "$plan", count: { $sum: 1 } } },
@@ -87,15 +90,23 @@ export const fetchTenantsService = async ({ cursor, limit, search }) => {
 };
 
 export const fetchTenantByIdService = async ({ id }) => {
-  const [tenant, usersCount, users] = await Promise.all([
+  const [tenant, usersCount] = await Promise.all([
     Tenant.findOne({ _id: id, isDeleted: false }).exec(),
     User.countDocuments({ tenantId: id }).exec(),
-    User.find({ tenantId: id }).exec(),
   ]);
 
   if (!tenant) {
     throw new AppError("Tenant not found", 404);
   }
+
+  return {
+    tenant,
+    usersCount,
+  };
+};
+
+export const fetchUsersByTenantIdService = async ({ tenantId }) => {
+  const users = await User.find({ tenantId }).exec();
 
   const formattedUsers = users.map((user) => ({
     _id: user._id,
@@ -108,8 +119,6 @@ export const fetchTenantByIdService = async ({ id }) => {
   }));
 
   return {
-    tenant,
-    usersCount,
     users: formattedUsers,
   };
 };
@@ -131,11 +140,18 @@ export const createTenantService = async ({
       [
         {
           name,
-          gstNumber,
-          panNumber,
+          gstNumber: gstNumber || undefined,
+          panNumber: panNumber || undefined,
           email,
           mobile,
-          address,
+          address: {
+            line1: address?.line1 || undefined,
+            line2: address?.line2 || undefined,
+            city: address?.city || undefined,
+            state: address?.state || undefined,
+            country: address?.country || undefined,
+            postalCode: address?.postalCode || undefined,
+          },
           plan,
         },
       ],
@@ -186,7 +202,6 @@ export const updateTenantByIdService = async ({
   email,
   mobile,
   address,
-  logoUrl,
   plan,
 }) => {
   const tenant = await Tenant.findOne({ _id: id, isDeleted: false }).exec();

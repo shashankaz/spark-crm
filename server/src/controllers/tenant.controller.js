@@ -6,6 +6,7 @@ import {
   updateTenantByIdService,
   deleteTenantByIdService,
   createUserForTenantService,
+  fetchUsersByTenantIdService,
 } from "../services/tenant.service.js";
 
 export const getTenantDashboardStats = async (req, res, next) => {
@@ -55,12 +56,34 @@ export const getTenantById = async (req, res, next) => {
       });
     }
 
-    const { tenant, usersCount, users } = await fetchTenantByIdService({ id });
+    const { tenant, usersCount } = await fetchTenantByIdService({ id });
 
     res.json({
       success: true,
       message: "Tenant retrieved successfully",
-      data: { tenant, usersCount, users },
+      data: { tenant, usersCount },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getUsersByTenantId = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "Tenant ID is required",
+      });
+    }
+
+    const { users } = await fetchUsersByTenantIdService({ tenantId: id });
+
+    res.json({
+      success: true,
+      message: "Tenant users retrieved successfully",
+      data: { users },
     });
   } catch (error) {
     next(error);

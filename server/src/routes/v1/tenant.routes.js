@@ -7,6 +7,7 @@ import {
   updateTenantById,
   deleteTenantById,
   createUserForTenant,
+  getUsersByTenantId,
 } from "../../controllers/tenant.controller.js";
 import { requireAuth } from "../../middlewares/auth.middleware.js";
 import { requireSuperAdmin } from "../../middlewares/role.middleware.js";
@@ -22,6 +23,7 @@ router.get(
 
 router.get("/", requireAuth, requireSuperAdmin, getAllTenants);
 router.get("/:id", requireAuth, requireSuperAdmin, getTenantById);
+router.get("/:id/users", requireAuth, requireSuperAdmin, getUsersByTenantId);
 router.post("/", requireAuth, requireSuperAdmin, createTenant);
 router.patch("/:id", requireAuth, requireSuperAdmin, updateTenantById);
 router.delete("/:id", requireAuth, requireSuperAdmin, deleteTenantById);
