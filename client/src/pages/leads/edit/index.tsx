@@ -163,7 +163,16 @@ const LeadsEditPage = () => {
 
   const fullName = [lead.firstName, lead.lastName].filter(Boolean).join(" ");
 
-  const leadEditData: Lead = {
+  const leadEditData: Omit<
+    Lead,
+    | "userId"
+    | "tenantId"
+    | "idempotentId"
+    | "status"
+    | "score"
+    | "createdAt"
+    | "updatedAt"
+  > = {
     _id: lead._id,
     firstName: lead.firstName,
     lastName: lead.lastName,

@@ -28,7 +28,16 @@ import { useUpdateLead } from "@/hooks/use-lead";
 import type { Lead } from "@/types";
 
 interface LeadEditFormProps {
-  lead: Lead;
+  lead: Omit<
+    Lead,
+    | "userId"
+    | "tenantId"
+    | "idempotentId"
+    | "status"
+    | "score"
+    | "createdAt"
+    | "updatedAt"
+  >;
   organizations: { _id: string; name: string }[];
 }
 
