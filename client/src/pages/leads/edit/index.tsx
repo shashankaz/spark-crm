@@ -76,6 +76,7 @@ const LeadsEditPage = () => {
 
   const [callDialogOpen, setCallDialogOpen] = useState(false);
   const [pendingStatus, setPendingStatus] = useState<LeadStatus | null>(null);
+  const [activeTab, setActiveTab] = useState("details");
 
   const { data: leadData, isPending } = useLead({ id: leadId! });
   const lead = leadData?.lead;
@@ -86,10 +87,16 @@ const LeadsEditPage = () => {
   const { data: organizationsData } = useOrganizations({});
   const organizations = organizationsData?.organizations ?? [];
 
-  const { data: callsData } = useCalls({ leadId: leadId! });
+  const { data: callsData } = useCalls({
+    leadId: leadId!,
+    enabled: activeTab === "calls",
+  });
   const calls = callsData?.calls ?? [];
 
-  const { data: commentsData } = useComments({ leadId: leadId! });
+  const { data: commentsData } = useComments({
+    leadId: leadId!,
+    enabled: activeTab === "comments",
+  });
   const comments = commentsData?.comments ?? [];
 
   const { data: leadActivityData } = useLeadActivity({ id: leadId! });
@@ -237,7 +244,7 @@ const LeadsEditPage = () => {
             </div>
           </div>
 
-          <Tabs defaultValue="details">
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList>
               <TabsTrigger value="details">Details</TabsTrigger>
               <TabsTrigger value="calls">

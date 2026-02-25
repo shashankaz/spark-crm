@@ -9,16 +9,18 @@ export const useComments = ({
   cursor,
   limit = 10,
   search,
+  enabled,
 }: {
   leadId: string;
   cursor?: string;
   limit?: number;
   search?: string;
+  enabled?: boolean;
 }) => {
   return useQuery({
     queryKey: ["comments", leadId, { cursor, limit, search }],
     queryFn: () => getAllCommentsByLeadId({ leadId, cursor, limit, search }),
-    enabled: !!leadId,
+    enabled: enabled ?? !!leadId,
   });
 };
 

@@ -9,16 +9,18 @@ export const useCalls = ({
   cursor,
   limit = 10,
   search,
+  enabled,
 }: {
   leadId: string;
   cursor?: string;
   limit?: number;
   search?: string;
+  enabled?: boolean;
 }) => {
   return useQuery({
     queryKey: ["calls", leadId, { cursor, limit, search }],
     queryFn: () => getAllCallsByLeadId({ leadId, cursor, limit, search }),
-    enabled: !!leadId,
+    enabled: enabled ?? !!leadId,
   });
 };
 

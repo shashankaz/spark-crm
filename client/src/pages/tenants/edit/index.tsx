@@ -24,9 +24,13 @@ import { TenantEditForm } from "./tenant-edit-form";
 const TenantsEditPage = () => {
   const { tenantId } = useParams<{ tenantId: string }>();
   const [userDialogOpen, setUserDialogOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("details");
 
   const { data, isPending } = useTenant({ id: tenantId! });
-  const { data: usersData } = useUsersByTenantId({ id: tenantId! });
+  const { data: usersData } = useUsersByTenantId({
+    id: tenantId!,
+    enabled: activeTab === "users",
+  });
 
   if (isPending) return null;
 
@@ -50,7 +54,7 @@ const TenantsEditPage = () => {
           <Description description="Manage tenant details and users" />
         </div>
 
-        <Tabs defaultValue="details">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList>
             <TabsTrigger value="details">Details</TabsTrigger>
             <TabsTrigger value="users">
