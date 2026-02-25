@@ -7,10 +7,11 @@ import cookieParser from "cookie-parser";
 import dns from "dns";
 import "dotenv/config";
 
-import { AppError } from "./utils/app-error.js";
+import { AppError } from "./shared/app-error.js";
 import { Database } from "./utils/db.js";
-import router from "./routes/index.js";
+import { router } from "./routes/index.js";
 import { env } from "./config/env.js";
+import { globalErrorHandler } from "./middlewares/global-error.middleware.js";
 
 const app = express();
 
@@ -72,14 +73,7 @@ app.use((req, res, next) => {
   next(new AppError(`Not found - ${req.originalUrl}`, 404));
 });
 
-app.use((err, req, res, next) => {
-  const status = err.status || 500;
-  res.status(status).json({
-    success: false,
-    message: err.message || "Server Error",
-    ...(env.NODE_ENV === "development" && { stack: err.stack }),
-  });
-});
+app.use(globalErrorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

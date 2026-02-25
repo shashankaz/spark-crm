@@ -9,7 +9,7 @@ import commentRoutes from "./v1/comment.routes.js";
 import dealRoutes from "./v1/deal.routes.js";
 import dashboardRoutes from "./v1/dashboard.route.js";
 
-const router = Router();
+export const router = Router();
 
 router.use("/auth", authRoutes);
 router.use("/tenant", tenantRoutes);
@@ -20,5 +20,3 @@ router.use("/user", userRoutes);
 router.use("/call", callRoutes);
 router.use("/comment", commentRoutes);
 router.use("/dashboard", dashboardRoutes);
-
-export default router;
