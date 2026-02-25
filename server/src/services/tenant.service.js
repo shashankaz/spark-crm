@@ -105,8 +105,17 @@ export const fetchTenantByIdService = async ({ id }) => {
   };
 };
 
-export const fetchUsersByTenantIdService = async ({ tenantId }) => {
-  const users = await User.find({ tenantId }).exec();
+export const fetchUsersByTenantIdService = async ({ tenantId, search }) => {
+  const whereQuery = { tenantId };
+  if (search) {
+    whereQuery.$or = [
+      { firstName: { $regex: search, $options: "i" } },
+      { lastName: { $regex: search, $options: "i" } },
+      { email: { $regex: search, $options: "i" } },
+    ];
+  }
+
+  const users = await User.find(whereQuery).exec();
 
   const formattedUsers = users.map((user) => ({
     _id: user._id,
