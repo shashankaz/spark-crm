@@ -1,4 +1,5 @@
 import { fetchDashboardStatsService } from "../services/dashboard.service.js";
+import { sendSuccess } from "../shared/api-response.js";
 
 export const getDashboardStats = async (req, res, next) => {
   try {
@@ -7,10 +8,10 @@ export const getDashboardStats = async (req, res, next) => {
     const { stats, recentLeads, recentDeals } =
       await fetchDashboardStatsService({ tenantId });
 
-    res.json({
-      success: true,
-      message: "Dashboard stats retrieved successfully",
-      data: { stats, recentLeads, recentDeals },
+    sendSuccess(res, 200, "Dashboard stats retrieved successfully", {
+      stats,
+      recentLeads,
+      recentDeals,
     });
   } catch (error) {
     next(error);

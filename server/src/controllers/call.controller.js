@@ -2,15 +2,14 @@ import {
   fetchCallsByLeadService,
   createCallForLeadService,
 } from "../services/call.service.js";
+import { AppError } from "../shared/app-error.js";
+import { sendSuccess } from "../shared/api-response.js";
 
 export const getAllCallsByLeadId = async (req, res, next) => {
   try {
     const { leadId } = req.params;
     if (!leadId) {
-      return res.status(400).json({
-        success: false,
-        message: "Lead ID is required",
-      });
+      throw new AppError("Lead ID is required", 400);
     }
 
     const cursor = req.query.cursor;
@@ -24,10 +23,9 @@ export const getAllCallsByLeadId = async (req, res, next) => {
       search,
     });
 
-    res.json({
-      success: true,
-      message: "Calls retrieved successfully",
-      data: { calls, totalCount },
+    sendSuccess(res, 200, "Calls retrieved successfully", {
+      calls,
+      totalCount,
     });
   } catch (error) {
     next(error);
@@ -38,26 +36,17 @@ export const createCallForLead = async (req, res, next) => {
   try {
     const { leadId } = req.params;
     if (!leadId) {
-      return res.status(400).json({
-        success: false,
-        message: "Lead ID is required",
-      });
+      throw new AppError("Lead ID is required", 400);
     }
 
     const { tenantId, _id: userId, firstName: userName } = req.user;
     if (!tenantId) {
-      return res.status(400).json({
-        success: false,
-        message: "Tenant ID is missing in user data",
-      });
+      throw new AppError("Tenant ID is missing in user data", 400);
     }
 
     const { type, status, duration } = req.body;
     if (!type || !status) {
-      return res.status(400).json({
-        success: false,
-        message: "Type and status are required to create a call",
-      });
+      throw new AppError("Type and status are required to create a call", 400);
     }
 
     const call = await createCallForLeadService({
@@ -71,17 +60,10 @@ export const createCallForLead = async (req, res, next) => {
       duration,
     });
     if (!call) {
-      return res.status(400).json({
-        success: false,
-        message: "Failed to create call",
-      });
+      throw new AppError("Failed to create call", 400);
     }
 
-    res.status(201).json({
-      success: true,
-      message: "Call created successfully",
-      data: { call },
-    });
+    sendSuccess(res, 201, "Call created successfully", { call });
   } catch (error) {
     next(error);
   }

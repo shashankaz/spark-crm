@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import { Lead } from "../models/lead.model.js";
 import { Deal } from "../models/deal.model.js";
 import { Organization } from "../models/organization.model.js";
-import { AppError } from "../utils/app-error.js";
+import { AppError } from "../shared/app-error.js";
 import { calculateLeadScore } from "../utils/calculate-score.js";
 import { createLeadActionHistoryService } from "./lead-action-history.service.js";
 import { LeadActionHistory } from "../models/lead-action-history.model.js";

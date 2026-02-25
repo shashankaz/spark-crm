@@ -2,15 +2,14 @@ import {
   fetchCommentsByLeadService,
   createCommentForLeadService,
 } from "../services/comment.service.js";
+import { AppError } from "../shared/app-error.js";
+import { sendSuccess } from "../shared/api-response.js";
 
 export const getAllCommentsByLeadId = async (req, res, next) => {
   try {
     const { leadId } = req.params;
     if (!leadId) {
-      return res.status(400).json({
-        success: false,
-        message: "Lead ID is required",
-      });
+      throw new AppError("Lead ID is required", 400);
     }
 
     const cursor = req.query.cursor;
@@ -24,10 +23,9 @@ export const getAllCommentsByLeadId = async (req, res, next) => {
       search,
     });
 
-    res.json({
-      success: true,
-      message: "Comments retrieved successfully",
-      data: { comments, totalCount },
+    sendSuccess(res, 200, "Comments retrieved successfully", {
+      comments,
+      totalCount,
     });
   } catch (error) {
     next(error);
@@ -38,26 +36,17 @@ export const createCommentForLead = async (req, res, next) => {
   try {
     const { leadId } = req.params;
     if (!leadId) {
-      return res.status(400).json({
-        success: false,
-        message: "Lead ID is required",
-      });
+      throw new AppError("Lead ID is required", 400);
     }
 
     const { tenantId, _id: userId, firstName: userName } = req.user;
     if (!tenantId) {
-      return res.status(400).json({
-        success: false,
-        message: "Tenant ID is missing in user data",
-      });
+      throw new AppError("Tenant ID is missing in user data", 400);
     }
 
     const { comment } = req.body;
     if (!comment) {
-      return res.status(400).json({
-        success: false,
-        message: "Comment is required",
-      });
+      throw new AppError("Comment is required", 400);
     }
 
     const newComment = await createCommentForLeadService({
@@ -68,16 +57,11 @@ export const createCommentForLead = async (req, res, next) => {
       comment,
     });
     if (!newComment) {
-      return res.status(400).json({
-        success: false,
-        message: "Failed to create comment",
-      });
+      throw new AppError("Failed to create comment", 400);
     }
 
-    res.status(201).json({
-      success: true,
-      message: "Comment created successfully",
-      data: { comment: newComment },
+    sendSuccess(res, 201, "Comment created successfully", {
+      comment: newComment,
     });
   } catch (error) {
     next(error);

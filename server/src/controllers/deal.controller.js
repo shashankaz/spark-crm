@@ -1,13 +1,15 @@
-import { fetchDealsService } from "../services/deal.service.js";
+import {
+  fetchDealsService,
+  deleteDealByIdService,
+} from "../services/deal.service.js";
+import { AppError } from "../shared/app-error.js";
+import { sendSuccess } from "../shared/api-response.js";
 
 export const getAllDeals = async (req, res, next) => {
   try {
     const { tenantId } = req.user;
     if (!tenantId) {
-      return res.status(400).json({
-        success: false,
-        message: "Tenant ID is missing in user data",
-      });
+      throw new AppError("Tenant ID is missing in user data", 400);
     }
 
     const cursor = req.query.cursor;
@@ -21,10 +23,9 @@ export const getAllDeals = async (req, res, next) => {
       search,
     });
 
-    res.json({
-      success: true,
-      message: "Deals retrieved successfully",
-      data: { deals, totalCount },
+    sendSuccess(res, 200, "Deals retrieved successfully", {
+      deals,
+      totalCount,
     });
   } catch (error) {
     next(error);
@@ -35,18 +36,12 @@ export const deleteDealById = async (req, res, next) => {
   try {
     const { tenantId } = req.user;
     if (!tenantId) {
-      return res.status(400).json({
-        success: false,
-        message: "Tenant ID is missing in user data",
-      });
+      throw new AppError("Tenant ID is missing in user data", 400);
     }
 
     const { id } = req.params;
     if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "Deal ID is required",
-      });
+      throw new AppError("Deal ID is required", 400);
     }
 
     const deleted = await deleteDealByIdService({
@@ -54,17 +49,10 @@ export const deleteDealById = async (req, res, next) => {
       tenantId,
     });
     if (!deleted) {
-      return res.status(404).json({
-        success: false,
-        message: "Deal not found",
-      });
+      throw new AppError("Deal not found", 404);
     }
 
-    res.json({
-      success: true,
-      message: "Deal deleted successfully",
-      data: { id },
-    });
+    sendSuccess(res, 200, "Deal deleted successfully", { id });
   } catch (error) {
     next(error);
   }

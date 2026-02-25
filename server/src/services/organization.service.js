@@ -1,6 +1,6 @@
 import { formatDate } from "date-fns";
 import { Organization } from "../models/organization.model.js";
-import { AppError } from "../utils/app-error.js";
+import { AppError } from "../shared/app-error.js";
 
 export const fetchOrganizationsService = async ({
   tenantId,

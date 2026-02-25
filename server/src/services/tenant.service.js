@@ -4,7 +4,7 @@ import { formatDate } from "date-fns";
 import { Tenant } from "../models/tenant.model.js";
 import { User } from "../models/user.model.js";
 import { hashPassword } from "../utils/auth/bcrypt.js";
-import { AppError } from "../utils/app-error.js";
+import { AppError } from "../shared/app-error.js";
 import { PLAN_PRICES } from "../utils/plans.js";
 import { WorkerService } from "./worker.service.js";
 

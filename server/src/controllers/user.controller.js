@@ -5,15 +5,14 @@ import {
   updateUserService,
   removeUserService,
 } from "../services/user.service.js";
+import { AppError } from "../shared/app-error.js";
+import { sendSuccess } from "../shared/api-response.js";
 
 export const getAllUsers = async (req, res, next) => {
   try {
     const { tenantId } = req.user;
     if (!tenantId) {
-      return res.status(400).json({
-        success: false,
-        message: "Tenant ID is missing in user data",
-      });
+      throw new AppError("Tenant ID is missing in user data", 400);
     }
 
     const cursor = req.query.cursor;
@@ -27,10 +26,9 @@ export const getAllUsers = async (req, res, next) => {
       search,
     });
 
-    res.json({
-      success: true,
-      message: "Users retrieved successfully",
-      data: { users, totalCount },
+    sendSuccess(res, 200, "Users retrieved successfully", {
+      users,
+      totalCount,
     });
   } catch (error) {
     next(error);
@@ -41,33 +39,20 @@ export const getUserById = async (req, res, next) => {
   try {
     const { tenantId } = req.user;
     if (!tenantId) {
-      return res.status(400).json({
-        success: false,
-        message: "Tenant ID is missing in user data",
-      });
+      throw new AppError("Tenant ID is missing in user data", 400);
     }
 
     const { id } = req.params;
     if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "User ID is required",
-      });
+      throw new AppError("User ID is required", 400);
     }
 
     const user = await fetchUserByIdService({ tenantId, id });
     if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
+      throw new AppError("User not found", 404);
     }
 
-    res.json({
-      success: true,
-      message: "User retrieved successfully",
-      data: { user },
-    });
+    sendSuccess(res, 200, "User retrieved successfully", { user });
   } catch (error) {
     next(error);
   }
@@ -77,18 +62,12 @@ export const createUser = async (req, res, next) => {
   try {
     const { tenantId } = req.user;
     if (!tenantId) {
-      return res.status(400).json({
-        success: false,
-        message: "Tenant ID is missing in user data",
-      });
+      throw new AppError("Tenant ID is missing in user data", 400);
     }
 
     const { firstName, lastName, email, mobile, password, role } = req.body;
     if (!firstName || !email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "First name, email, and password are required",
-      });
+      throw new AppError("First name, email, and password are required", 400);
     }
 
     const createdUser = await createUserService({
@@ -101,17 +80,10 @@ export const createUser = async (req, res, next) => {
       role,
     });
     if (!createdUser) {
-      return res.status(400).json({
-        success: false,
-        message: "Failed to create user",
-      });
+      throw new AppError("Failed to create user", 400);
     }
 
-    res.status(201).json({
-      success: true,
-      message: "User created successfully",
-      data: { createdUser },
-    });
+    sendSuccess(res, 201, "User created successfully", { createdUser });
   } catch (error) {
     next(error);
   }
@@ -121,27 +93,20 @@ export const updateUser = async (req, res, next) => {
   try {
     const { tenantId } = req.user;
     if (!tenantId) {
-      return res.status(400).json({
-        success: false,
-        message: "Tenant ID is missing in user data",
-      });
+      throw new AppError("Tenant ID is missing in user data", 400);
     }
 
     const { id } = req.params;
     if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "User ID is required",
-      });
+      throw new AppError("User ID is required", 400);
     }
 
     const { firstName, lastName, email, mobile, password, role } = req.body;
     if (!firstName && !email && !mobile && !password && !role) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "At least one field (first name, email, mobile, password, or role) is required to update",
-      });
+      throw new AppError(
+        "At least one field (first name, email, mobile, password, or role) is required to update",
+        400,
+      );
     }
 
     const updatedUser = await updateUserService({
@@ -155,17 +120,10 @@ export const updateUser = async (req, res, next) => {
       role,
     });
     if (!updatedUser) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
+      throw new AppError("User not found", 404);
     }
 
-    res.json({
-      success: true,
-      message: "User updated successfully",
-      data: { updatedUser },
-    });
+    sendSuccess(res, 200, "User updated successfully", { updatedUser });
   } catch (error) {
     next(error);
   }
@@ -176,33 +134,20 @@ export const deleteUser = async (req, res, next) => {
     const { tenantId } = req.user;
 
     if (!tenantId) {
-      return res.status(400).json({
-        success: false,
-        message: "Tenant ID is missing in user data",
-      });
+      throw new AppError("Tenant ID is missing in user data", 400);
     }
 
     const { id } = req.params;
     if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "User ID is required",
-      });
+      throw new AppError("User ID is required", 400);
     }
 
     const deletedUser = await removeUserService({ tenantId, id });
     if (!deletedUser) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
+      throw new AppError("User not found", 404);
     }
 
-    res.json({
-      success: true,
-      message: "User deleted successfully",
-      data: { id },
-    });
+    sendSuccess(res, 200, "User deleted successfully", { id });
   } catch (error) {
     next(error);
   }

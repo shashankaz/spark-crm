@@ -9,15 +9,14 @@ import {
   convertLeadToDealService,
   fetchLeadActivityByLeadIdService,
 } from "../services/lead.service.js";
+import { AppError } from "../shared/app-error.js";
+import { sendSuccess } from "../shared/api-response.js";
 
 export const getAllLeads = async (req, res, next) => {
   try {
     const { tenantId } = req.user;
     if (!tenantId) {
-      return res.status(400).json({
-        success: false,
-        message: "Tenant ID is missing in user data",
-      });
+      throw new AppError("Tenant ID is missing in user data", 400);
     }
 
     const cursor = req.query.cursor;
@@ -31,10 +30,9 @@ export const getAllLeads = async (req, res, next) => {
       search,
     });
 
-    res.json({
-      success: true,
-      message: "Leads retrieved successfully",
-      data: { leads, totalCount },
+    sendSuccess(res, 200, "Leads retrieved successfully", {
+      leads,
+      totalCount,
     });
   } catch (error) {
     next(error);
@@ -45,33 +43,20 @@ export const getLeadById = async (req, res, next) => {
   try {
     const { tenantId } = req.user;
     if (!tenantId) {
-      return res.status(400).json({
-        success: false,
-        message: "Tenant ID is missing in user data",
-      });
+      throw new AppError("Tenant ID is missing in user data", 400);
     }
 
     const { id } = req.params;
     if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "Lead ID is required",
-      });
+      throw new AppError("Lead ID is required", 400);
     }
 
     const lead = await fetchLeadByIdService({ id, tenantId });
     if (!lead) {
-      return res.status(404).json({
-        success: false,
-        message: "Lead not found",
-      });
+      throw new AppError("Lead not found", 404);
     }
 
-    res.json({
-      success: true,
-      message: "Lead retrieved successfully",
-      data: { lead },
-    });
+    sendSuccess(res, 200, "Lead retrieved successfully", { lead });
   } catch (error) {
     next(error);
   }
@@ -81,10 +66,7 @@ export const createLead = async (req, res, next) => {
   try {
     const { tenantId } = req.user;
     if (!tenantId) {
-      return res.status(400).json({
-        success: false,
-        message: "Tenant ID is missing in user data",
-      });
+      throw new AppError("Tenant ID is missing in user data", 400);
     }
 
     const {
@@ -99,11 +81,10 @@ export const createLead = async (req, res, next) => {
       source,
     } = req.body;
     if (!idempotentId || !tenantId || !orgId || !orgName) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Idempotent ID, Tenant ID, Organization ID, and Organization Name are required",
-      });
+      throw new AppError(
+        "Idempotent ID, Tenant ID, Organization ID, and Organization Name are required",
+        400,
+      );
     }
 
     const lead = await createLeadService({
@@ -121,17 +102,10 @@ export const createLead = async (req, res, next) => {
       source,
     });
     if (!lead) {
-      return res.status(400).json({
-        success: false,
-        message: "Failed to create lead",
-      });
+      throw new AppError("Failed to create lead", 400);
     }
 
-    res.status(201).json({
-      success: true,
-      message: "Lead created successfully",
-      data: { lead },
-    });
+    sendSuccess(res, 201, "Lead created successfully", { lead });
   } catch (error) {
     next(error);
   }
@@ -141,18 +115,12 @@ export const updateLeadById = async (req, res, next) => {
   try {
     const { tenantId } = req.user;
     if (!tenantId) {
-      return res.status(400).json({
-        success: false,
-        message: "Tenant ID is missing in user data",
-      });
+      throw new AppError("Tenant ID is missing in user data", 400);
     }
 
     const { id } = req.params;
     if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "Lead ID is required",
-      });
+      throw new AppError("Lead ID is required", 400);
     }
 
     const {
@@ -183,17 +151,10 @@ export const updateLeadById = async (req, res, next) => {
       status,
     });
     if (!updatedLead) {
-      return res.status(404).json({
-        success: false,
-        message: "Lead not found or failed to update",
-      });
+      throw new AppError("Lead not found or failed to update", 404);
     }
 
-    res.json({
-      success: true,
-      message: "Lead updated successfully",
-      data: { updatedLead },
-    });
+    sendSuccess(res, 200, "Lead updated successfully", { updatedLead });
   } catch (error) {
     next(error);
   }
@@ -203,18 +164,12 @@ export const deleteLeadById = async (req, res, next) => {
   try {
     const { tenantId } = req.user;
     if (!tenantId) {
-      return res.status(400).json({
-        success: false,
-        message: "Tenant ID is missing in user data",
-      });
+      throw new AppError("Tenant ID is missing in user data", 400);
     }
 
     const { id } = req.params;
     if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "Lead ID is required",
-      });
+      throw new AppError("Lead ID is required", 400);
     }
 
     const deleted = await deleteLeadByIdService({
@@ -224,17 +179,10 @@ export const deleteLeadById = async (req, res, next) => {
       userName: req.user.firstName,
     });
     if (!deleted) {
-      return res.status(404).json({
-        success: false,
-        message: "Lead not found",
-      });
+      throw new AppError("Lead not found", 404);
     }
 
-    res.json({
-      success: true,
-      message: "Lead deleted successfully",
-      data: { id },
-    });
+    sendSuccess(res, 200, "Lead deleted successfully", { id });
   } catch (error) {
     next(error);
   }
@@ -244,27 +192,22 @@ export const bulkWriteLeads = async (req, res, next) => {
   try {
     const { tenantId } = req.user;
     if (!tenantId) {
-      return res.status(400).json({
-        success: false,
-        message: "Tenant ID is missing in user data",
-      });
+      throw new AppError("Tenant ID is missing in user data", 400);
     }
 
     const { leads } = req.body;
     if (!Array.isArray(leads) || leads.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: "leads must be a non-empty array",
-      });
+      throw new AppError("leads must be a non-empty array", 400);
     }
 
     const result = await bulkWriteLeadsService({ tenantId, leads });
 
-    res.status(201).json({
-      success: true,
-      message: `${result.insertedCount} lead(s) created successfully`,
-      data: { insertedCount: result.insertedCount },
-    });
+    sendSuccess(
+      res,
+      201,
+      `${result.insertedCount} lead(s) created successfully`,
+      { insertedCount: result.insertedCount },
+    );
   } catch (error) {
     next(error);
   }
@@ -274,26 +217,17 @@ export const convertLeadToDeal = async (req, res, next) => {
   try {
     const { tenantId } = req.user;
     if (!tenantId) {
-      return res.status(400).json({
-        success: false,
-        message: "Tenant ID is missing in user data",
-      });
+      throw new AppError("Tenant ID is missing in user data", 400);
     }
 
     const { id } = req.params;
     if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "Lead ID is required",
-      });
+      throw new AppError("Lead ID is required", 400);
     }
 
     const { idempotentId, dealName, value, probability } = req.body;
     if (!idempotentId) {
-      return res.status(400).json({
-        success: false,
-        message: "Idempotent ID is required for deal creation",
-      });
+      throw new AppError("Idempotent ID is required for deal creation", 400);
     }
 
     const { deal } = await convertLeadToDealService({
@@ -307,11 +241,7 @@ export const convertLeadToDeal = async (req, res, next) => {
       probability,
     });
 
-    res.status(201).json({
-      success: true,
-      message: "Lead converted to deal successfully",
-      data: { deal },
-    });
+    sendSuccess(res, 201, "Lead converted to deal successfully", { deal });
   } catch (error) {
     next(error);
   }
@@ -321,10 +251,7 @@ export const getAllOrganizations = async (req, res, next) => {
   try {
     const { tenantId } = req.user;
     if (!tenantId) {
-      return res.status(400).json({
-        success: false,
-        message: "Tenant ID is missing in user data",
-      });
+      throw new AppError("Tenant ID is missing in user data", 400);
     }
 
     const limit = Number(req.query.limit) || 10;
@@ -336,10 +263,8 @@ export const getAllOrganizations = async (req, res, next) => {
       search,
     });
 
-    res.json({
-      success: true,
-      message: "Organizations retrieved successfully",
-      data: { organizations },
+    sendSuccess(res, 200, "Organizations retrieved successfully", {
+      organizations,
     });
   } catch (error) {
     next(error);
@@ -350,20 +275,15 @@ export const getLeadActivityByLeadId = async (req, res, next) => {
   try {
     const { id } = req.params;
     if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "Lead ID is required",
-      });
+      throw new AppError("Lead ID is required", 400);
     }
 
     const activities = await fetchLeadActivityByLeadIdService({
       leadId: id,
     });
 
-    res.json({
-      success: true,
-      message: "Lead activities retrieved successfully",
-      data: { activities },
+    sendSuccess(res, 200, "Lead activities retrieved successfully", {
+      activities,
     });
   } catch (error) {
     next(error);

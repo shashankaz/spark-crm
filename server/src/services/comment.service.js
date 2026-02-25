@@ -1,6 +1,6 @@
 import { Comment } from "../models/comment.model.js";
 import { Lead } from "../models/lead.model.js";
-import { AppError } from "../utils/app-error.js";
+import { AppError } from "../shared/app-error.js";
 import { createLeadActionHistoryService } from "./lead-action-history.service.js";
 
 export const fetchCommentsByLeadService = async ({

@@ -8,14 +8,14 @@ import {
   changePasswordService,
 } from "../services/auth.service.js";
 import { isProduction } from "../config/env.js";
+import { AppError } from "../shared/app-error.js";
+import { sendSuccess } from "../shared/api-response.js";
 
 export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Email and password are required" });
+      throw new AppError("Email and password are required", 400);
     }
 
     const { accessToken, refreshToken, user } = await loginService({
@@ -37,11 +37,7 @@ export const login = async (req, res, next) => {
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
     });
 
-    res.json({
-      success: true,
-      message: "Login successful",
-      data: { user },
-    });
+    sendSuccess(res, 200, "Login successful", { user });
   } catch (error) {
     next(error);
   }
@@ -51,9 +47,7 @@ export const refreshToken = async (req, res, next) => {
   try {
     const rt = req.cookies["__auth_rt"];
     if (!rt) {
-      return res
-        .status(401)
-        .json({ success: false, message: "Refresh token missing" });
+      throw new AppError("Refresh token is missing", 401);
     }
 
     const { accessToken, refreshToken } = await refreshAuthTokenService({
@@ -74,10 +68,7 @@ export const refreshToken = async (req, res, next) => {
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
 
-    res.json({
-      success: true,
-      message: "Token refreshed successfully",
-    });
+    sendSuccess(res, 200, "Token refreshed successfully", {});
   } catch (error) {
     next(error);
   }
@@ -90,7 +81,7 @@ export const logout = async (req, res, next) => {
     res.clearCookie("__auth_at");
     res.clearCookie("__auth_rt");
 
-    res.json({ success: true, message: "Logout successful" });
+    sendSuccess(res, 200, "Logout successful", {});
   } catch (error) {
     next(error);
   }
@@ -100,11 +91,7 @@ export const getProfile = async (req, res, next) => {
   try {
     const user = await getUserProfileService({ id: req.user._id });
 
-    res.json({
-      success: true,
-      message: "Profile retrieved successfully",
-      data: { user },
-    });
+    sendSuccess(res, 200, "Profile retrieved successfully", { user });
   } catch (error) {
     next(error);
   }
@@ -114,11 +101,7 @@ export const getSessions = async (req, res, next) => {
   try {
     const sessions = await getUserSessionsService({ id: req.user._id });
 
-    res.json({
-      success: true,
-      message: "Sessions retrieved successfully",
-      data: { sessions },
-    });
+    sendSuccess(res, 200, "Sessions retrieved successfully", { sessions });
   } catch (error) {
     next(error);
   }
@@ -128,11 +111,10 @@ export const editProfile = async (req, res, next) => {
   try {
     const { firstName, lastName, mobile } = req.body;
     if (!firstName && !lastName && !mobile) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "At least one field (firstName, lastName, or mobile) is required",
-      });
+      throw new AppError(
+        "At least one field (firstName, lastName, or mobile) is required",
+        400,
+      );
     }
 
     const updatedUser = await editProfileService({
@@ -142,10 +124,8 @@ export const editProfile = async (req, res, next) => {
       mobile,
     });
 
-    res.json({
-      success: true,
-      message: "Profile updated successfully",
-      data: { user: updatedUser },
+    sendSuccess(res, 200, "Profile updated successfully", {
+      user: updatedUser,
     });
   } catch (error) {
     next(error);
@@ -156,17 +136,14 @@ export const changePassword = async (req, res, next) => {
   try {
     const { currentPassword, newPassword } = req.body;
     if (!currentPassword || !newPassword) {
-      return res.status(400).json({
-        success: false,
-        message: "Current password and new password are required",
-      });
+      throw new AppError("Current password and new password are required", 400);
     }
 
     if (currentPassword === newPassword) {
-      return res.status(400).json({
-        success: false,
-        message: "New password must be different from current password",
-      });
+      throw new AppError(
+        "New password must be different from current password",
+        400,
+      );
     }
 
     await changePasswordService({
@@ -175,10 +152,7 @@ export const changePassword = async (req, res, next) => {
       newPassword,
     });
 
-    res.json({
-      success: true,
-      message: "Password changed successfully",
-    });
+    sendSuccess(res, 200, "Password changed successfully", {});
   } catch (error) {
     next(error);
   }

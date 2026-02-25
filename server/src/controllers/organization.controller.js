@@ -5,15 +5,14 @@ import {
   updateOrganizationByIdService,
   deleteOrganizationByIdService,
 } from "../services/organization.service.js";
+import { AppError } from "../shared/app-error.js";
+import { sendSuccess } from "../shared/api-response.js";
 
 export const getAllOrganizations = async (req, res, next) => {
   try {
     const { tenantId } = req.user;
     if (!tenantId) {
-      return res.status(400).json({
-        success: false,
-        message: "Tenant ID is missing in user data",
-      });
+      throw new AppError("Tenant ID is missing in user data", 400);
     }
 
     const cursor = req.query.cursor;
@@ -27,10 +26,9 @@ export const getAllOrganizations = async (req, res, next) => {
       search,
     });
 
-    res.json({
-      success: true,
-      message: "Organizations retrieved successfully",
-      data: { organizations, totalCount },
+    sendSuccess(res, 200, "Organizations retrieved successfully", {
+      organizations,
+      totalCount,
     });
   } catch (error) {
     next(error);
@@ -41,32 +39,21 @@ export const getOrganizationById = async (req, res, next) => {
   try {
     const { tenantId } = req.user;
     if (!tenantId) {
-      return res.status(400).json({
-        success: false,
-        message: "Tenant ID is missing in user data",
-      });
+      throw new AppError("Tenant ID is missing in user data", 400);
     }
 
     const { id } = req.params;
     if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "Organization ID is required",
-      });
+      throw new AppError("Organization ID is required", 400);
     }
 
     const organization = await fetchOrganizationByIdService({ id, tenantId });
     if (!organization) {
-      return res.status(404).json({
-        success: false,
-        message: "Organization not found",
-      });
+      throw new AppError("Organization not found", 404);
     }
 
-    res.json({
-      success: true,
-      message: "Organization retrieved successfully",
-      data: { organization },
+    sendSuccess(res, 200, "Organization retrieved successfully", {
+      organization,
     });
   } catch (error) {
     next(error);
@@ -77,10 +64,7 @@ export const createOrganization = async (req, res, next) => {
   try {
     const { tenantId } = req.user;
     if (!tenantId) {
-      return res.status(400).json({
-        success: false,
-        message: "Tenant ID is missing in user data",
-      });
+      throw new AppError("Tenant ID is missing in user data", 400);
     }
 
     const {
@@ -98,11 +82,10 @@ export const createOrganization = async (req, res, next) => {
     } = req.body;
 
     if (!idempotentId || !name || !industry || !size || !country) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Idempotent ID, Organization Name, Industry, Size, and Country are required",
-      });
+      throw new AppError(
+        "Idempotent ID, Organization Name, Industry, Size, and Country are required",
+        400,
+      );
     }
 
     const organization = await createOrganizationService({
@@ -121,16 +104,11 @@ export const createOrganization = async (req, res, next) => {
       contactMobile,
     });
     if (!organization) {
-      return res.status(400).json({
-        success: false,
-        message: "Failed to create organization",
-      });
+      throw new AppError("Failed to create organization", 400);
     }
 
-    res.status(201).json({
-      success: true,
-      message: "Organization created successfully",
-      data: { organization },
+    sendSuccess(res, 201, "Organization created successfully", {
+      organization,
     });
   } catch (error) {
     next(error);
@@ -141,18 +119,12 @@ export const updateOrganizationById = async (req, res, next) => {
   try {
     const { tenantId } = req.user;
     if (!tenantId) {
-      return res.status(400).json({
-        success: false,
-        message: "Tenant ID is missing in user data",
-      });
+      throw new AppError("Tenant ID is missing in user data", 400);
     }
 
     const { id } = req.params;
     if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "Organization ID is required",
-      });
+      throw new AppError("Organization ID is required", 400);
     }
 
     const {
@@ -184,16 +156,11 @@ export const updateOrganizationById = async (req, res, next) => {
       contactMobile,
     });
     if (!updatedOrganization) {
-      return res.status(404).json({
-        success: false,
-        message: "Organization not found or failed to update",
-      });
+      throw new AppError("Organization not found or failed to update", 404);
     }
 
-    res.json({
-      success: true,
-      message: "Organization updated successfully",
-      data: { updatedOrganization },
+    sendSuccess(res, 200, "Organization updated successfully", {
+      updatedOrganization,
     });
   } catch (error) {
     next(error);
@@ -204,33 +171,20 @@ export const deleteOrganizationById = async (req, res, next) => {
   try {
     const { tenantId } = req.user;
     if (!tenantId) {
-      return res.status(400).json({
-        success: false,
-        message: "Tenant ID is missing in user data",
-      });
+      throw new AppError("Tenant ID is missing in user data", 400);
     }
 
     const { id } = req.params;
     if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "Organization ID is required",
-      });
+      throw new AppError("Organization ID is required", 400);
     }
 
     const deleted = await deleteOrganizationByIdService({ id, tenantId });
     if (!deleted) {
-      return res.status(404).json({
-        success: false,
-        message: "Organization not found",
-      });
+      throw new AppError("Organization not found", 404);
     }
 
-    res.json({
-      success: true,
-      message: "Organization deleted successfully",
-      data: { id },
-    });
+    sendSuccess(res, 200, "Organization deleted successfully", { id });
   } catch (error) {
     next(error);
   }

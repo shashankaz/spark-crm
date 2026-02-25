@@ -1,7 +1,7 @@
 import { formatDate } from "date-fns";
 import { Session } from "../models/session.model.js";
 import { User } from "../models/user.model.js";
-import { AppError } from "../utils/app-error.js";
+import { AppError } from "../shared/app-error.js";
 import {
   hashPassword,
   hashRefreshToken,

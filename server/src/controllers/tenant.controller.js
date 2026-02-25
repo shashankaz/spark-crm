@@ -8,16 +8,18 @@ import {
   createUserForTenantService,
   fetchUsersByTenantIdService,
 } from "../services/tenant.service.js";
+import { AppError } from "../shared/app-error.js";
+import { sendSuccess } from "../shared/api-response.js";
 
 export const getTenantDashboardStats = async (req, res, next) => {
   try {
     const { stats, recentTenants, planDistribution } =
       await fetchTenantDashboardStatsService();
 
-    res.json({
-      success: true,
-      message: "Tenant dashboard stats retrieved successfully",
-      data: { stats, recentTenants, planDistribution },
+    sendSuccess(res, 200, "Tenant dashboard stats retrieved successfully", {
+      stats,
+      recentTenants,
+      planDistribution,
     });
   } catch (error) {
     next(error);
@@ -36,10 +38,9 @@ export const getAllTenants = async (req, res, next) => {
       search,
     });
 
-    res.json({
-      success: true,
-      message: "Tenants retrieved successfully",
-      data: { tenants, totalCount },
+    sendSuccess(res, 200, "Tenants retrieved successfully", {
+      tenants,
+      totalCount,
     });
   } catch (error) {
     next(error);
@@ -50,18 +51,14 @@ export const getTenantById = async (req, res, next) => {
   try {
     const { id } = req.params;
     if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "Tenant ID is required",
-      });
+      throw new AppError("Tenant ID is required", 400);
     }
 
     const { tenant, usersCount } = await fetchTenantByIdService({ id });
 
-    res.json({
-      success: true,
-      message: "Tenant retrieved successfully",
-      data: { tenant, usersCount },
+    sendSuccess(res, 200, "Tenant retrieved successfully", {
+      tenant,
+      usersCount,
     });
   } catch (error) {
     next(error);
@@ -72,19 +69,12 @@ export const getUsersByTenantId = async (req, res, next) => {
   try {
     const { id } = req.params;
     if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "Tenant ID is required",
-      });
+      throw new AppError("Tenant ID is required", 400);
     }
 
     const { users } = await fetchUsersByTenantIdService({ tenantId: id });
 
-    res.json({
-      success: true,
-      message: "Tenant users retrieved successfully",
-      data: { users },
-    });
+    sendSuccess(res, 200, "Tenant users retrieved successfully", { users });
   } catch (error) {
     next(error);
   }
@@ -95,10 +85,7 @@ export const createTenant = async (req, res, next) => {
     const { name, gstNumber, panNumber, email, mobile, address, plan } =
       req.body;
     if (!name || !email || !mobile || !plan) {
-      return res.status(400).json({
-        success: false,
-        message: "Name, Email, Mobile, and Plan are required",
-      });
+      throw new AppError("Name, Email, Mobile, and Plan are required", 400);
     }
 
     const tenant = await createTenantService({
@@ -111,16 +98,10 @@ export const createTenant = async (req, res, next) => {
       plan,
     });
     if (!tenant) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Failed to create tenant" });
+      throw new AppError("Failed to create tenant", 400);
     }
 
-    res.status(201).json({
-      success: true,
-      message: "Tenant created successfully",
-      data: { tenant },
-    });
+    sendSuccess(res, 201, "Tenant created successfully", { tenant });
   } catch (error) {
     next(error);
   }
@@ -130,20 +111,16 @@ export const updateTenantById = async (req, res, next) => {
   try {
     const { id } = req.params;
     if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "Tenant ID is required",
-      });
+      throw new AppError("Tenant ID is required", 400);
     }
 
     const { name, gstNumber, panNumber, email, mobile, address, plan } =
       req.body;
     if (!name && !email && !mobile) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "At least one field (name, email, mobile) is required to update",
-      });
+      throw new AppError(
+        "At least one field (name, email, mobile) is required to update",
+        400,
+      );
     }
 
     const updatedTenant = await updateTenantByIdService({
@@ -158,17 +135,10 @@ export const updateTenantById = async (req, res, next) => {
     });
 
     if (!updatedTenant) {
-      return res.status(404).json({
-        success: false,
-        message: "Tenant not found",
-      });
+      throw new AppError("Tenant not found", 404);
     }
 
-    res.json({
-      success: true,
-      message: "Tenant updated successfully",
-      data: { updatedTenant },
-    });
+    sendSuccess(res, 200, "Tenant updated successfully", { updatedTenant });
   } catch (error) {
     next(error);
   }
@@ -178,25 +148,15 @@ export const deleteTenantById = async (req, res, next) => {
   try {
     const { id } = req.params;
     if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "Tenant ID is required",
-      });
+      throw new AppError("Tenant ID is required", 400);
     }
 
     const deleted = await deleteTenantByIdService({ id });
     if (!deleted) {
-      return res.status(404).json({
-        success: false,
-        message: "Tenant not found",
-      });
+      throw new AppError("Tenant not found", 404);
     }
 
-    res.json({
-      success: true,
-      message: "Tenant deleted successfully",
-      data: { id },
-    });
+    sendSuccess(res, 200, "Tenant deleted successfully", { id });
   } catch (error) {
     next(error);
   }
@@ -206,18 +166,12 @@ export const createUserForTenant = async (req, res, next) => {
   try {
     const { id } = req.params;
     if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "Tenant ID is required",
-      });
+      throw new AppError("Tenant ID is required", 400);
     }
 
     const { name, email, mobile, password, role } = req.body;
     if (!name || !email || !password || !role) {
-      return res.status(400).json({
-        success: false,
-        message: "Name, Email, Password, and Role are required",
-      });
+      throw new AppError("Name, Email, Password, and Role are required", 400);
     }
 
     const user = await createUserForTenantService({
@@ -229,17 +183,10 @@ export const createUserForTenant = async (req, res, next) => {
       role,
     });
     if (!user) {
-      return res.status(400).json({
-        success: false,
-        message: "Failed to create user for tenant",
-      });
+      throw new AppError("Failed to create user for tenant", 400);
     }
 
-    res.json({
-      success: true,
-      message: "Tenant user created successfully",
-      data: { user },
-    });
+    sendSuccess(res, 200, "Tenant user created successfully", { user });
   } catch (error) {
     next(error);
   }

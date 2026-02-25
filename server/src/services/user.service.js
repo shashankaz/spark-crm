@@ -1,7 +1,7 @@
 import { formatDate } from "date-fns";
 import { User } from "../models/user.model.js";
 import { hashPassword } from "../utils/auth/bcrypt.js";
-import { AppError } from "../utils/app-error.js";
+import { AppError } from "../shared/app-error.js";
 
 export const fetchUsersService = async ({
   tenantId,
