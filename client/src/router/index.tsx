@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router";
 import { LoadingPage } from "@/components/shared/loading";
 
 import { ProtectedRoute } from "@/components/protected-route";
+import { CommandBox } from "@/components/shared/command-box";
 
 const LandingPage = lazy(() => import("@/pages/landing-page"));
 const Login = lazy(() => import("@/pages/auth/login"));
@@ -80,6 +81,8 @@ export const ReactRouter = () => {
 
           <Route path="*" element={<NotFound />} />
         </Routes>
+
+        <CommandBox />
       </Suspense>
     </Router>
   );
