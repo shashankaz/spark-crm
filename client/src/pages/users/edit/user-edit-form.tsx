@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { LoaderCircle } from "lucide-react";
 import toast from "react-hot-toast";
@@ -23,14 +22,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
-import { PasswordInput } from "@/components/shared/password-input";
-
-import { updateUser } from "@/api/services/user.service";
-
-import type { User } from "@/types";
-
 import { userEditSchema } from "./user-edit-form-scheme";
 import type { UserEditFormValues } from "./user-edit-form-scheme";
+
+import { PasswordInput } from "@/components/shared/password-input";
+
+import { useUpdateUser } from "@/hooks/use-user";
+
+import type { User } from "@/types";
 
 interface UserEditFormProps {
   user: User;
@@ -63,11 +62,11 @@ export const UserEditForm: React.FC<UserEditFormProps> = ({ user }) => {
     });
   }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const queryClient = useQueryClient();
+  const { mutate, isPending } = useUpdateUser();
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: (data: UserEditFormValues) =>
-      updateUser({
+  const onSubmit = (data: UserEditFormValues) => {
+    mutate(
+      {
         id: user._id,
         firstName: data.firstName,
         lastName: data.lastName,
@@ -75,19 +74,16 @@ export const UserEditForm: React.FC<UserEditFormProps> = ({ user }) => {
         mobile: data.mobile || undefined,
         password: data.newPassword || undefined,
         role: data.role,
-      }),
-    onSuccess: ({ message }) => {
-      toast.success(message);
-      queryClient.invalidateQueries({ queryKey: ["getUserById", user._id] });
-      queryClient.invalidateQueries({ queryKey: ["getAllUsers"] });
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-  });
-
-  const onSubmit = (data: UserEditFormValues) => {
-    mutate(data);
+      },
+      {
+        onSuccess: ({ message }) => {
+          toast.success(message);
+        },
+        onError: ({ message }) => {
+          toast.error(message);
+        },
+      },
+    );
   };
 
   return (

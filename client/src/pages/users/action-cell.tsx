@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { EllipsisVertical, Pencil, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -14,7 +13,8 @@ import {
 
 import { DeleteDialog } from "@/components/shared/dashboard/delete-dialog";
 
-import { deleteUser } from "@/api/services/user.service";
+import { useDeleteUser } from "@/hooks/use-user";
+
 import type { User } from "@/types";
 
 export const ActionCell = ({ user }: { user: User }) => {
@@ -22,21 +22,21 @@ export const ActionCell = ({ user }: { user: User }) => {
 
   const navigate = useNavigate();
 
-  const queryClient = useQueryClient();
+  const { mutate, isPending } = useDeleteUser();
 
-  const { mutate: handleDelete, isPending } = useMutation({
-    mutationFn: ({ id }: { id: string }) => deleteUser({ id }),
-    onSuccess: ({ message }) => {
-      toast.success(message);
-      queryClient.invalidateQueries({ queryKey: ["getAllUsers"] });
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-    onSettled: () => {
-      setDeleteOpen(false);
-    },
-  });
+  const deleteUser = ({ id }: { id: string }) => {
+    mutate(
+      { id },
+      {
+        onSuccess: ({ message }) => {
+          toast.success(message);
+        },
+        onError: ({ message }) => {
+          toast.error(message);
+        },
+      },
+    );
+  };
 
   return (
     <>
@@ -74,7 +74,7 @@ export const ActionCell = ({ user }: { user: User }) => {
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
         onConfirm={() => {
-          handleDelete({ id: user._id });
+          deleteUser({ id: user._id });
         }}
         placeholder="user"
       />

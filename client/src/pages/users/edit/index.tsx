@@ -7,24 +7,16 @@ import { Badge } from "@/components/ui/badge";
 import { UserEditForm } from "./user-edit-form";
 import { Heading } from "@/components/shared/typography/heading";
 import { Description } from "@/components/shared/typography/description";
-import { useQuery } from "@tanstack/react-query";
-import {
-  getUserById,
-  type GetUserByIdResponse,
-} from "@/api/services/user.service";
+
+import { useUserById } from "@/hooks/use-user";
 
 const UsersEditPage = () => {
   const { userId } = useParams<{ userId: string }>();
 
-  const { isPending, data } = useQuery<GetUserByIdResponse>({
-    queryKey: ["getUserById", userId],
-    queryFn: () => getUserById({ id: userId! }).then((response) => response),
-    enabled: !!userId,
-  });
+  const { data, isPending } = useUserById({ id: userId! });
+  const user = data?.user;
 
   if (isPending) return null;
-
-  const user = data?.user;
 
   if (!user) {
     return (

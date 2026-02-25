@@ -2,7 +2,6 @@ import { useState, useMemo } from "react";
 import { debounce } from "lodash";
 import { Helmet } from "react-helmet-async";
 import { Download, Plus } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -20,7 +19,7 @@ import { DataTable } from "@/components/shared/dashboard/data-table";
 import { Heading } from "@/components/shared/typography/heading";
 import { Description } from "@/components/shared/typography/description";
 
-import { getAllUsers } from "@/api/services/user.service";
+import { useUsers } from "@/hooks/use-user";
 
 import { exportUsersToExcel } from "@/utils/export/user";
 import type { User } from "@/types";
@@ -40,11 +39,8 @@ const UsersPage = () => {
     [],
   );
 
-  const { data: users = [], isPending } = useQuery<User[]>({
-    queryKey: ["getAllUsers"],
-    queryFn: () =>
-      getAllUsers({ search: debouncedSearch }).then((res) => res.users),
-  });
+  const { data, isPending } = useUsers({ search: debouncedSearch });
+  const users = data?.users || [];
 
   if (isPending) return <TableSkeleton />;
 

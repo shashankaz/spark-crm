@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { LoaderCircle } from "lucide-react";
 import toast from "react-hot-toast";
@@ -28,7 +27,7 @@ import { countriesFlag } from "@/utils/countries/countries-flag";
 import { tenantFormSchema } from "../tenant-form-schema";
 import type { TenantFormValues } from "../tenant-form-schema";
 
-import { updateTenantById } from "@/api/services/tenant.service";
+import { useUpdateTenant } from "@/hooks/use-tenant";
 
 import type { Tenant } from "@/types";
 
@@ -79,24 +78,20 @@ export const TenantEditForm: React.FC<TenantEditFormProps> = ({ tenant }) => {
     });
   }, [tenant]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const queryClient = useQueryClient();
-
-  const { mutate, isPending } = useMutation({
-    mutationFn: (data: TenantFormValues) =>
-      updateTenantById({ id: tenant._id, ...data }),
-    onSuccess: ({ message }) => {
-      toast.success(message);
-      queryClient.invalidateQueries({
-        queryKey: ["getTenantById", tenant._id],
-      });
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-  });
+  const { mutate, isPending } = useUpdateTenant();
 
   const onSubmit = (data: TenantFormValues) => {
-    mutate(data);
+    mutate(
+      { id: tenant._id, ...data },
+      {
+        onSuccess: ({ message }) => {
+          toast.success(message);
+        },
+        onError: ({ message }) => {
+          toast.error(message);
+        },
+      },
+    );
   };
 
   return (

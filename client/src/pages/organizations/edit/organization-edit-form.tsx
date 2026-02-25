@@ -3,7 +3,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { LoaderCircle } from "lucide-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -25,7 +24,7 @@ import {
 import { organizationFormSchema } from "../organization-form-schema";
 import type { OrganizationFormValues } from "../organization-form-schema";
 
-import { updateOrganizationById } from "@/api/services/organization.service";
+import { useUpdateOrganization } from "@/hooks/use-organization";
 
 import { countriesFlag } from "@/utils/countries/countries-flag";
 
@@ -38,8 +37,6 @@ interface OrganizationEditFormProps {
 export const OrganizationEditForm: React.FC<OrganizationEditFormProps> = ({
   organization,
 }) => {
-  const queryClient = useQueryClient();
-
   const form = useForm<OrganizationFormValues>({
     resolver: zodResolver(organizationFormSchema),
     mode: "onChange",
@@ -66,22 +63,20 @@ export const OrganizationEditForm: React.FC<OrganizationEditFormProps> = ({
     });
   }, [organization, form]);
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: (data: OrganizationFormValues) =>
-      updateOrganizationById({ id: organization._id, ...data }),
-    onSuccess: ({ message }) => {
-      toast.success(message);
-      queryClient.invalidateQueries({
-        queryKey: ["fetchOrganization", organization._id],
-      });
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-  });
+  const { mutate, isPending } = useUpdateOrganization();
 
   const onSubmit = (data: OrganizationFormValues) => {
-    mutate(data);
+    mutate(
+      { id: organization._id, ...data },
+      {
+        onSuccess: ({ message }) => {
+          toast.success(message);
+        },
+        onError: ({ message }) => {
+          toast.error(message);
+        },
+      },
+    );
   };
 
   return (

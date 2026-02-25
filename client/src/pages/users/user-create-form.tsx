@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { LoaderCircle } from "lucide-react";
 import toast from "react-hot-toast";
@@ -26,7 +25,7 @@ import { PasswordInput } from "@/components/shared/password-input";
 import { userFormSchema } from "./user-form-schema";
 import type { UserFormValues } from "./user-form-schema";
 
-import { createUser } from "@/api/services/user.service";
+import { useCreateUser } from "@/hooks/use-user";
 
 interface UserCreateFormProps {
   setOpen: (open: boolean) => void;
@@ -46,32 +45,31 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = ({ setOpen }) => {
     },
   });
 
-  const queryClient = useQueryClient();
-
-  const { mutate, isPending } = useMutation({
-    mutationFn: createUser,
-    onSuccess: ({ message }) => {
-      toast.success(message);
-      queryClient.invalidateQueries({ queryKey: ["getAllUsers"] });
-      form.reset();
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-    onSettled: () => {
-      setOpen(false);
-    },
-  });
+  const { mutate, isPending } = useCreateUser();
 
   const onSubmit = (data: UserFormValues) => {
-    mutate({
-      firstName: data.firstName,
-      lastName: data.lastName,
-      email: data.email,
-      mobile: data.mobile || undefined,
-      password: data.password,
-      role: data.role,
-    });
+    mutate(
+      {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        mobile: data.mobile || undefined,
+        password: data.password,
+        role: data.role,
+      },
+      {
+        onSuccess: ({ message }) => {
+          toast.success(message);
+          form.reset();
+        },
+        onError: ({ message }) => {
+          toast.error(message);
+        },
+        onSettled: () => {
+          setOpen(false);
+        },
+      },
+    );
   };
 
   return (
