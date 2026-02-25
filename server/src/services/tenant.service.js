@@ -1,4 +1,3 @@
-import { randomBytes } from "node:crypto";
 import mongoose from "mongoose";
 import { formatDate } from "date-fns";
 import { Tenant } from "../models/tenant.model.js";
@@ -6,56 +5,120 @@ import { User } from "../models/user.model.js";
 import { hashPassword } from "../utils/auth/bcrypt.js";
 import { AppError } from "../shared/app-error.js";
 import { PLAN_PRICES } from "../utils/plans.js";
-import { WorkerService } from "./worker.service.js";
+import { calcChange } from "../utils/stats-helper.js";
 
 export const fetchTenantDashboardStatsService = async () => {
   const now = new Date();
   const startOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-  const [
-    totalTenants,
-    tenantsLastMonth,
-    totalUsers,
-    usersLastMonth,
-    planCounts,
-    lastMonthPlanCounts,
-    recentTenantsRaw,
-  ] = await Promise.all([
-    Tenant.countDocuments({ isDeleted: false }),
-    Tenant.countDocuments({
-      isDeleted: false,
-      createdAt: { $lt: startOfThisMonth },
-    }),
-    User.countDocuments({ role: { $ne: "super_admin" } }),
-    User.countDocuments({
-      role: { $ne: "super_admin" },
-      createdAt: { $lt: startOfThisMonth },
-    }),
+  const [tenantAgg, userAgg] = await Promise.all([
     Tenant.aggregate([
       { $match: { isDeleted: false } },
-      { $group: { _id: "$plan", count: { $sum: 1 } } },
+      {
+        $facet: {
+          total: [{ $count: "count" }],
+          lastMonth: [
+            { $match: { createdAt: { $lt: startOfThisMonth } } },
+            { $count: "count" },
+          ],
+          planCounts: [{ $group: { _id: "$plan", count: { $sum: 1 } } }],
+          lastMonthPlanCounts: [
+            { $match: { createdAt: { $lt: startOfThisMonth } } },
+            { $group: { _id: "$plan", count: { $sum: 1 } } },
+          ],
+          recent: [
+            { $sort: { createdAt: -1 } },
+            { $limit: 5 },
+            {
+              $project: {
+                _id: 1,
+                name: 1,
+                email: 1,
+                plan: 1,
+                address: 1,
+                createdAt: 1,
+              },
+            },
+          ],
+        },
+      },
     ]),
-    Tenant.aggregate([
-      { $match: { isDeleted: false, createdAt: { $lt: startOfThisMonth } } },
-      { $group: { _id: "$plan", count: { $sum: 1 } } },
+    User.aggregate([
+      { $match: { role: { $ne: "super_admin" } } },
+      {
+        $facet: {
+          total: [{ $count: "count" }],
+          lastMonth: [
+            { $match: { createdAt: { $lt: startOfThisMonth } } },
+            { $count: "count" },
+          ],
+        },
+      },
     ]),
-    Tenant.find({ isDeleted: false })
-      .sort({ createdAt: -1 })
-      .limit(5)
-      .lean()
-      .exec(),
   ]);
 
-  return WorkerService.run("calcTenantDashboardStats", {
-    totalTenants,
-    tenantsLastMonth,
-    totalUsers,
-    usersLastMonth,
-    planCounts,
-    lastMonthPlanCounts,
-    recentTenantsRaw,
-    planPrices: PLAN_PRICES,
-  });
+  const totalTenants = tenantAgg[0].total[0]?.count ?? 0;
+  const tenantsLastMonth = tenantAgg[0].lastMonth[0]?.count ?? 0;
+  const planCounts = tenantAgg[0].planCounts;
+  const lastMonthPlanCounts = tenantAgg[0].lastMonthPlanCounts;
+  const totalUsers = userAgg[0].total[0]?.count ?? 0;
+  const usersLastMonth = userAgg[0].lastMonth[0]?.count ?? 0;
+
+  const currentRevenue = planCounts.reduce(
+    (sum, p) => sum + (PLAN_PRICES[p._id] || 0) * p.count,
+    0,
+  );
+  const lastMonthRevenue = lastMonthPlanCounts.reduce(
+    (sum, p) => sum + (PLAN_PRICES[p._id] || 0) * p.count,
+    0,
+  );
+
+  const paidPlans = planCounts
+    .filter((p) => p._id !== "free")
+    .reduce((sum, p) => sum + p.count, 0);
+  const lastMonthPaidPlans = lastMonthPlanCounts
+    .filter((p) => p._id !== "free")
+    .reduce((sum, p) => sum + p.count, 0);
+
+  const stats = {
+    totalTenants: {
+      value: totalTenants,
+      change: calcChange(totalTenants, tenantsLastMonth),
+      trend: totalTenants >= tenantsLastMonth ? "up" : "down",
+    },
+    totalUsers: {
+      value: totalUsers,
+      change: calcChange(totalUsers, usersLastMonth),
+      trend: totalUsers >= usersLastMonth ? "up" : "down",
+    },
+    monthlyRevenue: {
+      value: currentRevenue,
+      change: calcChange(currentRevenue, lastMonthRevenue),
+      trend: currentRevenue >= lastMonthRevenue ? "up" : "down",
+    },
+    paidPlans: {
+      value: paidPlans,
+      change: calcChange(paidPlans, lastMonthPaidPlans),
+      trend: paidPlans >= lastMonthPaidPlans ? "up" : "down",
+    },
+  };
+
+  const recentTenants = tenantAgg[0].recent.map((t) => ({
+    _id: t._id,
+    name: t.name,
+    email: t.email,
+    plan: t.plan,
+    city: t.address?.city || "",
+    country: t.address?.country || "",
+    createdAt: formatDate(new Date(t.createdAt), "yyyy-MM-dd"),
+  }));
+
+  const planDistribution = planCounts.map((p) => ({
+    plan: p._id,
+    count: p.count,
+  }));
+
+  return { stats, recentTenants, planDistribution };
 };
 
 export const fetchTenantsService = async ({ cursor, limit, search }) => {
