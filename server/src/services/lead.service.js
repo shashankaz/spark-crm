@@ -97,7 +97,7 @@ export const updateLeadByIdService = async ({
   tenantId,
   orgId,
   orgName,
-  dealId,
+  userId,
   userName,
   firstName,
   lastName,
