@@ -235,11 +235,16 @@ export const deleteTenantById = async ({
 
 export const getUsersByTenantId = async ({
   id,
+  search,
 }: {
   id: string;
+  search?: string;
 }): Promise<GetUsersByTenantIdResponse> => {
   try {
-    const response = await api.get(`/tenant/${id}/users`);
+    const query = buildQueryParams({ search });
+    const response = await api.get(
+      `/tenant/${id}/users${query ? `?${query}` : ""}`,
+    );
 
     const { message } = response.data;
     const { users } = response.data.data;

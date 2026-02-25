@@ -44,13 +44,15 @@ export const useTenant = ({ id }: { id: string }) => {
 export const useUsersByTenantId = ({
   id,
   enabled,
+  search,
 }: {
   id: string;
   enabled?: boolean;
+  search?: string;
 }) => {
   return useQuery({
-    queryKey: ["tenant", id, "users"],
-    queryFn: () => getUsersByTenantId({ id }),
+    queryKey: ["tenant", id, "users", search],
+    queryFn: () => getUsersByTenantId({ id, search }),
     enabled: enabled ?? !!id,
   });
 };
