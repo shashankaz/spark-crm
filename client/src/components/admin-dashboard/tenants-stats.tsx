@@ -91,12 +91,14 @@ export const TenantsStats = ({
                         className="border-b last:border-0 hover:bg-muted/50 transition-colors"
                       >
                         <td className="px-6 py-3">
-                          <p className="font-medium">{tenant.name}</p>
+                          <p className="font-medium truncate max-w-40">
+                            {tenant.name}
+                          </p>
                           <p className="text-xs text-muted-foreground">
                             {tenant.email}
                           </p>
                         </td>
-                        <td className="px-6 py-3 text-muted-foreground">
+                        <td className="px-6 py-3 text-muted-foreground truncate max-w-48">
                           {tenant.city}, {tenant.country}
                         </td>
                         <td className="px-6 py-3 text-right capitalize">
@@ -131,7 +133,9 @@ export const TenantsStats = ({
                 return (
                   <div key={item.plan} className="space-y-1">
                     <div className="flex items-center justify-between text-sm">
-                      <span className="font-medium capitalize">{item.plan}</span>
+                      <span className="font-medium capitalize">
+                        {item.plan}
+                      </span>
                       <span className="text-muted-foreground">
                         {item.count} <span className="text-xs">({pct}%)</span>
                       </span>

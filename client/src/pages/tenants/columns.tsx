@@ -35,6 +35,7 @@ export const columns: ColumnDef<Tenant>[] = [
   },
   {
     accessorKey: "name",
+    size: 160,
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -43,6 +44,9 @@ export const columns: ColumnDef<Tenant>[] = [
         Name
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
+    ),
+    cell: ({ row }) => (
+      <div className="truncate max-w-40">{row.getValue("name")}</div>
     ),
   },
   {
