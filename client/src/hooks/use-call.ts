@@ -1,8 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  getAllCallsByLeadId,
-  createCallForLead,
-} from "@/api/services/call.service";
+import { getAllCallsByLeadId, createCallForLead } from "@/api/services";
 
 export const useCalls = ({
   leadId,

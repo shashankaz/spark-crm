@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router";
 import { EllipsisVertical, LogOut, User } from "lucide-react";
 
-import { logout } from "@/api/services/auth.service";
+import { logout } from "@/api/services";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {

@@ -8,10 +8,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import type {
-  DashboardRecentLead,
-  DashboardRecentDeal,
-} from "@/api/services/dashboard.service";
+import type { DashboardRecentLead, DashboardRecentDeal } from "@/api/services";
 
 type Props = {
   recentLeads?: DashboardRecentLead[];

@@ -7,7 +7,7 @@ import {
   createUser,
   updateUser,
   deleteUser,
-} from "@/api/services/user.service";
+} from "@/api/services";
 
 export const useUser = () => {
   const context = useContext(UserContext);

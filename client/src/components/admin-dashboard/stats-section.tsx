@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import type { TenantDashboardStat } from "@/api/services/tenant.service";
+import type { TenantDashboardStat } from "@/api/services";
 
 type StatsData = {
   totalTenants: TenantDashboardStat;

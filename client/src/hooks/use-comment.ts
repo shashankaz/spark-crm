@@ -1,8 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  getAllCommentsByLeadId,
-  createCommentForLead,
-} from "@/api/services/comment.service";
+import { getAllCommentsByLeadId, createCommentForLead } from "@/api/services";
 
 export const useComments = ({
   leadId,

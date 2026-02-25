@@ -23,7 +23,7 @@ import {
 import { leadFormSchema } from "./lead-form-schema";
 import type { LeadFormValues } from "./lead-form-schema";
 
-import { useCreateLead, useOrganizations } from "@/hooks/use-lead";
+import { useCreateLead, useLeadOrganizations } from "@/hooks/use-lead";
 
 import { useUser } from "@/hooks/use-user";
 
@@ -48,7 +48,7 @@ export const LeadCreateForm: React.FC<LeadCreateFormProps> = ({ setOpen }) => {
 
   const { user } = useUser();
 
-  const { data } = useOrganizations({});
+  const { data } = useLeadOrganizations({});
   const organizations = data?.organizations ?? [];
 
   const { mutate, isPending } = useCreateLead();

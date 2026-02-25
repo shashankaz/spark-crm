@@ -7,7 +7,7 @@ import {
   getSessions,
   editProfile,
   changePassword,
-} from "@/api/services/auth.service";
+} from "@/api/services";
 
 export const useLogin = () => {
   const queryClient = useQueryClient();

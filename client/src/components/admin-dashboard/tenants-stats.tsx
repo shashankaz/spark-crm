@@ -13,7 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import type {
   TenantRecentTenant,
   TenantPlanDistribution,
-} from "@/api/services/tenant.service";
+} from "@/api/services";
 
 const planVariant: Record<
   string,

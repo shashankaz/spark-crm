@@ -6,10 +6,10 @@ import {
   createLead,
   updateLeadById,
   deleteLeadById,
-  getAllOrganizations,
+  getLeadOrganizations,
   getLeadActivityByLeadId,
   convertLeadToDeal,
-} from "@/api/services/lead.service";
+} from "@/api/services";
 
 export const useLeads = ({
   cursor,
@@ -77,7 +77,7 @@ export const useDeleteLead = () => {
   });
 };
 
-export const useOrganizations = ({
+export const useLeadOrganizations = ({
   limit = 10,
   search,
 }: {
@@ -88,7 +88,7 @@ export const useOrganizations = ({
 
   return useQuery({
     queryKey: ["lead-organizations", query],
-    queryFn: () => getAllOrganizations({ limit, search }),
+    queryFn: () => getLeadOrganizations({ limit, search }),
   });
 };
 

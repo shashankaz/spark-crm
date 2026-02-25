@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import type { DashboardStat } from "@/api/services/dashboard.service";
+import type { DashboardStat } from "@/api/services";
 
 type StatsData = {
   totalLeads: DashboardStat;

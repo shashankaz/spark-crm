@@ -19,6 +19,7 @@ import { loginFormSchema } from "./login-form-schema";
 import type { LoginFormValues } from "./login-form-schema";
 
 import { useLogin } from "@/hooks/use-auth";
+import { useUser } from "@/hooks/use-user";
 
 export const LoginForm = () => {
   const form = useForm<LoginFormValues>({
@@ -33,11 +34,13 @@ export const LoginForm = () => {
   const navigate = useNavigate();
 
   const { mutate, isPending } = useLogin();
+  const { setUser } = useUser();
 
   const onSubmit = (data: LoginFormValues) => {
     mutate(data, {
       onSuccess: ({ user, message }) => {
         toast.success(message);
+        setUser(user);
         if (user.role === "super_admin") navigate("/admin", { replace: true });
         else navigate("/dashboard", { replace: true });
       },

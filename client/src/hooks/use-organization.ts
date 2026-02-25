@@ -5,7 +5,7 @@ import {
   createOrganization,
   updateOrganizationById,
   deleteOrganizationById,
-} from "@/api/services/organization.service";
+} from "@/api/services";
 
 export const useOrganizations = ({
   cursor,

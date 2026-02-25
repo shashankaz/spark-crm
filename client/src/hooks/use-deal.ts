@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getAllDeals } from "@/api/services/deal.service";
+import { getAllDeals } from "@/api/services";
 
 export const useDeals = ({
   cursor,

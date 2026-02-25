@@ -8,7 +8,7 @@ import {
   updateTenantById,
   deleteTenantById,
   createUserForTenant,
-} from "@/api/services/tenant.service";
+} from "@/api/services";
 
 export const useTenantDashboardStats = () => {
   return useQuery({

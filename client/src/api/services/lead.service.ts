@@ -28,7 +28,7 @@ export type DeleteLeadResponse = {
   id: string;
 };
 
-export type GetAllOrganizationsResponse = {
+export type GetLeadOrganizationsResponse = {
   message: string;
   organizations: { _id: string; name: string }[];
 };
@@ -241,16 +241,18 @@ export const convertLeadToDeal = async ({
   }
 };
 
-export const getAllOrganizations = async ({
+export const getLeadOrganizations = async ({
   limit = 10,
   search,
 }: {
   limit?: number;
   search?: string;
-}): Promise<GetAllOrganizationsResponse> => {
+}): Promise<GetLeadOrganizationsResponse> => {
   try {
     const query = buildQueryParams({ limit, search });
-    const response = await api.get(`/lead/organizations${query ? `?${query}` : ""}`);
+    const response = await api.get(
+      `/lead/organizations${query ? `?${query}` : ""}`,
+    );
 
     const { message } = response.data;
     const { organizations } = response.data.data;

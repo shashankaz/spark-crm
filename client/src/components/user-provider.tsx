@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { UserContext } from "@/context/user-context";
 import type { User } from "@/types";
 
-import { getProfile } from "@/api/services/auth.service";
+import { getProfile } from "@/api/services";
 
 type UserProviderProps = {
   children: React.ReactNode;
