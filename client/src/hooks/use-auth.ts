@@ -43,6 +43,7 @@ export const useProfile = () => {
   return useQuery({
     queryKey: ["auth", "profile"],
     queryFn: getProfile,
+    retry: false,
   });
 };
 

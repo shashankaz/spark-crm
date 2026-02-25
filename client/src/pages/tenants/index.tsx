@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { debounce } from "lodash";
 import { Helmet } from "react-helmet-async";
 import { Download, Plus } from "lucide-react";
 
@@ -28,7 +29,18 @@ const TenantsPage = () => {
   const [open, setOpen] = useState(false);
   const [selectedTenants, setSelectedTenants] = useState<Tenant[]>([]);
 
-  const { data, isPending } = useTenants({});
+  const [searchInput, setSearchInput] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  const handleSearchChange = useMemo(
+    () =>
+      debounce((value: string) => {
+        setDebouncedSearch(value);
+      }, 500),
+    [],
+  );
+
+  const { data, isPending } = useTenants({ search: debouncedSearch });
   const tenants = data?.tenants ?? [];
 
   if (isPending) return <TableSkeleton />;
@@ -66,6 +78,11 @@ const TenantsPage = () => {
           columns={columns}
           data={tenants}
           placeholder="tenants"
+          search={searchInput}
+          onSearchChange={(value) => {
+            setSearchInput(value);
+            handleSearchChange(value);
+          }}
           onSelectionChange={(rows) => setSelectedTenants(rows as Tenant[])}
         />
 

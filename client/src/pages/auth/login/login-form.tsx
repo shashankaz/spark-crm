@@ -15,8 +15,6 @@ import { Button } from "@/components/ui/button";
 
 import { PasswordInput } from "@/components/shared/password-input";
 
-import { useUser } from "@/hooks/use-user";
-
 import { loginFormSchema } from "./login-form-schema";
 import type { LoginFormValues } from "./login-form-schema";
 
@@ -33,20 +31,20 @@ export const LoginForm = () => {
   });
 
   const navigate = useNavigate();
-  const { setUser } = useUser();
 
   const { mutate, isPending } = useLogin();
 
   const onSubmit = (data: LoginFormValues) => {
     mutate(data, {
       onSuccess: ({ user, message }) => {
-        setUser(user);
         toast.success(message);
         if (user.role === "super_admin") navigate("/admin", { replace: true });
         else navigate("/dashboard", { replace: true });
       },
       onError: ({ message }) => {
         toast.error(message);
+      },
+      onSettled: () => {
         form.reset();
       },
     });

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { debounce } from "lodash";
 import { useParams } from "react-router";
 import { Helmet } from "react-helmet-async";
 
@@ -26,10 +27,22 @@ const TenantsEditPage = () => {
   const [userDialogOpen, setUserDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("details");
 
+  const [searchInput, setSearchInput] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  const handleSearchChange = useMemo(
+    () =>
+      debounce((value: string) => {
+        setDebouncedSearch(value);
+      }, 500),
+    [],
+  );
+
   const { data, isPending } = useTenant({ id: tenantId! });
   const { data: usersData } = useUsersByTenantId({
     id: tenantId!,
     enabled: activeTab === "users",
+    search: debouncedSearch,
   });
 
   if (isPending) return null;
@@ -82,6 +95,11 @@ const TenantsEditPage = () => {
                 columns={userColumns}
                 data={users}
                 placeholder="users"
+                search={searchInput}
+                onSearchChange={(value) => {
+                  setSearchInput(value);
+                  handleSearchChange(value);
+                }}
               />
             </div>
           </TabsContent>

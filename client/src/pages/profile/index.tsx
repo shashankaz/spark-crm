@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { Helmet } from "react-helmet-async";
 import toast from "react-hot-toast";
@@ -25,12 +24,11 @@ import type {
   ChangePasswordValues,
 } from "./profile-form-schema";
 
-import { editProfile, changePassword } from "@/api/services/auth.service";
-
 import { useUser } from "@/hooks/use-user";
+import { useChangePassword, useEditProfile } from "@/hooks/use-auth";
 
 const ProfilePage = () => {
-  const { user, setUser } = useUser();
+  const { user } = useUser();
 
   const fullName = user
     ? `${user.firstName}${user.lastName ? " " + user.lastName : ""}`
@@ -56,41 +54,47 @@ const ProfilePage = () => {
     },
   });
 
-  const { mutate: mutateProfile, isPending: isProfilePending } = useMutation({
-    mutationFn: editProfile,
-    onSuccess: ({ message, user: updatedUser }) => {
-      toast.success(message);
-      setUser(updatedUser);
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-  });
-
-  const { mutate: mutatePassword, isPending: isPasswordPending } = useMutation({
-    mutationFn: changePassword,
-    onSuccess: ({ message }) => {
-      toast.success(message);
-      passwordForm.reset();
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-  });
-
-  const onEditProfileSubmit = (data: EditProfileValues) => {
-    mutateProfile({
-      firstName: data.firstName,
-      lastName: data.lastName,
-      mobile: data.mobile || undefined,
-    });
-  };
+  const { mutate: mutatePassword, isPending: isPasswordPending } =
+    useChangePassword();
+  const { mutate: mutateProfile, isPending: isProfilePending } =
+    useEditProfile();
 
   const onChangePasswordSubmit = (data: ChangePasswordValues) => {
-    mutatePassword({
-      currentPassword: data.currentPassword,
-      newPassword: data.newPassword,
-    });
+    mutatePassword(
+      {
+        currentPassword: data.currentPassword,
+        newPassword: data.newPassword,
+      },
+      {
+        onSuccess: ({ message }) => {
+          toast.success(message);
+        },
+        onError: ({ message }) => {
+          toast.error(message);
+        },
+        onSettled: () => {
+          passwordForm.reset();
+        },
+      },
+    );
+  };
+
+  const onEditProfileSubmit = (data: EditProfileValues) => {
+    mutateProfile(
+      {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        mobile: data.mobile || undefined,
+      },
+      {
+        onSuccess: ({ message }) => {
+          toast.success(message);
+        },
+        onError: ({ message }) => {
+          toast.error(message);
+        },
+      },
+    );
   };
 
   if (!user) return null;
