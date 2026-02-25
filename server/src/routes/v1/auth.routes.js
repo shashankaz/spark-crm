@@ -18,11 +18,14 @@ const router = Router();
 
 router.post("/login", loginLimiter, login);
 router.post("/refresh", refreshLimiter, refreshToken);
-router.post("/logout", requireAuth, logout);
 
-router.get("/profile", requireAuth, getProfile);
-router.patch("/profile", requireAuth, editProfile);
-router.get("/sessions", requireAuth, getSessions);
-router.post("/change-password", requireAuth, changePassword);
+router.use(requireAuth);
+
+router.post("/logout", logout);
+
+router.get("/profile", getProfile);
+router.patch("/profile", editProfile);
+router.get("/sessions", getSessions);
+router.post("/change-password", changePassword);
 
 export default router;

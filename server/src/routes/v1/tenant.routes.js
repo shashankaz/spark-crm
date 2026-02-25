@@ -14,20 +14,18 @@ import { requireSuperAdmin } from "../../middlewares/role.middleware.js";
 
 const router = Router();
 
-router.get(
-  "/dashboard",
-  requireAuth,
-  requireSuperAdmin,
-  getTenantDashboardStats,
-);
+router.use(requireAuth);
+router.use(requireSuperAdmin);
 
-router.get("/", requireAuth, requireSuperAdmin, getAllTenants);
-router.get("/:id", requireAuth, requireSuperAdmin, getTenantById);
-router.get("/:id/users", requireAuth, requireSuperAdmin, getUsersByTenantId);
-router.post("/", requireAuth, requireSuperAdmin, createTenant);
-router.patch("/:id", requireAuth, requireSuperAdmin, updateTenantById);
-router.delete("/:id", requireAuth, requireSuperAdmin, deleteTenantById);
+router.get("/dashboard", getTenantDashboardStats);
 
-router.post("/:id/user", requireAuth, requireSuperAdmin, createUserForTenant);
+router.get("/", getAllTenants);
+router.get("/:id", getTenantById);
+router.get("/:id/users", getUsersByTenantId);
+router.post("/", createTenant);
+router.patch("/:id", updateTenantById);
+router.delete("/:id", deleteTenantById);
+
+router.post("/:id/user", createUserForTenant);
 
 export default router;

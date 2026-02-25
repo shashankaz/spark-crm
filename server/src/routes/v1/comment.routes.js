@@ -7,7 +7,9 @@ import { requireAuth } from "../../middlewares/auth.middleware.js";
 
 const router = Router();
 
-router.get("/:leadId", requireAuth, getAllCommentsByLeadId);
-router.post("/:leadId", requireAuth, createCommentForLead);
+router.use(requireAuth);
+
+router.get("/:leadId", getAllCommentsByLeadId);
+router.post("/:leadId", createCommentForLead);
 
 export default router;

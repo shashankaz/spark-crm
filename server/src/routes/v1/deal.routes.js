@@ -1,10 +1,15 @@
 import { Router } from "express";
-import { deleteDealById, getAllDeals } from "../../controllers/deal.controller.js";
+import {
+  deleteDealById,
+  getAllDeals,
+} from "../../controllers/deal.controller.js";
 import { requireAuth } from "../../middlewares/auth.middleware.js";
 
 const router = Router();
 
-router.get("/", requireAuth, getAllDeals);
-router.delete("/:id", requireAuth, deleteDealById);
+router.use(requireAuth);
+
+router.get("/", getAllDeals);
+router.delete("/:id", deleteDealById);
 
 export default router;

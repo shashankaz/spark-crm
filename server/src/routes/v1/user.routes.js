@@ -10,10 +10,12 @@ import { requireAuth } from "../../middlewares/auth.middleware.js";
 
 const router = Router();
 
-router.get("/", requireAuth, getAllUsers);
-router.get("/:id", requireAuth, getUserById);
-router.post("/", requireAuth, createUser);
-router.patch("/:id", requireAuth, updateUser);
-router.delete("/:id", requireAuth, deleteUser);
+router.use(requireAuth);
+
+router.get("/", getAllUsers);
+router.get("/:id", getUserById);
+router.post("/", createUser);
+router.patch("/:id", updateUser);
+router.delete("/:id", deleteUser);
 
 export default router;

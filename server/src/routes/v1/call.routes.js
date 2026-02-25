@@ -7,7 +7,9 @@ import { requireAuth } from "../../middlewares/auth.middleware.js";
 
 const router = Router();
 
-router.get("/:leadId", requireAuth, getAllCallsByLeadId);
-router.post("/:leadId", requireAuth, createCallForLead);
+router.use(requireAuth);
+
+router.get("/:leadId", getAllCallsByLeadId);
+router.post("/:leadId", createCallForLead);
 
 export default router;
