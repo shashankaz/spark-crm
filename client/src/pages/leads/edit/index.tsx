@@ -41,15 +41,15 @@ import { CallLogCreateForm } from "./call-log-create-form";
 import { CommentCreateForm } from "./comment-create-form";
 import { getActivityStyle } from "./helper";
 
-import { useOrganizations } from "@/hooks/use-organization";
-import { useCalls } from "@/hooks/use-call";
-import { useComments } from "@/hooks/use-comment";
 import {
+  useOrganizations,
+  useCalls,
+  useComments,
   useConvertLeadToDeal,
   useLead,
   useLeadActivity,
   useUpdateLead,
-} from "@/hooks/use-lead";
+} from "@/hooks";
 
 import type { Lead, LeadStatus } from "@/types/domain/lead";
 

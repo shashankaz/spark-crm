@@ -26,9 +26,7 @@ import type { OrganizationFormValues } from "./organization-form-schema";
 
 import { countriesFlag } from "@/utils/countries/countries-flag";
 
-import { useCreateOrganization } from "@/hooks/use-organization";
-
-import { useUser } from "@/hooks/use-user";
+import { useCreateOrganization, useUser } from "@/hooks";
 
 interface OrganizationCreateFormProps {
   setOpen: (open: boolean) => void;

@@ -24,7 +24,7 @@ import {
 import { organizationFormSchema } from "../organization-form-schema";
 import type { OrganizationFormValues } from "../organization-form-schema";
 
-import { useUpdateOrganization } from "@/hooks/use-organization";
+import { useUpdateOrganization } from "@/hooks";
 
 import { countriesFlag } from "@/utils/countries/countries-flag";
 

@@ -27,7 +27,7 @@ import { countriesFlag } from "@/utils/countries/countries-flag";
 import { tenantFormSchema } from "../tenant-form-schema";
 import type { TenantFormValues } from "../tenant-form-schema";
 
-import { useUpdateTenant } from "@/hooks/use-tenant";
+import { useUpdateTenant } from "@/hooks";
 
 import type { Tenant } from "@/types";
 

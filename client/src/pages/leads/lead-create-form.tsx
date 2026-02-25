@@ -23,9 +23,7 @@ import {
 import { leadFormSchema } from "./lead-form-schema";
 import type { LeadFormValues } from "./lead-form-schema";
 
-import { useCreateLead, useLeadOrganizations } from "@/hooks/use-lead";
-
-import { useUser } from "@/hooks/use-user";
+import { useCreateLead, useLeadOrganizations, useUser } from "@/hooks";
 
 interface LeadCreateFormProps {
   setOpen: (open: boolean) => void;

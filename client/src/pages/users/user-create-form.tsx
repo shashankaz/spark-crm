@@ -25,7 +25,7 @@ import { PasswordInput } from "@/components/shared/password-input";
 import { userFormSchema } from "./user-form-schema";
 import type { UserFormValues } from "./user-form-schema";
 
-import { useCreateUser } from "@/hooks/use-user";
+import { useCreateUser } from "@/hooks";
 
 interface UserCreateFormProps {
   setOpen: (open: boolean) => void;

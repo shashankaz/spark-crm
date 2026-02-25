@@ -2,7 +2,7 @@ import { Navigate, Outlet } from "react-router";
 
 import { LoadingPage } from "@/components/shared/loading";
 
-import { useUser } from "@/hooks/use-user";
+import { useUser } from "@/hooks";
 
 import type { User } from "@/types";
 

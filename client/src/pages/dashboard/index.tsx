@@ -5,7 +5,7 @@ import { RecentLeadsDeals } from "@/components/dashboard/recent-leads-deals";
 import { Heading } from "@/components/shared/typography/heading";
 import { Description } from "@/components/shared/typography/description";
 
-import { useDashboardStats } from "@/hooks/use-dashboard";
+import { useDashboardStats } from "@/hooks";
 
 const DashboardPage = () => {
   const { data, isPending } = useDashboardStats();

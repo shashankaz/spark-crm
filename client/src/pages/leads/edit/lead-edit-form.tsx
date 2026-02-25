@@ -23,7 +23,7 @@ import {
 import { leadFormSchema } from "../lead-form-schema";
 import type { LeadFormValues } from "../lead-form-schema";
 
-import { useUpdateLead } from "@/hooks/use-lead";
+import { useUpdateLead } from "@/hooks";
 
 import type { Lead } from "@/types";
 

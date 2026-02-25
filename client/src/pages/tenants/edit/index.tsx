@@ -17,7 +17,7 @@ import { DataTable } from "@/components/shared/dashboard/data-table";
 
 import { UserCreateForm } from "@/pages/users/user-create-form";
 
-import { useTenant, useUsersByTenantId } from "@/hooks/use-tenant";
+import { useTenant, useUsersByTenantId } from "@/hooks";
 
 import { columns as userColumns } from "./columns";
 import { TenantEditForm } from "./tenant-edit-form";

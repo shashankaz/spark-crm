@@ -23,7 +23,7 @@ import {
 import { callLogFormSchema } from "./call-log-form-schema";
 import type { CallLogFormValues } from "./call-log-form-schema";
 
-import { useCreateCall } from "@/hooks/use-call";
+import { useCreateCall } from "@/hooks";
 
 interface CallLogCreateFormProps {
   setOpen: (open: boolean) => void;

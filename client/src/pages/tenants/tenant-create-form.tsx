@@ -26,7 +26,7 @@ import { countriesFlag } from "@/utils/countries/countries-flag";
 import { tenantFormSchema } from "./tenant-form-schema";
 import type { TenantFormValues } from "./tenant-form-schema";
 
-import { useCreateTenant } from "@/hooks/use-tenant";
+import { useCreateTenant } from "@/hooks";
 
 interface TenantCreateFormProps {
   setOpen: (open: boolean) => void;

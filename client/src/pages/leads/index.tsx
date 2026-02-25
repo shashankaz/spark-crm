@@ -19,7 +19,7 @@ import { Description } from "@/components/shared/typography/description";
 import { columns } from "./columns";
 import { LeadCreateForm } from "./lead-create-form";
 
-import { useLeads } from "@/hooks/use-lead";
+import { useLeads } from "@/hooks";
 
 import { exportLeadsToExcel } from "@/utils/export/lead-excel";
 

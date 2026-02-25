@@ -18,8 +18,7 @@ import { PasswordInput } from "@/components/shared/password-input";
 import { loginFormSchema } from "./login-form-schema";
 import type { LoginFormValues } from "./login-form-schema";
 
-import { useLogin } from "@/hooks/use-auth";
-import { useUser } from "@/hooks/use-user";
+import { useLogin, useUser } from "@/hooks";
 
 export const LoginForm = () => {
   const form = useForm<LoginFormValues>({

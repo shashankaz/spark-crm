@@ -27,7 +27,7 @@ import type { UserEditFormValues } from "./user-edit-form-scheme";
 
 import { PasswordInput } from "@/components/shared/password-input";
 
-import { useUpdateUser } from "@/hooks/use-user";
+import { useUpdateUser } from "@/hooks";
 
 import type { User } from "@/types";
 

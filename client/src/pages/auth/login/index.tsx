@@ -4,7 +4,7 @@ import { LoadingPage } from "@/components/shared/loading";
 
 import { quotes } from "@/data/quotes";
 
-import { useUser } from "@/hooks/use-user";
+import { useUser } from "@/hooks";
 
 import { LoginForm } from "./login-form";
 

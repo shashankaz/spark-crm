@@ -12,7 +12,7 @@ import { TableSkeleton } from "@/components/shared/dashboard/skeleton";
 
 import { columns } from "./columns";
 
-import { useDeals } from "@/hooks/use-deal";
+import { useDeals } from "@/hooks";
 
 import { exportDealsToExcel } from "@/utils/export/deal-excel";
 

@@ -19,7 +19,7 @@ import { Description } from "@/components/shared/typography/description";
 import { columns } from "./columns";
 import { OrganizationCreateForm } from "./organization-create-form";
 
-import { useOrganizations } from "@/hooks/use-organization";
+import { useOrganizations } from "@/hooks";
 
 import { exportOrganizationsToExcel } from "@/utils/export/organization-excel";
 

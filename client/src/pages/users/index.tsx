@@ -19,7 +19,7 @@ import { DataTable } from "@/components/shared/dashboard/data-table";
 import { Heading } from "@/components/shared/typography/heading";
 import { Description } from "@/components/shared/typography/description";
 
-import { useUsers } from "@/hooks/use-user";
+import { useUsers } from "@/hooks";
 
 import { exportUsersToExcel } from "@/utils/export/user";
 import type { User } from "@/types";

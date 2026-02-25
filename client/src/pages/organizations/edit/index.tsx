@@ -11,7 +11,7 @@ import { TableSkeleton } from "@/components/shared/dashboard/skeleton";
 
 import { OrganizationEditForm } from "./organization-edit-form";
 
-import { useOrganization } from "@/hooks/use-organization";
+import { useOrganization } from "@/hooks";
 
 const OrganizationsEditPage = () => {
   const { organizationId } = useParams<{ organizationId: string }>();

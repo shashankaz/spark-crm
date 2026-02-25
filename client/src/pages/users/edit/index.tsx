@@ -8,7 +8,7 @@ import { UserEditForm } from "./user-edit-form";
 import { Heading } from "@/components/shared/typography/heading";
 import { Description } from "@/components/shared/typography/description";
 
-import { useUserById } from "@/hooks/use-user";
+import { useUserById } from "@/hooks";
 
 const UsersEditPage = () => {
   const { userId } = useParams<{ userId: string }>();

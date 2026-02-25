@@ -24,8 +24,7 @@ import type {
   ChangePasswordValues,
 } from "./profile-form-schema";
 
-import { useUser } from "@/hooks/use-user";
-import { useChangePassword, useEditProfile } from "@/hooks/use-auth";
+import { useUser, useChangePassword, useEditProfile } from "@/hooks";
 
 const ProfilePage = () => {
   const { user } = useUser();

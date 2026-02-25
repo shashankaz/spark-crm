@@ -5,7 +5,7 @@ import { TenantsStats } from "@/components/admin-dashboard/tenants-stats";
 import { Heading } from "@/components/shared/typography/heading";
 import { Description } from "@/components/shared/typography/description";
 
-import { useTenantDashboardStats } from "@/hooks/use-tenant";
+import { useTenantDashboardStats } from "@/hooks";
 
 const AdminDashboard = () => {
   const { data, isPending } = useTenantDashboardStats();

@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { commentFormSchema } from "./comment-form-schema";
 import type { CommentFormValues } from "./comment-form-schema";
 
-import { useCreateComment } from "@/hooks/use-comment";
+import { useCreateComment } from "@/hooks";
 
 export const CommentCreateForm = () => {
   const { leadId } = useParams<{ leadId: string }>();

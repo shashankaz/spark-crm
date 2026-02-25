@@ -13,7 +13,7 @@ import {
 
 import { DeleteDialog } from "@/components/shared/dashboard/delete-dialog";
 
-import { useDeleteUser } from "@/hooks/use-user";
+import { useDeleteUser } from "@/hooks";
 
 import type { User } from "@/types";
 
