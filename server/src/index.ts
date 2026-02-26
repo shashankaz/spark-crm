@@ -7,11 +7,12 @@ import cookieParser from "cookie-parser";
 import dns from "dns";
 import "dotenv/config";
 
-import { AppError } from "./shared/app-error.js";
-import { Database } from "./utils/db.js";
-import { router } from "./routes/index.js";
-import { env } from "./config/env.js";
-import { globalErrorHandler } from "./middlewares/global-error.middleware.js";
+import { AppError } from "./shared/app-error";
+import { Database } from "./utils/db";
+import { router } from "./routes/index";
+import { env } from "./config/env";
+import { globalErrorHandler } from "./middlewares/global-error.middleware";
+import { registerGracefulShutdown } from "./utils/graceful-shut-down";
 
 const app = express();
 
@@ -56,11 +57,11 @@ Database.connect()
     process.exit(1);
   });
 
-app.get("/", (req: Request, res: Response) => {
+app.get("/", (_req: Request, res: Response) => {
   res.json({ status: true, message: "API is Live!", uptime: process.uptime() });
 });
 
-app.get("/api/health", (req: Request, res: Response) => {
+app.get("/api/health", (_req: Request, res: Response) => {
   res.json({
     success: true,
     message: "Server is healthy",
@@ -74,7 +75,7 @@ app.use((req: Request, _res: Response, next: NextFunction) => {
 });
 
 app.use((err: AppError, _req: Request, res: Response, _next: NextFunction) => {
-  const status = err.status || 500;
+  const status = err.statusCode || 500;
   res.status(status).json({
     success: false,
     message: err.message || "Server Error",
@@ -88,19 +89,4 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-const gracefulShutdown = async () => {
-  console.log("\n🛑 SIGTERM/SIGINT received. Shutting down server...");
-
-  Database.disconnect()
-    .then(() => {
-      console.log("🔌 MongoDB disconnected");
-    })
-    .catch((error) => {
-      console.error("❌ Error disconnecting MongoDB:", error);
-    });
-
-  process.exit(0);
-};
-
-process.on("SIGINT", gracefulShutdown);
-process.on("SIGTERM", gracefulShutdown);
+registerGracefulShutdown("server");
