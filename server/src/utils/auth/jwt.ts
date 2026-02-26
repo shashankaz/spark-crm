@@ -1,12 +1,16 @@
-import jwt from "jsonwebtoken";
-import { env } from "../../config/env.js";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import { env } from "../../config/env";
 
-export const verifyAccessToken = (token) => {
+interface TokenPayload extends JwtPayload {
+  _id: string;
+}
+
+export const verifyAccessToken = (token: string): TokenPayload | null => {
   const secret = env.ACCESS_SECRET;
   if (!secret) return null;
 
   try {
-    const decoded = jwt.verify(token, secret);
+    const decoded = jwt.verify(token, secret) as TokenPayload;
     return decoded;
   } catch (error) {
     console.error(error);
@@ -14,7 +18,7 @@ export const verifyAccessToken = (token) => {
   }
 };
 
-export const generateAccessToken = (id) => {
+export const generateAccessToken = (id: string): string | null => {
   const secret = env.ACCESS_SECRET;
   if (!secret) return null;
 
@@ -27,12 +31,12 @@ export const generateAccessToken = (id) => {
   }
 };
 
-export const verifyRefreshToken = (token) => {
+export const verifyRefreshToken = (token: string): TokenPayload | null => {
   const secret = env.REFRESH_SECRET;
   if (!secret) return null;
 
   try {
-    const decoded = jwt.verify(token, secret);
+    const decoded = jwt.verify(token, secret) as TokenPayload;
     return decoded;
   } catch (error) {
     console.error(error);
@@ -40,7 +44,7 @@ export const verifyRefreshToken = (token) => {
   }
 };
 
-export const generateRefreshToken = (id) => {
+export const generateRefreshToken = (id: string): string | null => {
   const secret = env.REFRESH_SECRET;
   if (!secret) return null;
 

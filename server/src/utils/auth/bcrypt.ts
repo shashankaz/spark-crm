@@ -1,13 +1,13 @@
 import bcrypt from "bcrypt";
 import crypto from "crypto";
-import { env } from "../../config/env.js";
+import { env } from "../../config/env";
 
 const PEPPER = env.PEPPER;
 
 const BCRYPT_ROUNDS = 10;
 const BCRYPT_TOKEN_ROUNDS = 12;
 
-export const hashPassword = async (password) => {
+export const hashPassword = async (password: string): Promise<string> => {
   if (typeof password !== "string") {
     throw new Error("Password must be a string");
   }
@@ -40,7 +40,10 @@ export const hashPassword = async (password) => {
   return hashed;
 };
 
-export const verifyPassword = async (password, storedHash) => {
+export const verifyPassword = async (
+  password: string,
+  storedHash: string,
+): Promise<boolean> => {
   if (typeof password !== "string") return false;
 
   const normalized = password.normalize("NFKC");
@@ -55,7 +58,7 @@ export const verifyPassword = async (password, storedHash) => {
   return bcrypt.compare(withPepper, storedHash);
 };
 
-export const hashRefreshToken = async (token) => {
+export const hashRefreshToken = async (token: string): Promise<string> => {
   if (typeof token !== "string") {
     throw new Error("Refresh token must be a string");
   }
@@ -63,7 +66,10 @@ export const hashRefreshToken = async (token) => {
   return await bcrypt.hash(token, BCRYPT_TOKEN_ROUNDS);
 };
 
-export const verifyRefreshTokenHash = async (token, storedHash) => {
+export const verifyRefreshTokenHash = async (
+  token: string,
+  storedHash: string,
+): Promise<boolean> => {
   if (typeof token !== "string") return false;
 
   return bcrypt.compare(token, storedHash);
