@@ -12,7 +12,11 @@ const envSchema = z.object({
   AWS_REGION: z.string().min(1, "AWS_REGION is required"),
   AWS_ACCESS_KEY_ID: z.string().min(1, "AWS_ACCESS_KEY_ID is required"),
   AWS_SECRET_ACCESS_KEY: z.string().min(1, "AWS_SECRET_ACCESS_KEY is required"),
-  AWS_BUCKET_NAME: z.string().min(1, "AWS_BUCKET_NAME is required"),
+  AWS_S3_BUCKET_NAME: z.string().min(1, "AWS_S3_BUCKET_NAME is required"),
+  AWS_SQS_QUEUE_URL: z.url("AWS_SQS_QUEUE_URL must be a valid URL"),
+  AWS_SQS_LEAD_REMINDER_QUEUE_URL: z.url(
+    "AWS_SQS_LEAD_REMINDER_QUEUE_URL must be a valid URL",
+  ),
 
   MAILTRAP_HOST: z.string().min(1, "MAILTRAP_HOST is required"),
   MAILTRAP_PORT: z.coerce.number().int().positive().default(2525),
