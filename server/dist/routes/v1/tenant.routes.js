@@ -1,0 +1,18 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const tenant_controller_js_1 = require("../../controllers/tenant.controller.js");
+const auth_middleware_js_1 = require("../../middlewares/auth.middleware.js");
+const role_middleware_js_1 = require("../../middlewares/role.middleware.js");
+const router = (0, express_1.Router)();
+router.use(auth_middleware_js_1.requireAuth);
+router.use(role_middleware_js_1.requireSuperAdmin);
+router.get("/dashboard", tenant_controller_js_1.getTenantDashboardStats);
+router.get("/", tenant_controller_js_1.getAllTenants);
+router.get("/:id", tenant_controller_js_1.getTenantById);
+router.get("/:id/users", tenant_controller_js_1.getUsersByTenantId);
+router.post("/", tenant_controller_js_1.createTenant);
+router.patch("/:id", tenant_controller_js_1.updateTenantById);
+router.delete("/:id", tenant_controller_js_1.deleteTenantById);
+router.post("/:id/user", tenant_controller_js_1.createUserForTenant);
+exports.default = router;

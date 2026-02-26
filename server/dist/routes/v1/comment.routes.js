@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const comment_controller_js_1 = require("../../controllers/comment.controller.js");
+const auth_middleware_js_1 = require("../../middlewares/auth.middleware.js");
+const router = (0, express_1.Router)();
+router.use(auth_middleware_js_1.requireAuth);
+router.get("/:leadId", comment_controller_js_1.getAllCommentsByLeadId);
+router.post("/:leadId", comment_controller_js_1.createCommentForLead);
+exports.default = router;

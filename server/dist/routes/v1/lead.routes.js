@@ -1,0 +1,17 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const lead_controller_js_1 = require("../../controllers/lead.controller.js");
+const auth_middleware_js_1 = require("../../middlewares/auth.middleware.js");
+const router = (0, express_1.Router)();
+router.use(auth_middleware_js_1.requireAuth);
+router.get("/", lead_controller_js_1.getAllLeads);
+router.get("/organizations", lead_controller_js_1.getAllOrganizations);
+router.get("/activity/:id", lead_controller_js_1.getLeadActivityByLeadId);
+router.get("/:id", lead_controller_js_1.getLeadById);
+router.post("/", lead_controller_js_1.createLead);
+router.post("/bulk", lead_controller_js_1.bulkWriteLeads);
+router.post("/:id/convert", lead_controller_js_1.convertLeadToDeal);
+router.patch("/:id", lead_controller_js_1.updateLeadById);
+router.delete("/:id", lead_controller_js_1.deleteLeadById);
+exports.default = router;
