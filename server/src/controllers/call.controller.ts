@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { Types } from "mongoose";
 import {
   fetchCallsByLeadService,
   createCallForLeadService,
@@ -14,9 +15,9 @@ export const getAllCallsByLeadId = asyncHandler(
       throw new AppError("Lead ID is required", 400);
     }
 
-    const cursor = req.query.cursor;
+    const cursor = req.query.cursor as Types.ObjectId | undefined;
     const limit = Number(req.query.limit) || 10;
-    const search = req.query.search;
+    const search = req.query.search as string | undefined;
 
     const { calls, totalCount } = await fetchCallsByLeadService({
       leadId,
@@ -50,7 +51,6 @@ export const createCallForLead = asyncHandler(
     }
 
     const call = await createCallForLeadService({
-      tenantId,
       leadId,
       userId,
       userName,

@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { Types } from "mongoose";
 import {
   fetchDealsService,
   deleteDealByIdService,
@@ -13,9 +14,9 @@ export const getAllDeals = asyncHandler(async (req: Request, res: Response) => {
     throw new AppError("Tenant ID is missing in user data", 400);
   }
 
-  const cursor = req.query.cursor;
+  const cursor = req.query.cursor as Types.ObjectId | undefined;
   const limit = Number(req.query.limit) || 10;
-  const search = req.query.search;
+  const search = req.query.search as string | undefined;
 
   const { deals, totalCount } = await fetchDealsService({
     tenantId,

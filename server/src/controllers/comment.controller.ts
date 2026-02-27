@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { Types } from "mongoose";
 import {
   fetchCommentsByLeadService,
   createCommentForLeadService,
@@ -14,9 +15,9 @@ export const getAllCommentsByLeadId = asyncHandler(
       throw new AppError("Lead ID is required", 400);
     }
 
-    const cursor = req.query.cursor;
+    const cursor = req.query.cursor as Types.ObjectId | undefined;
     const limit = Number(req.query.limit) || 10;
-    const search = req.query.search;
+    const search = req.query.search as string | undefined;
 
     const { comments, totalCount } = await fetchCommentsByLeadService({
       leadId,

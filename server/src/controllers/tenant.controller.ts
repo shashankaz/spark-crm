@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { Types } from "mongoose";
 import {
   fetchTenantDashboardStatsService,
   fetchTenantsService,
@@ -14,7 +15,7 @@ import { sendSuccess } from "../shared/api-response";
 import { asyncHandler } from "../shared/async-handler";
 
 export const getTenantDashboardStats = asyncHandler(
-  async (req: Request, res: Response) => {
+  async (_req: Request, res: Response) => {
     const { stats, recentTenants, planDistribution } =
       await fetchTenantDashboardStatsService();
 
@@ -28,9 +29,9 @@ export const getTenantDashboardStats = asyncHandler(
 
 export const getAllTenants = asyncHandler(
   async (req: Request, res: Response) => {
-    const cursor = req.query.cursor;
+    const cursor = req.query.cursor as Types.ObjectId | undefined;
     const limit = Number(req.query.limit) || 10;
-    const search = req.query.search;
+    const search = req.query.search as string | undefined;
 
     const { tenants, totalCount } = await fetchTenantsService({
       cursor,
@@ -68,7 +69,7 @@ export const getUsersByTenantId = asyncHandler(
       throw new AppError("Tenant ID is required", 400);
     }
 
-    const search = req.query.search;
+    const search = req.query.search as string | undefined;
 
     const { users } = await fetchUsersByTenantIdService({
       tenantId: id,

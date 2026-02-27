@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { Types } from "mongoose";
 import {
   fetchLeadsService,
   fetchLeadByIdService,
@@ -9,26 +10,32 @@ import {
   bulkWriteLeadsService,
   convertLeadToDealService,
   fetchLeadActivityByLeadIdService,
+  assignLeadService,
 } from "../services/lead.service";
+import { enqueueLeadExportService } from "../services/lead-export.service";
 import { AppError } from "../shared/app-error";
 import { sendSuccess } from "../shared/api-response";
 import { asyncHandler } from "../shared/async-handler";
 
 export const getAllLeads = asyncHandler(async (req: Request, res: Response) => {
-  const { tenantId } = req.user;
+  const { tenantId, _id: userId, role } = req.user;
   if (!tenantId) {
     throw new AppError("Tenant ID is missing in user data", 400);
   }
 
-  const cursor = req.query.cursor;
+  const cursor = req.query.cursor as Types.ObjectId | undefined;
   const limit = Number(req.query.limit) || 10;
-  const search = req.query.search;
+  const search = req.query.search as string | undefined;
+  const orgId = req.query.orgId as Types.ObjectId | undefined;
 
   const { leads, totalCount } = await fetchLeadsService({
     tenantId,
     cursor,
     limit,
     search,
+    orgId,
+    userId,
+    role,
   });
 
   sendSuccess(res, 200, "Leads retrieved successfully", {
@@ -38,7 +45,7 @@ export const getAllLeads = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export const getLeadById = asyncHandler(async (req: Request, res: Response) => {
-  const { tenantId } = req.user;
+  const { tenantId, _id: userId, role } = req.user;
   if (!tenantId) {
     throw new AppError("Tenant ID is missing in user data", 400);
   }
@@ -48,7 +55,7 @@ export const getLeadById = asyncHandler(async (req: Request, res: Response) => {
     throw new AppError("Lead ID is required", 400);
   }
 
-  const lead = await fetchLeadByIdService({ id, tenantId });
+  const lead = await fetchLeadByIdService({ id, tenantId, userId, role });
   if (!lead) {
     throw new AppError("Lead not found", 404);
   }
@@ -231,18 +238,20 @@ export const convertLeadToDeal = asyncHandler(
 
 export const getAllOrganizations = asyncHandler(
   async (req: Request, res: Response) => {
-    const { tenantId } = req.user;
+    const { tenantId, _id: userId, role } = req.user;
     if (!tenantId) {
       throw new AppError("Tenant ID is missing in user data", 400);
     }
 
     const limit = Number(req.query.limit) || 10;
-    const search = req.query.search;
+    const search = req.query.search as string | undefined;
 
     const { organizations } = await fetchOrganizationsService({
       tenantId,
       limit,
       search,
+      userId,
+      role,
     });
 
     sendSuccess(res, 200, "Organizations retrieved successfully", {
@@ -267,3 +276,64 @@ export const getLeadActivityByLeadId = asyncHandler(
     });
   },
 );
+
+export const assignLead = asyncHandler(async (req: Request, res: Response) => {
+  const { tenantId, _id: adminUserId, firstName: adminUserName } = req.user;
+  if (!tenantId) {
+    throw new AppError("Tenant ID is missing in user data", 400);
+  }
+
+  const { id } = req.params;
+  if (!id) {
+    throw new AppError("Lead ID is required", 400);
+  }
+
+  const { assignedUserId } = req.body;
+  if (!assignedUserId) {
+    throw new AppError("Assigned user ID is required", 400);
+  }
+
+  const lead = await assignLeadService({
+    leadId: id,
+    tenantId,
+    assignedUserId,
+    adminUserId,
+    adminUserName,
+  });
+
+  sendSuccess(res, 200, "Lead assigned successfully", { lead });
+});
+
+export const exportLeads = asyncHandler(async (req: Request, res: Response) => {
+  const { tenantId } = req.user;
+  if (!tenantId) {
+    throw new AppError("Tenant ID is missing in user data", 400);
+  }
+
+  const { leadIds, recipientEmail } = req.body;
+
+  if (!Array.isArray(leadIds) || leadIds.length === 0) {
+    throw new AppError("leadIds must be a non-empty array", 400);
+  }
+
+  if (!recipientEmail || typeof recipientEmail !== "string") {
+    throw new AppError("recipientEmail is required", 400);
+  }
+
+  const { messageId } = await enqueueLeadExportService({
+    tenantId,
+    leadIds,
+    recipientEmail,
+  });
+
+  sendSuccess(
+    res,
+    202,
+    "Export job queued. You will receive an email shortly.",
+    {
+      messageId,
+      leadCount: leadIds.length,
+      recipientEmail,
+    },
+  );
+});
