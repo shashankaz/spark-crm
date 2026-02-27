@@ -8,13 +8,6 @@ export interface UserWelcomeMail {
   tempPassword: string;
 }
 
-export interface PlanChangeMail {
-  userEmail: string;
-  tenantName: string;
-  oldPlan: string;
-  newPlan: string;
-}
-
 export interface PasswordChangedMail {
   userEmail: string;
   userName: string;
