@@ -7,3 +7,4 @@ export * from "./lead.service";
 export * from "./organization.service";
 export * from "./tenant.service";
 export * from "./user.service";
+export * from "./attachment.service";
