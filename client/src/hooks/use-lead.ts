@@ -9,22 +9,25 @@ import {
   getLeadOrganizations,
   getLeadActivityByLeadId,
   convertLeadToDeal,
+  assignLead,
 } from "@/api/services";
 
 export const useLeads = ({
   cursor,
   limit = 10,
   search,
+  orgId,
 }: {
   cursor?: string;
   limit?: number;
   search?: string;
+  orgId?: string;
 }) => {
-  const query = buildQueryParams({ cursor, limit, search });
+  const query = buildQueryParams({ cursor, limit, search, orgId });
 
   return useQuery({
     queryKey: ["leads", query],
-    queryFn: () => getAllLeads({ cursor, limit, search }),
+    queryFn: () => getAllLeads({ cursor, limit, search, orgId }),
   });
 };
 
@@ -112,6 +115,21 @@ export const useConvertLeadToDeal = () => {
         queryKey: ["lead-activity", variables.id],
       });
       queryClient.invalidateQueries({ queryKey: ["deals"] });
+    },
+  });
+};
+
+export const useAssignLead = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: assignLead,
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["leads"] });
+      queryClient.invalidateQueries({ queryKey: ["lead", variables.id] });
+      queryClient.invalidateQueries({
+        queryKey: ["lead-activity", variables.id],
+      });
     },
   });
 };

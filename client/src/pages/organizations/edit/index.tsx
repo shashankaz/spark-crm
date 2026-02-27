@@ -10,6 +10,7 @@ import { Description } from "@/components/shared/typography/description";
 import { TableSkeleton } from "@/components/shared/dashboard/skeleton";
 
 import { OrganizationEditForm } from "./organization-edit-form";
+import { OrganizationLeadsTab } from "./organization-leads-tab";
 
 import { useOrganization } from "@/hooks";
 
@@ -59,10 +60,15 @@ const OrganizationsEditPage = () => {
         <Tabs defaultValue="details">
           <TabsList>
             <TabsTrigger value="details">Details</TabsTrigger>
+            <TabsTrigger value="leads">Leads</TabsTrigger>
           </TabsList>
 
           <TabsContent value="details" className="mt-6">
             <OrganizationEditForm organization={org} />
+          </TabsContent>
+
+          <TabsContent value="leads" className="mt-6">
+            <OrganizationLeadsTab orgId={org._id} />
           </TabsContent>
         </Tabs>
       </div>

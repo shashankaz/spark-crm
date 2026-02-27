@@ -43,17 +43,24 @@ export type ConvertLeadToDealResponse = {
   deal: Deal;
 };
 
+export type AssignLeadResponse = {
+  message: string;
+  lead: Lead;
+};
+
 export const getAllLeads = async ({
   cursor,
   limit = 10,
   search,
+  orgId,
 }: {
   cursor?: string;
   limit?: number;
   search?: string;
+  orgId?: string;
 }): Promise<GetAllLeadsResponse> => {
   try {
-    const query = buildQueryParams({ cursor, limit, search });
+    const query = buildQueryParams({ cursor, limit, search, orgId });
     const response = await api.get(`/lead${query ? `?${query}` : ""}`);
 
     const { message } = response.data;
@@ -260,6 +267,26 @@ export const getLeadOrganizations = async ({
     return { message, organizations };
   } catch (error) {
     console.error("Get all organizations error:", error);
+    throw error;
+  }
+};
+
+export const assignLead = async ({
+  id,
+  assignedUserId,
+}: {
+  id: string;
+  assignedUserId: string;
+}): Promise<AssignLeadResponse> => {
+  try {
+    const response = await api.patch(`/lead/${id}/assign`, { assignedUserId });
+
+    const { message } = response.data;
+    const { lead } = response.data.data;
+
+    return { message, lead };
+  } catch (error) {
+    console.error("Assign lead error:", error);
     throw error;
   }
 };

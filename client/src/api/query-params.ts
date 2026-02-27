@@ -2,6 +2,7 @@ type QueryKey = {
   cursor?: number;
   limit?: number;
   search?: string;
+  orgId?: string;
 };
 type QueryValue = string | number | boolean | null | undefined;
 type QueryParams = Partial<Record<keyof QueryKey, QueryValue>>;
