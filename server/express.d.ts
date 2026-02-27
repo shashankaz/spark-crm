@@ -1,15 +1,10 @@
 import { Request } from "express";
+import { UserDocument } from "./src/types/models/user.model.types";
 
 declare global {
   namespace Express {
     interface Request {
-      user?: {
-        _id: string;
-        tenantId: string;
-        email: string;
-        name: string;
-        role: string;
-      };
+      user: UserDocument;
     }
   }
 }
