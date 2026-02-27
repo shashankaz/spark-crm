@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { generateUploadUrl } from "../../controllers/upload.controller.js";
-import { requireAuth } from "../../middlewares/auth.middleware.js";
+import { generateUploadUrl } from "../../controllers/upload.controller";
+import { requireAuth } from "../../middlewares/auth.middleware";
 
 const router = Router();
 

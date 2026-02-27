@@ -1,18 +1,25 @@
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { randomUUID } from "crypto";
-import { env } from "../config/env.js";
-import { s3 } from "../utils/s3.js";
+import { Types } from "mongoose";
+import { env } from "../config/env";
+import { s3 } from "../utils/s3";
 
-export const generateUploadUrlService = async (
-  fileName: string,
-  fileType: string,
-  userId: string,
-) => {
-  const key = `users/${userId}/${randomUUID()}-${fileName}`;
+export const generateUploadUrlService = async ({
+  type,
+  fileName,
+  fileType,
+  userId,
+}: {
+  type: string;
+  fileName: string;
+  fileType: string;
+  userId: Types.ObjectId;
+}) => {
+  const key = `${type}/${userId}/${randomUUID()}-${fileName}`;
 
   const command = new PutObjectCommand({
-    Bucket: env.AWS_BUCKET_NAME,
+    Bucket: env.AWS_S3_BUCKET_NAME,
     Key: key,
     ContentType: fileType,
   });
@@ -24,6 +31,6 @@ export const generateUploadUrlService = async (
   return {
     signedUrl,
     key,
-    fileUrl: `https://${env.AWS_BUCKET_NAME}.s3.${env.AWS_REGION}.amazonaws.com/${key}`,
+    fileUrl: `https://${env.AWS_S3_BUCKET_NAME}.s3.${env.AWS_REGION}.amazonaws.com/${key}`,
   };
 };
