@@ -1,7 +1,7 @@
-import { Comment } from "../models/comment.model.js";
-import { Lead } from "../models/lead.model.js";
-import { AppError } from "../shared/app-error.js";
-import { createLeadActionHistoryService } from "./lead-action-history.service.js";
+import { Comment } from "../models/comment.model";
+import { Lead } from "../models/lead.model";
+import { AppError } from "../shared/app-error";
+import { createLeadActionHistoryService } from "./lead-action-history.service";
 import {
   FetchCommentsByLeadInput,
   CreateCommentForLeadInput,
@@ -13,7 +13,7 @@ export const fetchCommentsByLeadService = async ({
   limit,
   search,
 }: FetchCommentsByLeadInput) => {
-  const countQuery = { leadId };
+  const countQuery: any = { leadId };
   if (search) {
     countQuery.comment = { $regex: search, $options: "i" };
   }
@@ -32,7 +32,6 @@ export const fetchCommentsByLeadService = async ({
 };
 
 export const createCommentForLeadService = async ({
-  tenantId,
   leadId,
   userId,
   userName,
@@ -44,7 +43,6 @@ export const createCommentForLeadService = async ({
   }
 
   const newComment = await Comment.create({
-    tenantId,
     leadId,
     comment,
   });

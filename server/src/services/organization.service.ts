@@ -1,6 +1,7 @@
 import { formatDate } from "date-fns";
-import { Organization } from "../models/organization.model.js";
-import { AppError } from "../shared/app-error.js";
+import { Types } from "mongoose";
+import { Organization } from "../models/organization.model";
+import { AppError } from "../shared/app-error";
 import {
   FetchOrganizationsInput,
   FetchOrganizationByIdInput,
@@ -8,6 +9,10 @@ import {
   UpdateOrganizationByIdInput,
   DeleteOrganizationByIdInput,
 } from "../types/services/organization.service.types";
+import {
+  OrganizationIndustry,
+  OrganizationSize,
+} from "../types/models/organization.model.types";
 
 export const fetchOrganizationsService = async ({
   tenantId,
@@ -106,10 +111,11 @@ export const updateOrganizationByIdService = async ({
     throw new AppError("Organization not found", 404);
   }
 
-  organization.userId = userId || organization.userId;
+  organization.userId = (userId as Types.ObjectId) || organization.userId;
   organization.name = name || organization.name;
-  organization.industry = industry || organization.industry;
-  organization.size = size || organization.size;
+  organization.industry =
+    (industry as OrganizationIndustry) || organization.industry;
+  organization.size = (size as OrganizationSize) || organization.size;
   organization.country = country || organization.country;
   organization.email = email || organization.email;
   organization.mobile = mobile || organization.mobile;

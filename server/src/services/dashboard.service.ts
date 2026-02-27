@@ -1,10 +1,12 @@
 import { format } from "date-fns";
-import { Lead } from "../models/lead.model.js";
-import { Deal } from "../models/deal.model.js";
-import { Organization } from "../models/organization.model.js";
-import { User } from "../models/user.model.js";
-import { calcChange, getDealStatus } from "../utils/stats-helper.js";
+import { Lead } from "../models/lead.model";
+import { Deal } from "../models/deal.model";
+import { Organization } from "../models/organization.model";
+import { User } from "../models/user.model";
+import { calcChange, getDealStatus } from "../utils/stats-helper";
 import { FetchDashboardStatsInput } from "../types/services/dashboard.service.types";
+import { LeadDocument } from "../types/models/lead.model.types";
+import { DealDocument } from "../types/models/deal.model.types";
 
 export const fetchDashboardStatsService = async ({
   tenantId,
@@ -123,7 +125,7 @@ export const fetchDashboardStatsService = async ({
     },
   };
 
-  const recentLeads = leadAgg[0].recent.map((lead) => ({
+  const recentLeads = leadAgg[0].recent.map((lead: LeadDocument) => ({
     _id: lead._id,
     name: `${lead.firstName} ${lead.lastName || ""}`.trim(),
     email: lead.email,
@@ -132,7 +134,7 @@ export const fetchDashboardStatsService = async ({
     updatedAt: format(new Date(lead.updatedAt), "yyyy-MM-dd"),
   }));
 
-  const recentDeals = dealAgg[0].recent.map((deal) => ({
+  const recentDeals = dealAgg[0].recent.map((deal: DealDocument) => ({
     _id: deal._id,
     title: deal.name,
     value: deal.value || 0,

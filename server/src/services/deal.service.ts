@@ -1,5 +1,5 @@
 import { formatDate } from "date-fns";
-import { Deal } from "../models/deal.model.js";
+import { Deal } from "../models/deal.model";
 import {
   FetchDealsInput,
   DeleteDealInput,
@@ -11,7 +11,7 @@ export const fetchDealsService = async ({
   limit,
   search,
 }: FetchDealsInput) => {
-  const countQuery = { tenantId };
+  const countQuery: any = { tenantId };
   if (search) {
     countQuery.$or = [{ name: { $regex: search, $options: "i" } }];
   }

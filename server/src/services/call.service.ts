@@ -1,8 +1,8 @@
 import { Types } from "mongoose";
-import { Call } from "../models/call.model.js";
-import { Lead } from "../models/lead.model.js";
-import { AppError } from "../shared/app-error.js";
-import { createLeadActionHistoryService } from "./lead-action-history.service.js";
+import { Call } from "../models/call.model";
+import { Lead } from "../models/lead.model";
+import { AppError } from "../shared/app-error";
+import { createLeadActionHistoryService } from "./lead-action-history.service";
 import {
   FetchCallsByLeadInput,
   FetchCallsByLeadResponse,
@@ -16,7 +16,7 @@ export const fetchCallsByLeadService = async ({
   limit,
   search,
 }: FetchCallsByLeadInput): Promise<FetchCallsByLeadResponse> => {
-  const countQuery: Record<string, unknown> = {
+  const countQuery: any = {
     leadId: new Types.ObjectId(leadId),
   };
 
@@ -36,16 +36,14 @@ export const fetchCallsByLeadService = async ({
   ]);
 
   const formattedCalls: CallResponse[] = calls.map((call) => ({
-    _id: call._id.toString(),
-    tenantId: call.tenantId.toString(),
-    leadId: call.leadId.toString(),
+    _id: call._id,
+    leadId: call.leadId,
     type: call.type,
     to: call.to,
     from: call.from,
     status: call.status,
     duration: call.duration,
     createdAt: call.createdAt,
-    updatedAt: call.updatedAt,
   }));
 
   return {
@@ -55,7 +53,6 @@ export const fetchCallsByLeadService = async ({
 };
 
 export const createCallForLeadService = async ({
-  tenantId,
   leadId,
   userId,
   userName,
@@ -71,7 +68,6 @@ export const createCallForLeadService = async ({
   }
 
   const call = await Call.create({
-    tenantId: new Types.ObjectId(tenantId),
     leadId: new Types.ObjectId(leadId),
     type,
     to: lead.firstName,
@@ -91,15 +87,13 @@ export const createCallForLeadService = async ({
   });
 
   return {
-    _id: call._id.toString(),
-    tenantId: call.tenantId.toString(),
-    leadId: call.leadId.toString(),
+    _id: call._id,
+    leadId: call.leadId,
     type: call.type,
     to: call.to,
     from: call.from,
     status: call.status,
     duration: call.duration,
     createdAt: call.createdAt,
-    updatedAt: call.updatedAt,
   };
 };

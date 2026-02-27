@@ -1,7 +1,7 @@
 import { formatDate } from "date-fns";
-import { User } from "../models/user.model.js";
-import { hashPassword } from "../utils/auth/bcrypt.js";
-import { AppError } from "../shared/app-error.js";
+import { User } from "../models/user.model";
+import { hashPassword } from "../utils/auth/bcrypt";
+import { AppError } from "../shared/app-error";
 import {
   FetchUsersInput,
   FetchUserByIdInput,
@@ -9,6 +9,7 @@ import {
   UpdateUserInput,
   RemoveUserInput,
 } from "../types/services/user.service.types";
+import { UserRole } from "../types/models/user.model.types";
 
 export const fetchUsersService = async ({
   tenantId,
@@ -16,7 +17,7 @@ export const fetchUsersService = async ({
   limit,
   search,
 }: FetchUsersInput) => {
-  const countQuery = { tenantId };
+  const countQuery: any = { tenantId };
   if (search) {
     countQuery.$or = [
       { firstName: { $regex: search, $options: "i" } },
@@ -24,7 +25,7 @@ export const fetchUsersService = async ({
     ];
   }
 
-  const whereQuery = { ...countQuery };
+  const whereQuery: any = { ...countQuery };
   if (cursor) {
     whereQuery._id = { $gt: cursor };
   }
@@ -63,7 +64,7 @@ export const createUserService = async ({
   password,
   role,
 }: CreateUserInput) => {
-  const hashedPassword = await hashPassword(password);
+  const hashedPassword = password ? await hashPassword(password) : undefined;
 
   const newUser = new User({
     firstName,
@@ -98,7 +99,7 @@ export const updateUserService = async ({
   if (email) user.email = email;
   if (mobile) user.mobile = mobile;
   if (password) user.password = await hashPassword(password);
-  if (role) user.role = role;
+  if (role) user.role = role as UserRole;
 
   return await user.save();
 };

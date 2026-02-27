@@ -15,6 +15,7 @@ import {
   generateRefreshToken,
   verifyRefreshToken,
 } from "../utils/auth/jwt";
+import { sendPasswordChangedMail } from "./email.service";
 import {
   LoginInput,
   LoginResponse,
@@ -26,7 +27,6 @@ import {
   EditProfileInput,
   ChangePasswordInput,
   UserResponse,
-  RefreshTokenPayload,
 } from "../types/services/auth.service.types";
 
 export const loginService = async ({
@@ -37,7 +37,7 @@ export const loginService = async ({
     "+password",
   );
 
-  if (!user) {
+  if (!user || !user.password) {
     throw new AppError("Invalid email or password", 401);
   }
 
@@ -64,11 +64,11 @@ export const loginService = async ({
   });
 
   const responseUser: UserResponse = {
-    _id: user._id.toString(),
+    _id: user._id,
     firstName: user.firstName,
-    lastName: user.lastName,
+    lastName: user.lastName ?? "-",
     email: user.email,
-    mobile: user.mobile,
+    mobile: user.mobile ?? "-",
     role: user.role,
     createdAt: format(user.createdAt, "dd/MM/yyyy"),
     updatedAt: format(user.updatedAt, "dd/MM/yyyy"),
@@ -84,7 +84,7 @@ export const loginService = async ({
 export const refreshAuthTokenService = async ({
   refreshToken,
 }: RefreshTokenInput): Promise<RefreshTokenResponse> => {
-  const payload = verifyRefreshToken(refreshToken) as RefreshTokenPayload;
+  const payload = verifyRefreshToken(refreshToken);
 
   if (!payload || !payload._id) {
     throw new AppError("Invalid refresh token", 401);
@@ -92,7 +92,7 @@ export const refreshAuthTokenService = async ({
 
   const session = await Session.findById(payload._id);
 
-  if (!session) {
+  if (!session || !session.token) {
     throw new AppError("Session not found", 401);
   }
 
@@ -106,8 +106,11 @@ export const refreshAuthTokenService = async ({
   }
 
   const newAccessToken = generateAccessToken(session.userId.toString());
-
   const newRefreshToken = generateRefreshToken(session._id.toString());
+
+  if (!newAccessToken || !newRefreshToken) {
+    throw new AppError("Failed to generate tokens", 500);
+  }
 
   const hashedNewRefreshToken = await hashRefreshToken(newRefreshToken);
 
@@ -139,11 +142,11 @@ export const getUserProfileService = async ({
   }
 
   return {
-    _id: user._id.toString(),
+    _id: user._id,
     firstName: user.firstName,
-    lastName: user.lastName,
+    lastName: user.lastName ?? "-",
     email: user.email,
-    mobile: user.mobile,
+    mobile: user.mobile ?? "-",
     role: user.role,
     createdAt: format(user.createdAt, "dd/MM/yyyy"),
     updatedAt: format(user.updatedAt, "dd/MM/yyyy"),
@@ -177,11 +180,11 @@ export const editProfileService = async ({
   await user.save();
 
   return {
-    _id: user._id.toString(),
+    _id: user._id,
     firstName: user.firstName,
-    lastName: user.lastName,
+    lastName: user.lastName ?? "-",
     email: user.email,
-    mobile: user.mobile,
+    mobile: user.mobile ?? "-",
     role: user.role,
     updatedAt: format(user.updatedAt, "dd/MM/yyyy"),
   };
@@ -194,7 +197,7 @@ export const changePasswordService = async ({
 }: ChangePasswordInput): Promise<void> => {
   const user = await User.findById(id).select("+password");
 
-  if (!user) {
+  if (!user || !user.password) {
     throw new AppError("User not found", 404);
   }
 
@@ -207,4 +210,9 @@ export const changePasswordService = async ({
   user.password = await hashPassword(newPassword);
 
   await user.save();
+
+  await sendPasswordChangedMail({
+    userEmail: user.email,
+    userName: user.firstName,
+  });
 };

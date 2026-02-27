@@ -1,12 +1,13 @@
 import { formatDate } from "date-fns";
-import mongoose from "mongoose";
-import { Lead } from "../models/lead.model.js";
-import { Deal } from "../models/deal.model.js";
-import { Organization } from "../models/organization.model.js";
-import { AppError } from "../shared/app-error.js";
-import { calculateLeadScore } from "../utils/calculate-score.js";
-import { createLeadActionHistoryService } from "./lead-action-history.service.js";
-import { LeadActionHistory } from "../models/lead-action-history.model.js";
+import mongoose, { Types } from "mongoose";
+import { Lead } from "../models/lead.model";
+import { Deal } from "../models/deal.model";
+import { Organization } from "../models/organization.model";
+import { User } from "../models/user.model";
+import { AppError } from "../shared/app-error";
+import { calculateLeadScore } from "../utils/calculate-score";
+import { createLeadActionHistoryService } from "./lead-action-history.service";
+import { LeadActionHistory } from "../models/lead-action-history.model";
 import {
   FetchLeadsInput,
   FetchLeadByIdInput,
@@ -17,15 +18,27 @@ import {
   ConvertLeadToDealInput,
   FetchOrganizationsForLeadInput,
   FetchLeadActivityByLeadIdInput,
+  AssignLeadInput,
 } from "../types/services/lead.service.types";
+import { LeadGender, LeadStatus } from "../types/models/lead.model.types";
 
 export const fetchLeadsService = async ({
   tenantId,
   cursor,
   limit,
   search,
+  orgId,
+  userId,
+  role,
 }: FetchLeadsInput) => {
-  const countQuery = { tenantId };
+  const countQuery: any = { tenantId };
+
+  if (role !== "admin") countQuery.userId = userId;
+
+  if (orgId) {
+    countQuery.orgId = orgId;
+  }
+
   if (search) {
     countQuery.$or = [
       { firstName: { $regex: search, $options: "i" } },
@@ -34,7 +47,7 @@ export const fetchLeadsService = async ({
     ];
   }
 
-  const whereQuery = { ...countQuery };
+  const whereQuery: any = { ...countQuery };
   if (cursor) {
     whereQuery._id = { $gt: cursor };
   }
@@ -47,10 +60,10 @@ export const fetchLeadsService = async ({
   const formattedLeads = leads.map((lead) => ({
     _id: lead._id,
     firstName: lead.firstName,
-    lastName: lead.lastName || "",
+    lastName: lead.lastName ?? "-",
     email: lead.email,
     orgName: lead.orgName,
-    score: lead.score || 0,
+    score: lead.score ?? 0,
     updatedAt: formatDate(lead.updatedAt, "dd/MM/yyyy"),
   }));
 
@@ -60,8 +73,19 @@ export const fetchLeadsService = async ({
 export const fetchLeadByIdService = async ({
   id,
   tenantId,
+  userId,
+  role,
 }: FetchLeadByIdInput) => {
-  return await Lead.findOne({ _id: id, tenantId }).exec();
+  const lead = await Lead.findOne({ _id: id, tenantId }).exec();
+  if (!lead) {
+    throw new AppError("Lead not found", 404);
+  }
+
+  if (role !== "admin" && lead.userId !== userId) {
+    throw new AppError("Unauthorized", 403);
+  }
+
+  return lead;
 };
 
 export const createLeadService = async ({
@@ -133,16 +157,16 @@ export const updateLeadByIdService = async ({
     );
   }
 
-  lead.orgId = orgId || lead.orgId;
+  lead.orgId = (orgId as Types.ObjectId) || lead.orgId;
   lead.orgName = orgName || lead.orgName;
-  lead.userId = userId || lead.userId;
+  lead.userId = (userId as Types.ObjectId) || lead.userId;
   lead.firstName = firstName || lead.firstName;
   lead.lastName = lastName || lead.lastName;
   lead.email = email || lead.email;
   lead.mobile = mobile || lead.mobile;
-  lead.gender = gender || lead.gender;
+  lead.gender = (gender as LeadGender) || lead.gender;
   lead.source = source || lead.source;
-  lead.status = status || lead.status;
+  lead.status = (status as LeadStatus) || lead.status;
 
   lead.score = calculateLeadScore(lead);
 
@@ -280,8 +304,11 @@ export const fetchOrganizationsService = async ({
   tenantId,
   limit,
   search,
+  userId,
+  role,
 }: FetchOrganizationsForLeadInput) => {
-  const whereQuery = { tenantId };
+  const whereQuery: any = { tenantId };
+  if (role !== "admin") whereQuery.userId = userId;
   if (search) {
     whereQuery.name = { $regex: search, $options: "i" };
   }
@@ -298,4 +325,46 @@ export const fetchLeadActivityByLeadIdService = async ({
   leadId,
 }: FetchLeadActivityByLeadIdInput) => {
   return await LeadActionHistory.find({ leadId }).sort({ _id: -1 }).exec();
+};
+
+export const assignLeadService = async ({
+  leadId,
+  tenantId,
+  assignedUserId,
+  adminUserId,
+  adminUserName,
+}: AssignLeadInput) => {
+  const lead = await Lead.findOne({ _id: leadId, tenantId }).exec();
+  if (!lead) {
+    throw new AppError("Lead not found", 404);
+  }
+
+  if (lead.status === "converted") {
+    throw new AppError(
+      "Cannot reassign a lead that has been converted to a deal",
+      400,
+    );
+  }
+
+  const assignedUser = await User.findOne({
+    _id: assignedUserId,
+    tenantId,
+  }).exec();
+  if (!assignedUser) {
+    throw new AppError("Assigned user not found in this tenant", 404);
+  }
+
+  const previousUserId = lead.userId;
+  lead.userId = assignedUser._id as Types.ObjectId;
+  lead.score = calculateLeadScore(lead);
+
+  await createLeadActionHistoryService({
+    leadId: lead._id,
+    actionType: "lead_updated",
+    message: `Lead reassigned from user ${previousUserId} to ${assignedUser.firstName} by ${adminUserName}`,
+    userId: adminUserId,
+    userName: adminUserName,
+  });
+
+  return await lead.save();
 };
