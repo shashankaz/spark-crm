@@ -20,5 +20,6 @@ const commentSchema = new Schema<CommentDocument>(
   },
 );
 commentSchema.index({ leadId: 1 });
+commentSchema.index({ comment: "text" });
 
 export const Comment = model<CommentDocument>("Comment", commentSchema);
