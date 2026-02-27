@@ -1,7 +1,7 @@
-import { S3Client } from "@aws-sdk/client-s3";
+import { SQSClient } from "@aws-sdk/client-sqs";
 import { env } from "../config/env";
 
-export const s3 = new S3Client({
+export const sqs = new SQSClient({
   region: env.AWS_REGION,
   credentials: {
     accessKeyId: env.AWS_ACCESS_KEY_ID,
