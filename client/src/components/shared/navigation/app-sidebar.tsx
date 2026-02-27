@@ -7,6 +7,7 @@ import {
   UserPlus,
   Handshake,
   Users,
+  Workflow,
 } from "lucide-react";
 
 import {
@@ -48,6 +49,7 @@ const allLinks: {
       { to: "/organizations", label: "Organizations", icon: Building2 },
       { to: "/leads", label: "Leads", icon: UserPlus },
       { to: "/deals", label: "Deals", icon: Handshake },
+      { to: "/workflows", label: "Workflows", icon: Workflow },
       { to: "/users", label: "Users", icon: Users },
     ],
     user: [
@@ -55,6 +57,7 @@ const allLinks: {
       { to: "/organizations", label: "Organizations", icon: Building2 },
       { to: "/leads", label: "Leads", icon: UserPlus },
       { to: "/deals", label: "Deals", icon: Handshake },
+      { to: "/workflows", label: "Workflows", icon: Workflow },
     ],
   },
 };

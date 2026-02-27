@@ -9,3 +9,4 @@ export * from "./use-organization";
 export * from "./use-tenant";
 export * from "./use-theme";
 export * from "./use-user";
+export * from "./use-attachment";
