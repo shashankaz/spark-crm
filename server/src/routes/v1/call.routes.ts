@@ -2,8 +2,8 @@ import { Router } from "express";
 import {
   getAllCallsByLeadId,
   createCallForLead,
-} from "../../controllers/call.controller.js";
-import { requireAuth } from "../../middlewares/auth.middleware.js";
+} from "../../controllers/call.controller";
+import { requireAuth } from "../../middlewares/auth.middleware";
 
 const router = Router();
 

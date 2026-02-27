@@ -7,12 +7,12 @@ import {
   getSessions,
   editProfile,
   changePassword,
-} from "../../controllers/auth.controller.js";
-import { requireAuth } from "../../middlewares/auth.middleware.js";
+} from "../../controllers/auth.controller";
+import { requireAuth } from "../../middlewares/auth.middleware";
 import {
   loginLimiter,
   refreshLimiter,
-} from "../../middlewares/rate-limit.middleware.js";
+} from "../../middlewares/rate-limit.middleware";
 
 const router = Router();
 

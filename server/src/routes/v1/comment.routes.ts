@@ -2,8 +2,8 @@ import { Router } from "express";
 import {
   getAllCommentsByLeadId,
   createCommentForLead,
-} from "../../controllers/comment.controller.js";
-import { requireAuth } from "../../middlewares/auth.middleware.js";
+} from "../../controllers/comment.controller";
+import { requireAuth } from "../../middlewares/auth.middleware";
 
 const router = Router();
 

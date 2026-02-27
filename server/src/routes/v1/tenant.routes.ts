@@ -8,9 +8,9 @@ import {
   deleteTenantById,
   createUserForTenant,
   getUsersByTenantId,
-} from "../../controllers/tenant.controller.js";
-import { requireAuth } from "../../middlewares/auth.middleware.js";
-import { requireSuperAdmin } from "../../middlewares/role.middleware.js";
+} from "../../controllers/tenant.controller";
+import { requireAuth } from "../../middlewares/auth.middleware";
+import { requireSuperAdmin } from "../../middlewares/role.middleware";
 
 const router = Router();
 

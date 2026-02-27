@@ -2,8 +2,8 @@ import { Router } from "express";
 import {
   deleteDealById,
   getAllDeals,
-} from "../../controllers/deal.controller.js";
-import { requireAuth } from "../../middlewares/auth.middleware.js";
+} from "../../controllers/deal.controller";
+import { requireAuth } from "../../middlewares/auth.middleware";
 
 const router = Router();
 

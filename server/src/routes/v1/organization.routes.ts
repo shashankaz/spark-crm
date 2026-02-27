@@ -5,8 +5,8 @@ import {
   createOrganization,
   updateOrganizationById,
   deleteOrganizationById,
-} from "../../controllers/organization.controller.js";
-import { requireAuth } from "../../middlewares/auth.middleware.js";
+} from "../../controllers/organization.controller";
+import { requireAuth } from "../../middlewares/auth.middleware";
 
 const router = Router();
 

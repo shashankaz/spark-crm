@@ -9,8 +9,11 @@ import {
   bulkWriteLeads,
   convertLeadToDeal,
   getLeadActivityByLeadId,
-} from "../../controllers/lead.controller.js";
-import { requireAuth } from "../../middlewares/auth.middleware.js";
+  assignLead,
+  exportLeads,
+} from "../../controllers/lead.controller";
+import { requireAuth } from "../../middlewares/auth.middleware";
+import { requireAdmin } from "../../middlewares/role.middleware";
 
 const router = Router();
 
@@ -22,8 +25,11 @@ router.get("/activity/:id", getLeadActivityByLeadId);
 router.get("/:id", getLeadById);
 router.post("/", createLead);
 router.post("/bulk", bulkWriteLeads);
+router.post("/export", exportLeads);
 router.post("/:id/convert", convertLeadToDeal);
 router.patch("/:id", updateLeadById);
 router.delete("/:id", deleteLeadById);
+
+router.patch("/:id/assign", requireAdmin, assignLead);
 
 export default router;
