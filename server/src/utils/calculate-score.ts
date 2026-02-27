@@ -1,3 +1,5 @@
+import { LeadBase } from "../types/models/lead.model.types";
+
 const GENERIC_EMAIL_DOMAINS = Object.freeze([
   "gmail.com",
   "yahoo.com",
@@ -34,7 +36,7 @@ const MEDIUM_INTENT_KEYWORDS = Object.freeze([
   "signup",
 ]);
 
-export const calculateLeadScore = (lead) => {
+export const calculateLeadScore = (lead: LeadBase) => {
   if (!lead || typeof lead !== "object") return 0;
 
   let score = 0;
@@ -51,7 +53,7 @@ export const calculateLeadScore = (lead) => {
   ];
 
   completenessFields.forEach((field) => {
-    if (lead[field]) score += 5;
+    if (lead[field as keyof LeadBase]) score += 5;
   });
 
   if (lead.email && lead.email.includes("@")) {
