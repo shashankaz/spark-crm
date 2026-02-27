@@ -1,3 +1,3 @@
 export interface WorkerTaskPayload {
-  [key: string]: any;
+  [key: string]: string;
 }

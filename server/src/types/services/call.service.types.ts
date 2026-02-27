@@ -1,14 +1,16 @@
+import { Types } from "mongoose";
+
 export interface FetchCallsByLeadInput {
-  leadId: string;
-  cursor?: string;
+  leadId: Types.ObjectId;
+  cursor?: Types.ObjectId;
   limit: number;
   search?: string;
 }
 
 export interface CreateCallForLeadInput {
-  tenantId: string;
-  leadId: string;
-  userId: string;
+  tenantId: Types.ObjectId;
+  leadId: Types.ObjectId;
+  userId: Types.ObjectId;
   userName: string;
   type: string;
   from: string;
@@ -17,9 +19,9 @@ export interface CreateCallForLeadInput {
 }
 
 export interface CallResponse {
-  _id: string;
-  tenantId: string;
-  leadId: string;
+  _id: Types.ObjectId;
+  tenantId: Types.ObjectId;
+  leadId: Types.ObjectId;
   type: string;
   to: string;
   from: string;

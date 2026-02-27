@@ -1,19 +1,21 @@
+import { Types } from "mongoose";
+
 export interface FetchOrganizationsInput {
-  tenantId: string;
-  cursor?: string;
+  tenantId: Types.ObjectId;
+  cursor?: Types.ObjectId;
   limit: number;
   search?: string;
 }
 
 export interface FetchOrganizationByIdInput {
-  id: string;
-  tenantId: string;
+  id: Types.ObjectId;
+  tenantId: Types.ObjectId;
 }
 
 export interface CreateOrganizationInput {
-  idempotentId?: string;
-  tenantId: string;
-  userId?: string;
+  idempotentId?: Types.UUID;
+  tenantId: Types.ObjectId;
+  userId?: Types.ObjectId;
   name: string;
   industry?: string;
   size?: string;
@@ -27,9 +29,9 @@ export interface CreateOrganizationInput {
 }
 
 export interface UpdateOrganizationByIdInput {
-  id: string;
-  tenantId: string;
-  userId?: string;
+  id: Types.ObjectId;
+  tenantId: Types.ObjectId;
+  userId?: Types.ObjectId;
   name?: string;
   industry?: string;
   size?: string;
@@ -43,6 +45,6 @@ export interface UpdateOrganizationByIdInput {
 }
 
 export interface DeleteOrganizationByIdInput {
-  id: string;
-  tenantId: string;
+  id: Types.ObjectId;
+  tenantId: Types.ObjectId;
 }

@@ -1,3 +1,5 @@
+import { Types } from "mongoose";
+
 export interface LoginInput {
   email: string;
   password: string;
@@ -8,32 +10,32 @@ export interface RefreshTokenInput {
 }
 
 export interface LogoutInput {
-  userId: string;
+  userId: Types.ObjectId;
 }
 
 export interface GetUserProfileInput {
-  id: string;
+  id: Types.ObjectId;
 }
 
 export interface GetUserSessionsInput {
-  id: string;
+  id: Types.ObjectId;
 }
 
 export interface EditProfileInput {
-  id: string;
+  id: Types.ObjectId;
   firstName?: string;
   lastName?: string;
   mobile?: string;
 }
 
 export interface ChangePasswordInput {
-  id: string;
+  id: Types.ObjectId;
   currentPassword: string;
   newPassword: string;
 }
 
 export interface UserResponse {
-  _id: string;
+  _id: Types.ObjectId;
   firstName: string;
   lastName: string;
   email: string;
@@ -55,7 +57,7 @@ export interface RefreshTokenResponse {
 }
 
 export interface RefreshTokenPayload {
-  _id: string;
+  _id: Types.ObjectId;
   iat?: number;
   exp?: number;
 }

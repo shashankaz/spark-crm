@@ -1,12 +1,14 @@
+import { Types } from "mongoose";
+
 export interface FetchDealsInput {
-  tenantId: string;
-  cursor?: string;
+  tenantId: Types.ObjectId;
+  cursor?: Types.ObjectId;
   limit: number;
   search?: string;
 }
 
 export interface DealResponse {
-  _id: any;
+  _id: Types.ObjectId;
   name: string;
   value: number;
   probability: number;
@@ -19,6 +21,6 @@ export interface FetchDealsResponse {
 }
 
 export interface DeleteDealInput {
-  id: string;
-  tenantId: string;
+  id: Types.ObjectId;
+  tenantId: Types.ObjectId;
 }

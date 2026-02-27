@@ -1,14 +1,16 @@
+import { Types } from "mongoose";
+
 export interface FetchCommentsByLeadInput {
-  leadId: string;
-  cursor?: string;
+  leadId: Types.ObjectId;
+  cursor?: Types.ObjectId;
   limit: number;
   search?: string;
 }
 
 export interface CreateCommentForLeadInput {
-  tenantId: string;
-  leadId: string;
-  userId: string;
+  tenantId: Types.ObjectId;
+  leadId: Types.ObjectId;
+  userId: Types.ObjectId;
   userName: string;
   comment: string;
 }

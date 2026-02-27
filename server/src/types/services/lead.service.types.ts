@@ -1,21 +1,28 @@
+import { Types } from "mongoose";
+
 export interface FetchLeadsInput {
-  tenantId: string;
-  cursor?: string;
+  tenantId: Types.ObjectId;
+  cursor?: Types.ObjectId;
   limit: number;
   search?: string;
+  orgId?: Types.ObjectId;
+  userId?: Types.ObjectId;
+  role?: string;
 }
 
 export interface FetchLeadByIdInput {
-  id: string;
-  tenantId: string;
+  id: Types.ObjectId;
+  tenantId: Types.ObjectId;
+  userId?: Types.ObjectId;
+  role?: string;
 }
 
 export interface CreateLeadInput {
-  idempotentId?: string;
-  tenantId: string;
-  orgId?: string;
+  idempotentId?: Types.UUID;
+  tenantId: Types.ObjectId;
+  orgId?: Types.ObjectId;
   orgName?: string;
-  userId?: string;
+  userId?: Types.ObjectId;
   userName: string;
   firstName?: string;
   lastName?: string;
@@ -26,11 +33,11 @@ export interface CreateLeadInput {
 }
 
 export interface UpdateLeadByIdInput {
-  id: string;
-  tenantId: string;
-  orgId?: string;
+  id: Types.ObjectId;
+  tenantId: Types.ObjectId;
+  orgId?: Types.ObjectId;
   orgName?: string;
-  userId?: string;
+  userId?: Types.ObjectId;
   userName: string;
   firstName?: string;
   lastName?: string;
@@ -42,34 +49,44 @@ export interface UpdateLeadByIdInput {
 }
 
 export interface DeleteLeadByIdInput {
-  id: string;
-  tenantId: string;
-  userId: string;
+  id: Types.ObjectId;
+  tenantId: Types.ObjectId;
+  userId: Types.ObjectId;
   userName: string;
 }
 
 export interface BulkWriteLeadsInput {
-  tenantId: string;
-  leads: any[];
+  tenantId: Types.ObjectId;
+  leads: string[];
 }
 
 export interface ConvertLeadToDealInput {
-  id: string;
-  tenantId: string;
-  userId: string;
+  id: Types.ObjectId;
+  tenantId: Types.ObjectId;
+  userId: Types.ObjectId;
   userName: string;
-  idempotentId?: string;
+  idempotentId?: Types.UUID;
   dealName?: string;
   value?: number;
   probability?: number;
 }
 
 export interface FetchOrganizationsForLeadInput {
-  tenantId: string;
+  tenantId: Types.ObjectId;
   limit: number;
   search?: string;
+  userId?: Types.ObjectId;
+  role?: string;
 }
 
 export interface FetchLeadActivityByLeadIdInput {
-  leadId: string;
+  leadId: Types.ObjectId;
+}
+
+export interface AssignLeadInput {
+  leadId: Types.ObjectId;
+  tenantId: Types.ObjectId;
+  assignedUserId: Types.ObjectId;
+  adminUserId: Types.ObjectId;
+  adminUserName: string;
 }

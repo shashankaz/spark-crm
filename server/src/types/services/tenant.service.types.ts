@@ -1,15 +1,17 @@
+import { Types } from "mongoose";
+
 export interface FetchTenantsInput {
-  cursor?: string;
+  cursor?: Types.ObjectId;
   limit: number;
   search?: string;
 }
 
 export interface FetchTenantByIdInput {
-  id: string;
+  id: Types.ObjectId;
 }
 
 export interface FetchUsersByTenantIdInput {
-  tenantId: string;
+  tenantId: Types.ObjectId;
   search?: string;
 }
 
@@ -31,7 +33,7 @@ export interface CreateTenantInput {
 }
 
 export interface UpdateTenantByIdInput {
-  id: string;
+  id: Types.ObjectId;
   name?: string;
   gstNumber?: string;
   panNumber?: string;
@@ -49,11 +51,11 @@ export interface UpdateTenantByIdInput {
 }
 
 export interface DeleteTenantByIdInput {
-  id: string;
+  id: Types.ObjectId;
 }
 
 export interface CreateUserForTenantInput {
-  tenantId: string;
+  tenantId: Types.ObjectId;
   name: string;
   email: string;
   mobile?: string;

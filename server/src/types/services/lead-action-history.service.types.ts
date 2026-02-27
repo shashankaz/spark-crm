@@ -1,7 +1,9 @@
+import { Types } from "mongoose";
+
 export interface CreateLeadActionHistoryInput {
-  leadId: any;
+  leadId: Types.ObjectId;
   actionType: string;
   message: string;
-  userId: any;
+  userId: Types.ObjectId;
   userName: string;
 }

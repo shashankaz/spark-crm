@@ -1,17 +1,19 @@
+import { Types } from "mongoose";
+
 export interface FetchUsersInput {
-  tenantId: string;
-  cursor?: string;
+  tenantId: Types.ObjectId;
+  cursor?: Types.ObjectId;
   limit: number;
   search?: string;
 }
 
 export interface FetchUserByIdInput {
-  tenantId: string;
-  id: string;
+  tenantId: Types.ObjectId;
+  id: Types.ObjectId;
 }
 
 export interface CreateUserInput {
-  tenantId: string;
+  tenantId: Types.ObjectId;
   firstName: string;
   lastName?: string;
   email: string;
@@ -21,8 +23,8 @@ export interface CreateUserInput {
 }
 
 export interface UpdateUserInput {
-  tenantId: string;
-  id: string;
+  tenantId: Types.ObjectId;
+  id: Types.ObjectId;
   firstName?: string;
   lastName?: string;
   email?: string;
@@ -32,6 +34,6 @@ export interface UpdateUserInput {
 }
 
 export interface RemoveUserInput {
-  tenantId: string;
-  id: string;
+  tenantId: Types.ObjectId;
+  id: Types.ObjectId;
 }
