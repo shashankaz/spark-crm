@@ -10,4 +10,5 @@ export const actionTypes = [
   "lead_commented",
   "lead_score_updated",
   "lead_assigned",
+  "lead_attachment_added",
 ];

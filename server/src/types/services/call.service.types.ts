@@ -20,7 +20,6 @@ export interface CreateCallForLeadInput {
 
 export interface CallResponse {
   _id: Types.ObjectId;
-  tenantId: Types.ObjectId;
   leadId: Types.ObjectId;
   type: string;
   to: string;
@@ -28,7 +27,6 @@ export interface CallResponse {
   status: string;
   duration: number;
   createdAt: Date;
-  updatedAt: Date;
 }
 
 export interface FetchCallsByLeadResponse {

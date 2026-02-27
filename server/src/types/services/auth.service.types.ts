@@ -55,9 +55,3 @@ export interface RefreshTokenResponse {
   accessToken: string;
   refreshToken: string;
 }
-
-export interface RefreshTokenPayload {
-  _id: Types.ObjectId;
-  iat?: number;
-  exp?: number;
-}

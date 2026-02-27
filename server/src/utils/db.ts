@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-import { env } from "../config/env.js";
+import { env } from "../config/env";
 
 export class Database {
-  static connection = null;
+  static connection: typeof mongoose | null = null;
 
   static async connect() {
     if (this.connection) {
