@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 import { formatDate } from "date-fns";
-import { Tenant } from "../models/tenant.model.js";
-import { User } from "../models/user.model.js";
-import { hashPassword } from "../utils/auth/bcrypt.js";
-import { AppError } from "../shared/app-error.js";
-import { PLAN_PRICES } from "../utils/plans.js";
-import { calcChange } from "../utils/stats-helper.js";
+import { Tenant } from "../models/tenant.model";
+import { User } from "../models/user.model";
+import { hashPassword } from "../utils/auth/bcrypt";
+import { AppError } from "../shared/app-error";
+import { PLAN_PRICES } from "../utils/plans";
+import { calcChange } from "../utils/stats-helper";
+import { sendAdminMail, sendUserWelcomeMail } from "./email.service";
 import {
-  FetchTenantDashboardStatsInput,
   FetchTenantsInput,
   FetchTenantByIdInput,
   FetchUsersByTenantIdInput,
@@ -16,10 +16,11 @@ import {
   DeleteTenantByIdInput,
   CreateUserForTenantInput,
 } from "../types/services/tenant.service.types";
+import { TenantDocument, TenantPlan } from "../types/models/tenant.model.types";
 
-export const fetchTenantDashboardStatsService = async (
-  input?: FetchTenantDashboardStatsInput,
-) => {
+const tempPasswordGlobal = "Asdf@1234";
+
+export const fetchTenantDashboardStatsService = async () => {
   const now = new Date();
   const startOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
@@ -77,20 +78,22 @@ export const fetchTenantDashboardStatsService = async (
   const usersLastMonth = userAgg[0].lastMonth[0]?.count ?? 0;
 
   const currentRevenue = planCounts.reduce(
-    (sum, p) => sum + (PLAN_PRICES[p._id] || 0) * p.count,
+    (sum: number, p) =>
+      sum + (PLAN_PRICES[p._id as keyof typeof PLAN_PRICES] || 0) * p.count,
     0,
   );
   const lastMonthRevenue = lastMonthPlanCounts.reduce(
-    (sum, p) => sum + (PLAN_PRICES[p._id] || 0) * p.count,
+    (sum: number, p) =>
+      sum + (PLAN_PRICES[p._id as keyof typeof PLAN_PRICES] || 0) * p.count,
     0,
   );
 
   const paidPlans = planCounts
     .filter((p) => p._id !== "free")
-    .reduce((sum, p) => sum + p.count, 0);
+    .reduce((sum: number, p) => sum + p.count, 0);
   const lastMonthPaidPlans = lastMonthPlanCounts
     .filter((p) => p._id !== "free")
-    .reduce((sum, p) => sum + p.count, 0);
+    .reduce((sum: number, p) => sum + p.count, 0);
 
   const stats = {
     totalTenants: {
@@ -115,7 +118,7 @@ export const fetchTenantDashboardStatsService = async (
     },
   };
 
-  const recentTenants = tenantAgg[0].recent.map((t) => ({
+  const recentTenants = tenantAgg[0].recent.map((t: TenantDocument) => ({
     _id: t._id,
     name: t.name,
     email: t.email,
@@ -138,7 +141,7 @@ export const fetchTenantsService = async ({
   limit,
   search,
 }: FetchTenantsInput) => {
-  const countQuery = { isDeleted: false };
+  const countQuery: any = { isDeleted: false };
   if (search) {
     countQuery.name = { $regex: search, $options: "i" };
   }
@@ -188,7 +191,7 @@ export const fetchUsersByTenantIdService = async ({
   tenantId,
   search,
 }: FetchUsersByTenantIdInput) => {
-  const whereQuery = { tenantId };
+  const whereQuery: any = { tenantId };
   if (search) {
     whereQuery.$or = [
       { firstName: { $regex: search, $options: "i" } },
@@ -252,12 +255,7 @@ export const createTenantService = async ({
     const createdTenant = tenant[0];
 
     // const tempPassword = randomBytes(9).toString("base64");
-    const tempPassword = "Asdf@1234";
-    const hashedPassword = await hashPassword(tempPassword);
-
-    console.log(
-      `Creating admin user for tenant ${createdTenant._id} with email ${email} and temp password ${tempPassword}`,
-    );
+    const hashedPassword = await hashPassword(tempPasswordGlobal);
 
     await User.create(
       [
@@ -275,6 +273,8 @@ export const createTenantService = async ({
     );
 
     await session.commitTransaction();
+
+    await sendAdminMail({ userEmail: email }, tempPasswordGlobal);
 
     return { tenant: createdTenant };
   } catch (error) {
@@ -306,9 +306,11 @@ export const updateTenantByIdService = async ({
   tenant.email = email || tenant.email;
   tenant.mobile = mobile || tenant.mobile;
   tenant.address = address || tenant.address;
-  tenant.plan = plan || tenant.plan;
+  tenant.plan = (plan as TenantPlan) || tenant.plan;
 
-  return tenant.save();
+  const updated = await tenant.save();
+
+  return updated;
 };
 
 export const deleteTenantByIdService = async ({
@@ -342,9 +344,10 @@ export const createUserForTenantService = async ({
     throw new AppError("Tenant not found", 404);
   }
 
-  const hashedPassword = await hashPassword(password);
+  const tempPassword = (password as string) || tempPasswordGlobal;
+  const hashedPassword = await hashPassword(tempPassword);
 
-  return User.create({
+  const newUser = await User.create({
     tenantId,
     firstName: name.split(" ")[0],
     lastName: name.split(" ").slice(1).join(" ") || "",
@@ -353,4 +356,12 @@ export const createUserForTenantService = async ({
     password: hashedPassword,
     role,
   });
+
+  await sendUserWelcomeMail({
+    userEmail: email,
+    userName: name.split(" ")[0],
+    tempPassword,
+  });
+
+  return newUser;
 };
