@@ -1,23 +1,23 @@
-import { AppError } from "../shared/app-error.js";
+import { NextFunction, Request, Response } from "express";
+import { AppError } from "../shared/app-error";
 
-export const globalErrorHandler = (err, req, res, next) => {
+export const globalErrorHandler = (
+  err: AppError,
+  _req: Request,
+  res: Response,
+  _next: NextFunction,
+) => {
   console.error(err);
 
   if (err instanceof AppError) {
     return res.status(err.statusCode).json({
       success: false,
       message: err.message,
-      error: {
-        details: err.details ?? null,
-      },
     });
   }
 
   return res.status(500).json({
     success: false,
     message: "Internal server error",
-    error: {
-      details: null,
-    },
   });
 };
