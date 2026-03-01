@@ -13,13 +13,17 @@ export const generateUploadUrl = asyncHandler(
       throw new AppError("Type, fileName and fileType are required", 400);
     }
 
-    const data = await generateUploadUrlService({
+    const { signedUrl, key, fileUrl } = await generateUploadUrlService({
       type,
       fileName,
       fileType,
       userId,
     });
 
-    sendSuccess(res, 200, "Signed URL generated successfully", { data });
+    sendSuccess(res, 200, "Signed URL generated successfully", {
+      signedUrl,
+      key,
+      fileUrl,
+    });
   },
 );
