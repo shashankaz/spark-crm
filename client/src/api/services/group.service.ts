@@ -5,7 +5,9 @@ import type {
   CampaignResponse,
   CampaignResult,
   CreateGroupRequest,
+  DeleteGroupRequest,
   DeleteGroupResponse,
+  GetGroupRequest,
   GetGroupResponse,
   GetGroupsResponse,
   GroupData,
@@ -26,7 +28,9 @@ export const getGroups = async (): Promise<GetGroupsResponse> =>
     };
   });
 
-export const getGroup = async (id: string): Promise<GetGroupResponse> =>
+export const getGroup = async ({
+  id,
+}: GetGroupRequest): Promise<GetGroupResponse> =>
   withApiHandler(async () => {
     const response = await api.get<ApiResponse<GroupData>>(`/group/${id}`);
 
@@ -70,8 +74,11 @@ export const updateGroup = async (
     };
   });
 
-export const deleteGroup = async (id: string): Promise<DeleteGroupResponse> =>
+export const deleteGroup = async (
+  params: DeleteGroupRequest,
+): Promise<DeleteGroupResponse> =>
   withApiHandler(async () => {
+    const { id } = params;
     const response = await api.delete<ApiResponse<void>>(`/group/${id}`);
 
     const { message } = response.data;

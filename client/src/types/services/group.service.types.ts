@@ -14,6 +14,10 @@ export type CampaignResult = {
   failed: number;
 };
 
+export type GetGroupRequest = {
+  id: string;
+};
+
 export type CreateGroupRequest = {
   name: string;
   description?: string;
@@ -43,6 +47,10 @@ export type GetGroupsResponse = {
 export type GetGroupResponse = {
   message: string;
   group: Group;
+};
+
+export type DeleteGroupRequest = {
+  id: string;
 };
 
 export type DeleteGroupResponse = {

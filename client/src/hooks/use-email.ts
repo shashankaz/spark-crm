@@ -1,7 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getAllCommentsByLeadId, createCommentForLead } from "@/api/services";
+import { getAllEmailsByLeadId, sendEmailForLead } from "@/api/services";
+import { buildQueryParams } from "@/api/query-params";
 
-export const useComments = ({
+export const useEmails = ({
   leadId,
   cursor,
   limit = 10,
@@ -14,24 +15,23 @@ export const useComments = ({
   search?: string;
   enabled?: boolean;
 }) => {
+  const query = buildQueryParams({ cursor, limit, search });
+
   return useQuery({
-    queryKey: ["comments", leadId, { cursor, limit, search }],
-    queryFn: () => getAllCommentsByLeadId({ leadId, cursor, limit, search }),
+    queryKey: ["emails", leadId, query],
+    queryFn: () => getAllEmailsByLeadId({ leadId, cursor, limit, search }),
     enabled: enabled ?? !!leadId,
   });
 };
 
-export const useCreateComment = () => {
+export const useSendEmail = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: createCommentForLead,
+    mutationFn: sendEmailForLead,
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: ["comments", variables.leadId],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["lead", variables.leadId],
+        queryKey: ["emails", variables.leadId],
       });
       queryClient.invalidateQueries({
         queryKey: ["lead-activity", variables.leadId],
