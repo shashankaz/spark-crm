@@ -1,159 +1,105 @@
 import { api } from "@/api";
-import type { User, Session } from "@/types";
+import { withApiHandler } from "@/api/api-handler";
+import type { ApiResponse } from "@/api/api-response";
+import type {
+  ChangePasswordRequest,
+  ChangePasswordResponse,
+  EditProfileRequest,
+  EditProfileResponse,
+  GetProfileResponse,
+  GetSessionsResponse,
+  LoginRequest,
+  LoginResponse,
+  LogoutResponse,
+  RefreshTokenResponse,
+  SessionsData,
+  UserData,
+} from "@/types/services";
 
-export type LoginResponse = {
-  message: string;
-  user: User;
-};
+export const login = async (params: LoginRequest): Promise<LoginResponse> =>
+  withApiHandler(async () => {
+    const response = await api.post<ApiResponse<UserData>>(
+      "/auth/login",
+      params,
+    );
 
-export type RefreshTokenResponse = {
-  message: string;
-};
+    const { message, data } = response.data;
 
-export type LogoutResponse = {
-  message: string;
-};
+    return {
+      message,
+      user: data.user,
+    };
+  });
 
-export type GetProfileResponse = {
-  message: string;
-  user: User;
-};
+export const refreshToken = async (): Promise<RefreshTokenResponse> =>
+  withApiHandler(async () => {
+    const response = await api.post<ApiResponse<void>>("/auth/refresh");
 
-export type GetSessionsResponse = {
-  message: string;
-  sessions: Session[];
-};
+    return {
+      message: response.data.message,
+    };
+  });
 
-export type EditProfileResponse = {
-  message: string;
-  user: User;
-};
+export const logout = async (): Promise<LogoutResponse> =>
+  withApiHandler(async () => {
+    const response = await api.post<ApiResponse<void>>("/auth/logout");
 
-export type ChangePasswordResponse = {
-  message: string;
-};
+    return {
+      message: response.data.message,
+    };
+  });
 
-export const login = async ({
-  email,
-  password,
-}: {
-  email: string;
-  password: string;
-}): Promise<LoginResponse> => {
-  try {
-    const response = await api.post("/auth/login", {
-      email,
-      password,
-    });
+export const getProfile = async (): Promise<GetProfileResponse> =>
+  withApiHandler(async () => {
+    const response = await api.get<ApiResponse<UserData>>("/auth/profile");
 
-    const { message } = response.data;
-    const { user } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, user };
-  } catch (error) {
-    console.error("Login error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      user: data.user,
+    };
+  });
 
-export const refreshToken = async (): Promise<RefreshTokenResponse> => {
-  try {
-    const response = await api.post("/auth/refresh");
+export const getSessions = async (): Promise<GetSessionsResponse> =>
+  withApiHandler(async () => {
+    const response = await api.get<ApiResponse<SessionsData>>("/auth/sessions");
 
-    const { message } = response.data;
+    const { message, data } = response.data;
 
-    return { message };
-  } catch (error) {
-    console.error("Refresh token error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      sessions: data.sessions,
+    };
+  });
 
-export const logout = async (): Promise<LogoutResponse> => {
-  try {
-    const response = await api.post("/auth/logout");
+export const editProfile = async (
+  params: EditProfileRequest,
+): Promise<EditProfileResponse> =>
+  withApiHandler(async () => {
+    const response = await api.patch<ApiResponse<UserData>>(
+      "/auth/profile",
+      params,
+    );
 
-    const { message } = response.data;
+    const { message, data } = response.data;
 
-    return { message };
-  } catch (error) {
-    console.error("Logout error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      user: data.user,
+    };
+  });
 
-export const getProfile = async (): Promise<GetProfileResponse> => {
-  try {
-    const response = await api.get("/auth/profile");
+export const changePassword = async (
+  params: ChangePasswordRequest,
+): Promise<ChangePasswordResponse> =>
+  withApiHandler(async () => {
+    const response = await api.post<ApiResponse<void>>(
+      "/auth/change-password",
+      params,
+    );
 
-    const { message } = response.data;
-    const { user } = response.data.data;
-
-    return { message, user };
-  } catch (error) {
-    console.error("Get profile error:", error);
-    throw error;
-  }
-};
-
-export const getSessions = async (): Promise<GetSessionsResponse> => {
-  try {
-    const response = await api.get("/auth/sessions");
-
-    const { message } = response.data;
-    const { sessions } = response.data.data;
-
-    return { message, sessions };
-  } catch (error) {
-    console.error("Get sessions error:", error);
-    throw error;
-  }
-};
-
-export const editProfile = async ({
-  firstName,
-  lastName,
-  mobile,
-}: {
-  firstName?: string;
-  lastName?: string;
-  mobile?: string;
-}): Promise<EditProfileResponse> => {
-  try {
-    const response = await api.patch("/auth/profile", {
-      firstName,
-      lastName,
-      mobile,
-    });
-
-    const { message } = response.data;
-    const { user } = response.data.data;
-
-    return { message, user };
-  } catch (error) {
-    console.error("Edit profile error:", error);
-    throw error;
-  }
-};
-
-export const changePassword = async ({
-  currentPassword,
-  newPassword,
-}: {
-  currentPassword: string;
-  newPassword: string;
-}): Promise<ChangePasswordResponse> => {
-  try {
-    const response = await api.post("/auth/change-password", {
-      currentPassword,
-      newPassword,
-    });
-
-    const { message } = response.data;
-
-    return { message };
-  } catch (error) {
-    console.error("Change password error:", error);
-    throw error;
-  }
-};
+    return {
+      message: response.data.message,
+    };
+  });

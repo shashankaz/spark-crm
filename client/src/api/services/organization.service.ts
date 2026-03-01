@@ -1,187 +1,108 @@
 import { api } from "@/api";
+import { withApiHandler } from "@/api/api-handler";
 import { buildQueryParams } from "@/api/query-params";
-import type { Organization } from "@/types";
+import type { ApiResponse } from "@/api/api-response";
+import type {
+  CreateOrganizationRequest,
+  CreateOrganizationResponse,
+  DeletedOrganizationData,
+  DeleteOrganizationByIdRequest,
+  DeleteOrganizationResponse,
+  GetAllOrganizationsRequest,
+  GetAllOrganizationsResponse,
+  GetOrganizationByIdRequest,
+  GetOrganizationByIdResponse,
+  OrganizationData,
+  OrganizationsData,
+  UpdatedOrganizationData,
+  UpdateOrganizationByIdRequest,
+  UpdateOrganizationResponse,
+} from "@/types/services";
 
-export type GetAllOrganizationsResponse = {
-  message: string;
-  organizations: Organization[];
-  totalCount: number;
-};
-
-export type GetOrganizationByIdResponse = {
-  message: string;
-  organization: Organization;
-};
-
-export type CreateOrganizationResponse = {
-  message: string;
-  organization: Organization;
-};
-
-export type UpdateOrganizationResponse = {
-  message: string;
-  updatedOrganization: Organization;
-};
-
-export type DeleteOrganizationResponse = {
-  message: string;
-  id: string;
-};
-
-export const getAllOrganizations = async ({
-  cursor,
-  limit = 10,
-  search,
-}: {
-  cursor?: string;
-  limit?: number;
-  search?: string;
-}): Promise<GetAllOrganizationsResponse> => {
-  try {
+export const getAllOrganizations = async (
+  params: GetAllOrganizationsRequest,
+): Promise<GetAllOrganizationsResponse> =>
+  withApiHandler(async () => {
+    const { cursor, limit = 10, search } = params;
     const query = buildQueryParams({ cursor, limit, search });
-    const response = await api.get(`/organization${query ? `?${query}` : ""}`);
+    const response = await api.get<ApiResponse<OrganizationsData>>(
+      `/organization${query ? `?${query}` : ""}`,
+    );
 
-    const { message } = response.data;
-    const { organizations, totalCount } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, organizations, totalCount };
-  } catch (error) {
-    console.error("Get all organizations error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      organizations: data.organizations,
+      totalCount: data.totalCount,
+    };
+  });
 
-export const getOrganizationById = async ({
-  id,
-}: {
-  id: string;
-}): Promise<GetOrganizationByIdResponse> => {
-  try {
-    const response = await api.get(`/organization/${id}`);
+export const getOrganizationById = async (
+  params: GetOrganizationByIdRequest,
+): Promise<GetOrganizationByIdResponse> =>
+  withApiHandler(async () => {
+    const { id } = params;
+    const response = await api.get<ApiResponse<OrganizationData>>(
+      `/organization/${id}`,
+    );
 
-    const { message } = response.data;
-    const { organization } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, organization };
-  } catch (error) {
-    console.error("Get organization by ID error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      organization: data.organization,
+    };
+  });
 
-export const createOrganization = async ({
-  idempotentId,
-  name,
-  industry,
-  size,
-  country,
-  email,
-  mobile,
-  website,
-  contactName,
-  contactEmail,
-  contactMobile,
-}: {
-  idempotentId: string;
-  name: string;
-  industry?: string;
-  size?: string;
-  country?: string;
-  email?: string;
-  mobile?: string;
-  website?: string;
-  contactName?: string;
-  contactEmail?: string;
-  contactMobile?: string;
-}): Promise<CreateOrganizationResponse> => {
-  try {
-    const response = await api.post("/organization", {
-      idempotentId,
-      name,
-      industry,
-      size,
-      country,
-      email,
-      mobile,
-      website,
-      contactName,
-      contactEmail,
-      contactMobile,
-    });
+export const createOrganization = async (
+  params: CreateOrganizationRequest,
+): Promise<CreateOrganizationResponse> =>
+  withApiHandler(async () => {
+    const response = await api.post<ApiResponse<OrganizationData>>(
+      "/organization",
+      params,
+    );
 
-    const { message } = response.data;
-    const { organization } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, organization };
-  } catch (error) {
-    console.error("Create organization error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      organization: data.organization,
+    };
+  });
 
-export const updateOrganizationById = async ({
-  id,
-  name,
-  industry,
-  size,
-  country,
-  email,
-  mobile,
-  website,
-  contactName,
-  contactEmail,
-  contactMobile,
-}: {
-  id: string;
-  name?: string;
-  industry?: string;
-  size?: string;
-  country?: string;
-  email?: string;
-  mobile?: string;
-  website?: string;
-  contactName?: string;
-  contactEmail?: string;
-  contactMobile?: string;
-}): Promise<UpdateOrganizationResponse> => {
-  try {
-    const response = await api.patch(`/organization/${id}`, {
-      name,
-      industry,
-      size,
-      country,
-      email,
-      mobile,
-      website,
-      contactName,
-      contactEmail,
-      contactMobile,
-    });
+export const updateOrganizationById = async (
+  params: UpdateOrganizationByIdRequest,
+): Promise<UpdateOrganizationResponse> =>
+  withApiHandler(async () => {
+    const { id, ...body } = params;
+    const response = await api.patch<ApiResponse<UpdatedOrganizationData>>(
+      `/organization/${id}`,
+      body,
+    );
 
-    const { message } = response.data;
-    const { updatedOrganization } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, updatedOrganization };
-  } catch (error) {
-    console.error("Update organization error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      updatedOrganization: data.updatedOrganization,
+    };
+  });
 
-export const deleteOrganizationById = async ({
-  id,
-}: {
-  id: string;
-}): Promise<DeleteOrganizationResponse> => {
-  try {
-    const response = await api.delete(`/organization/${id}`);
+export const deleteOrganizationById = async (
+  params: DeleteOrganizationByIdRequest,
+): Promise<DeleteOrganizationResponse> =>
+  withApiHandler(async () => {
+    const { id } = params;
+    const response = await api.delete<ApiResponse<DeletedOrganizationData>>(
+      `/organization/${id}`,
+    );
 
-    const { message } = response.data;
-    const { id: deletedId } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, id: deletedId };
-  } catch (error) {
-    console.error("Delete organization error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      id: data.id,
+    };
+  });

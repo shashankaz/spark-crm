@@ -1,292 +1,187 @@
 import { api } from "@/api";
+import { withApiHandler } from "@/api/api-handler";
 import { buildQueryParams } from "@/api/query-params";
-import type { Deal, Lead, LeadActionHistory } from "@/types";
+import type { ApiResponse } from "@/api/api-response";
+import type {
+  ActivitiesData,
+  AssignLeadRequest,
+  AssignLeadResponse,
+  ConvertLeadToDealRequest,
+  ConvertLeadToDealResponse,
+  CreateLeadRequest,
+  CreateLeadResponse,
+  DealData,
+  DeletedLeadData,
+  DeleteLeadByIdRequest,
+  DeleteLeadResponse,
+  GetAllLeadsRequest,
+  GetAllLeadsResponse,
+  GetLeadActivityByLeadIdRequest,
+  GetLeadActivityByLeadIdResponse,
+  GetLeadByIdRequest,
+  GetLeadByIdResponse,
+  GetLeadOrganizationsRequest,
+  GetLeadOrganizationsResponse,
+  LeadData,
+  LeadsData,
+  OrganizationsData,
+  UpdatedLeadData,
+  UpdateLeadByIdRequest,
+  UpdateLeadResponse,
+} from "@/types/services";
 
-export type GetAllLeadsResponse = {
-  message: string;
-  leads: Lead[];
-  totalCount: number;
-};
-
-export type GetLeadByIdResponse = {
-  message: string;
-  lead: Lead;
-};
-
-export type CreateLeadResponse = {
-  message: string;
-  lead: Lead;
-};
-
-export type UpdateLeadResponse = {
-  message: string;
-  lead: Lead;
-};
-
-export type DeleteLeadResponse = {
-  message: string;
-  id: string;
-};
-
-export type GetLeadOrganizationsResponse = {
-  message: string;
-  organizations: { _id: string; name: string }[];
-};
-
-export type GetLeadActivityByLeadIdResponse = {
-  message: string;
-  activities: LeadActionHistory[];
-};
-
-export type ConvertLeadToDealResponse = {
-  message: string;
-  deal: Deal;
-};
-
-export type AssignLeadResponse = {
-  message: string;
-  lead: Lead;
-};
-
-export const getAllLeads = async ({
-  cursor,
-  limit = 10,
-  search,
-  orgId,
-}: {
-  cursor?: string;
-  limit?: number;
-  search?: string;
-  orgId?: string;
-}): Promise<GetAllLeadsResponse> => {
-  try {
+export const getAllLeads = async (
+  params: GetAllLeadsRequest,
+): Promise<GetAllLeadsResponse> =>
+  withApiHandler(async () => {
+    const { cursor, limit = 10, search, orgId } = params;
     const query = buildQueryParams({ cursor, limit, search, orgId });
-    const response = await api.get(`/lead${query ? `?${query}` : ""}`);
+    const response = await api.get<ApiResponse<LeadsData>>(
+      `/lead${query ? `?${query}` : ""}`,
+    );
 
-    const { message } = response.data;
-    const { leads, totalCount } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, leads, totalCount };
-  } catch (error) {
-    console.error("Get all leads error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      leads: data.leads,
+      totalCount: data.totalCount,
+    };
+  });
 
-export const getLeadById = async ({
-  id,
-}: {
-  id: string;
-}): Promise<GetLeadByIdResponse> => {
-  try {
-    const response = await api.get(`/lead/${id}`);
+export const getLeadById = async (
+  params: GetLeadByIdRequest,
+): Promise<GetLeadByIdResponse> =>
+  withApiHandler(async () => {
+    const { id } = params;
+    const response = await api.get<ApiResponse<LeadData>>(`/lead/${id}`);
 
-    const { message } = response.data;
-    const { lead } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, lead };
-  } catch (error) {
-    console.error("Get lead by ID error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      lead: data.lead,
+    };
+  });
 
-export const createLead = async ({
-  idempotentId,
-  orgId,
-  orgName,
-  firstName,
-  lastName,
-  email,
-  mobile,
-  gender,
-  source,
-}: {
-  idempotentId: string;
-  orgId: string;
-  orgName: string;
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  mobile?: string;
-  gender?: string;
-  source?: string;
-}): Promise<CreateLeadResponse> => {
-  try {
-    const response = await api.post("/lead", {
-      idempotentId,
-      orgId,
-      orgName,
-      firstName,
-      lastName,
-      email,
-      mobile,
-      gender,
-      source,
-    });
+export const createLead = async (
+  params: CreateLeadRequest,
+): Promise<CreateLeadResponse> =>
+  withApiHandler(async () => {
+    const response = await api.post<ApiResponse<LeadData>>("/lead", params);
 
-    const { message } = response.data;
-    const { lead } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, lead };
-  } catch (error) {
-    console.error("Create lead error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      lead: data.lead,
+    };
+  });
 
-export const updateLeadById = async ({
-  id,
-  orgId,
-  orgName,
-  firstName,
-  lastName,
-  email,
-  mobile,
-  gender,
-  source,
-  status,
-}: {
-  id: string;
-  orgId?: string;
-  orgName?: string;
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  mobile?: string;
-  gender?: string;
-  source?: string;
-  status?: string;
-}): Promise<UpdateLeadResponse> => {
-  try {
-    const response = await api.patch(`/lead/${id}`, {
-      orgId,
-      orgName,
-      firstName,
-      lastName,
-      email,
-      mobile,
-      gender,
-      source,
-      status,
-    });
+export const updateLeadById = async (
+  params: UpdateLeadByIdRequest,
+): Promise<UpdateLeadResponse> =>
+  withApiHandler(async () => {
+    const { id, ...body } = params;
+    const response = await api.patch<ApiResponse<UpdatedLeadData>>(
+      `/lead/${id}`,
+      body,
+    );
 
-    const { message } = response.data;
-    const { updatedLead } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, lead: updatedLead };
-  } catch (error) {
-    console.error("Update lead error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      lead: data.updatedLead,
+    };
+  });
 
-export const deleteLeadById = async ({
-  id,
-}: {
-  id: string;
-}): Promise<DeleteLeadResponse> => {
-  try {
-    const response = await api.delete(`/lead/${id}`);
+export const deleteLeadById = async (
+  params: DeleteLeadByIdRequest,
+): Promise<DeleteLeadResponse> =>
+  withApiHandler(async () => {
+    const { id } = params;
+    const response = await api.delete<ApiResponse<DeletedLeadData>>(
+      `/lead/${id}`,
+    );
 
-    const { message } = response.data;
-    const { id: deletedId } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, id: deletedId };
-  } catch (error) {
-    console.error("Delete lead error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      id: data.id,
+    };
+  });
 
-export const getLeadActivityByLeadId = async ({
-  id,
-}: {
-  id: string;
-}): Promise<GetLeadActivityByLeadIdResponse> => {
-  try {
-    const response = await api.get(`/lead/activity/${id}`);
+export const getLeadActivityByLeadId = async (
+  params: GetLeadActivityByLeadIdRequest,
+): Promise<GetLeadActivityByLeadIdResponse> =>
+  withApiHandler(async () => {
+    const { id } = params;
+    const response = await api.get<ApiResponse<ActivitiesData>>(
+      `/lead/activity/${id}`,
+    );
 
-    const { message } = response.data;
-    const { activities } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, activities };
-  } catch (error) {
-    console.error("Get lead activity by lead ID error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      activities: data.activities,
+    };
+  });
 
-export const convertLeadToDeal = async ({
-  id,
-  idempotentId,
-  dealName,
-  value,
-  probability,
-}: {
-  id: string;
-  idempotentId: string;
-  dealName?: string;
-  value?: number;
-  probability?: number;
-}): Promise<ConvertLeadToDealResponse> => {
-  try {
-    const response = await api.post(`/lead/${id}/convert`, {
-      idempotentId,
-      dealName,
-      value,
-      probability,
-    });
+export const convertLeadToDeal = async (
+  params: ConvertLeadToDealRequest,
+): Promise<ConvertLeadToDealResponse> =>
+  withApiHandler(async () => {
+    const { id, ...body } = params;
+    const response = await api.post<ApiResponse<DealData>>(
+      `/lead/${id}/convert`,
+      body,
+    );
 
-    const { message } = response.data;
-    const { deal } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, deal };
-  } catch (error) {
-    console.error("Convert lead to deal error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      deal: data.deal,
+    };
+  });
 
-export const getLeadOrganizations = async ({
-  limit = 10,
-  search,
-}: {
-  limit?: number;
-  search?: string;
-}): Promise<GetLeadOrganizationsResponse> => {
-  try {
+export const getLeadOrganizations = async (
+  params: GetLeadOrganizationsRequest,
+): Promise<GetLeadOrganizationsResponse> =>
+  withApiHandler(async () => {
+    const { limit = 10, search } = params;
     const query = buildQueryParams({ limit, search });
-    const response = await api.get(
+    const response = await api.get<ApiResponse<OrganizationsData>>(
       `/lead/organizations${query ? `?${query}` : ""}`,
     );
 
-    const { message } = response.data;
-    const { organizations } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, organizations };
-  } catch (error) {
-    console.error("Get all organizations error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      organizations: data.organizations,
+    };
+  });
 
-export const assignLead = async ({
-  id,
-  assignedUserId,
-}: {
-  id: string;
-  assignedUserId: string;
-}): Promise<AssignLeadResponse> => {
-  try {
-    const response = await api.patch(`/lead/${id}/assign`, { assignedUserId });
+export const assignLead = async (
+  params: AssignLeadRequest,
+): Promise<AssignLeadResponse> =>
+  withApiHandler(async () => {
+    const { id, assignedUserId } = params;
+    const response = await api.patch<ApiResponse<LeadData>>(
+      `/lead/${id}/assign`,
+      {
+        assignedUserId,
+      },
+    );
 
-    const { message } = response.data;
-    const { lead } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, lead };
-  } catch (error) {
-    console.error("Assign lead error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      lead: data.lead,
+    };
+  });

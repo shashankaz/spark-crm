@@ -1,291 +1,170 @@
 import { api } from "@/api";
+import { withApiHandler } from "@/api/api-handler";
 import { buildQueryParams } from "@/api/query-params";
-import type { Tenant, User } from "@/types";
-
-export type TenantAddress = {
-  line1: string;
-  line2?: string;
-  city: string;
-  state: string;
-  postalCode: string;
-  country: string;
-};
-
-export type TenantDashboardStat = {
-  value: number;
-  change: string;
-  trend: "up" | "down";
-};
-
-export type TenantRecentTenant = {
-  _id: string;
-  name: string;
-  email: string;
-  plan: string;
-  city: string;
-  country: string;
-  createdAt: string;
-};
-
-export type TenantPlanDistribution = {
-  plan: string;
-  count: number;
-};
-
-export type GetTenantDashboardStatsResponse = {
-  message: string;
-  stats: {
-    totalTenants: TenantDashboardStat;
-    totalUsers: TenantDashboardStat;
-    monthlyRevenue: TenantDashboardStat;
-    paidPlans: TenantDashboardStat;
-  };
-  recentTenants: TenantRecentTenant[];
-  planDistribution: TenantPlanDistribution[];
-};
-
-export type GetAllTenantsResponse = {
-  message: string;
-  tenants: Tenant[];
-  totalCount: number;
-};
-
-export type GetTenantByIdResponse = {
-  message: string;
-  tenant: Tenant;
-  usersCount: number;
-};
-
-export type CreateTenantResponse = {
-  message: string;
-  tenant: Tenant;
-};
-
-export type UpdateTenantResponse = {
-  message: string;
-  tenant: Tenant;
-};
-
-export type DeleteTenantResponse = {
-  message: string;
-  id: string;
-};
-
-export type CreateUserForTenantResponse = {
-  message: string;
-  user: User;
-};
-
-export type GetUsersByTenantIdResponse = {
-  message: string;
-  users: User[];
-};
+import type { ApiResponse } from "@/api/api-response";
+import type {
+  CreatedTenantData,
+  CreateTenantRequest,
+  CreateTenantResponse,
+  CreateUserForTenantRequest,
+  CreateUserForTenantResponse,
+  DeletedTenantData,
+  DeleteTenantByIdRequest,
+  DeleteTenantResponse,
+  GetAllTenantsRequest,
+  GetAllTenantsResponse,
+  GetTenantByIdRequest,
+  GetTenantByIdResponse,
+  GetTenantDashboardStatsResponse,
+  GetUsersByTenantIdRequest,
+  GetUsersByTenantIdResponse,
+  TenantData,
+  TenantsData,
+  UpdatedTenantData,
+  UpdateTenantByIdRequest,
+  UpdateTenantResponse,
+  TenantDashboardStatsData,
+  TenantUserData,
+  TenantUsersData,
+} from "@/types/services";
 
 export const getTenantDashboardStats =
-  async (): Promise<GetTenantDashboardStatsResponse> => {
-    try {
-      const response = await api.get("/tenant/dashboard");
+  async (): Promise<GetTenantDashboardStatsResponse> =>
+    withApiHandler(async () => {
+      const response =
+        await api.get<ApiResponse<TenantDashboardStatsData>>(
+          "/tenant/dashboard",
+        );
 
-      const { message } = response.data;
-      const { stats, recentTenants, planDistribution } = response.data.data;
+      const { message, data } = response.data;
 
-      return { message, stats, recentTenants, planDistribution };
-    } catch (error) {
-      console.error("Get tenant dashboard stats error:", error);
-      throw error;
-    }
-  };
+      return {
+        message,
+        stats: data.stats,
+        recentTenants: data.recentTenants,
+        planDistribution: data.planDistribution,
+      };
+    });
 
-export const getAllTenants = async ({
-  cursor,
-  limit = 10,
-  search,
-}: {
-  cursor?: string;
-  limit?: number;
-  search?: string;
-}): Promise<GetAllTenantsResponse> => {
-  try {
+export const getAllTenants = async (
+  params: GetAllTenantsRequest,
+): Promise<GetAllTenantsResponse> =>
+  withApiHandler(async () => {
+    const { cursor, limit = 10, search } = params;
     const query = buildQueryParams({ cursor, limit, search });
-    const response = await api.get(`/tenant${query ? `?${query}` : ""}`);
+    const response = await api.get<ApiResponse<TenantsData>>(
+      `/tenant${query ? `?${query}` : ""}`,
+    );
 
-    const { message } = response.data;
-    const { tenants, totalCount } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, tenants, totalCount };
-  } catch (error) {
-    console.error("Get all tenants error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      tenants: data.tenants,
+      totalCount: data.totalCount,
+    };
+  });
 
-export const getTenantById = async ({
-  id,
-}: {
-  id: string;
-}): Promise<GetTenantByIdResponse> => {
-  try {
-    const response = await api.get(`/tenant/${id}`);
+export const getTenantById = async (
+  params: GetTenantByIdRequest,
+): Promise<GetTenantByIdResponse> =>
+  withApiHandler(async () => {
+    const { id } = params;
+    const response = await api.get<ApiResponse<TenantData>>(`/tenant/${id}`);
 
-    const { message } = response.data;
-    const { tenant, usersCount } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, tenant, usersCount };
-  } catch (error) {
-    console.error("Get tenant by ID error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      tenant: data.tenant,
+      usersCount: data.usersCount || 0,
+    };
+  });
 
-export const createTenant = async ({
-  name,
-  gstNumber,
-  panNumber,
-  email,
-  mobile,
-  address,
-  plan,
-}: {
-  name: string;
-  gstNumber?: string;
-  panNumber?: string;
-  email: string;
-  mobile: string;
-  address?: TenantAddress;
-  plan?: string;
-}): Promise<CreateTenantResponse> => {
-  try {
-    const response = await api.post("/tenant", {
-      name,
-      gstNumber,
-      panNumber,
-      email,
-      mobile,
-      address,
-      plan,
-    });
+export const createTenant = async (
+  params: CreateTenantRequest,
+): Promise<CreateTenantResponse> =>
+  withApiHandler(async () => {
+    const response = await api.post<ApiResponse<CreatedTenantData>>(
+      "/tenant",
+      params,
+    );
 
-    const { message } = response.data;
-    const { tenant } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, tenant };
-  } catch (error) {
-    console.error("Create tenant error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      tenant: data.tenant,
+    };
+  });
 
-export const updateTenantById = async ({
-  id,
-  name,
-  gstNumber,
-  panNumber,
-  email,
-  mobile,
-  address,
-  plan,
-}: {
-  id: string;
-  name?: string;
-  gstNumber?: string;
-  panNumber?: string;
-  email?: string;
-  mobile?: string;
-  address?: TenantAddress;
-  plan?: string;
-}): Promise<UpdateTenantResponse> => {
-  try {
-    const response = await api.patch(`/tenant/${id}`, {
-      name,
-      gstNumber,
-      panNumber,
-      email,
-      mobile,
-      address,
-      plan,
-    });
+export const updateTenantById = async (
+  params: UpdateTenantByIdRequest,
+): Promise<UpdateTenantResponse> =>
+  withApiHandler(async () => {
+    const { id, ...body } = params;
+    const response = await api.patch<ApiResponse<UpdatedTenantData>>(
+      `/tenant/${id}`,
+      body,
+    );
 
-    const { message } = response.data;
-    const { updatedTenant } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, tenant: updatedTenant };
-  } catch (error) {
-    console.error("Update tenant error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      tenant: data.updatedTenant,
+    };
+  });
 
-export const deleteTenantById = async ({
-  id,
-}: {
-  id: string;
-}): Promise<DeleteTenantResponse> => {
-  try {
-    const response = await api.delete(`/tenant/${id}`);
+export const deleteTenantById = async (
+  params: DeleteTenantByIdRequest,
+): Promise<DeleteTenantResponse> =>
+  withApiHandler(async () => {
+    const { id } = params;
+    const response = await api.delete<ApiResponse<DeletedTenantData>>(
+      `/tenant/${id}`,
+    );
 
-    const { message } = response.data;
-    const { id: deletedId } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, id: deletedId };
-  } catch (error) {
-    console.error("Delete tenant error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      id: data.id,
+    };
+  });
 
-export const getUsersByTenantId = async ({
-  id,
-  search,
-}: {
-  id: string;
-  search?: string;
-}): Promise<GetUsersByTenantIdResponse> => {
-  try {
+export const getUsersByTenantId = async (
+  params: GetUsersByTenantIdRequest,
+): Promise<GetUsersByTenantIdResponse> =>
+  withApiHandler(async () => {
+    const { id, search } = params;
     const query = buildQueryParams({ search });
-    const response = await api.get(
+    const response = await api.get<ApiResponse<TenantUsersData>>(
       `/tenant/${id}/users${query ? `?${query}` : ""}`,
     );
 
-    const { message } = response.data;
-    const { users } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, users };
-  } catch (error) {
-    console.error("Get users by tenant ID error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      users: data.users,
+    };
+  });
 
-export const createUserForTenant = async ({
-  tenantId,
-  name,
-  email,
-  mobile,
-  password,
-  role,
-}: {
-  tenantId: string;
-  name: string;
-  email: string;
-  mobile?: string;
-  password: string;
-  role: string;
-}): Promise<CreateUserForTenantResponse> => {
-  try {
-    const response = await api.post(`/tenant/${tenantId}/user`, {
-      name,
-      email,
-      mobile,
-      password,
-      role,
-    });
+export const createUserForTenant = async (
+  params: CreateUserForTenantRequest,
+): Promise<CreateUserForTenantResponse> =>
+  withApiHandler(async () => {
+    const { tenantId, ...body } = params;
+    const response = await api.post<ApiResponse<TenantUserData>>(
+      `/tenant/${tenantId}/user`,
+      body,
+    );
 
-    const { message } = response.data;
-    const { user } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, user };
-  } catch (error) {
-    console.error("Create user for tenant error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      user: data.user,
+    };
+  });

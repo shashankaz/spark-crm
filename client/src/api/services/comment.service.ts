@@ -1,61 +1,49 @@
 import { api } from "@/api";
+import { withApiHandler } from "@/api/api-handler";
 import { buildQueryParams } from "@/api/query-params";
-import type { Comment } from "@/types";
+import type { ApiResponse } from "@/api/api-response";
+import type {
+  CommentData,
+  CommentsData,
+  CreateCommentForLeadRequest,
+  CreateCommentForLeadResponse,
+  GetAllCommentsByLeadIdRequest,
+  GetAllCommentsByLeadIdResponse,
+} from "@/types/services";
 
-export type GetAllCommentsByLeadIdResponse = {
-  message: string;
-  comments: Comment[];
-  totalCount: number;
-};
-
-export type CreateCommentForLeadResponse = {
-  message: string;
-  comment: Comment;
-};
-
-export const getAllCommentsByLeadId = async ({
-  leadId,
-  cursor,
-  limit = 10,
-  search,
-}: {
-  leadId: string;
-  cursor?: string;
-  limit?: number;
-  search?: string;
-}): Promise<GetAllCommentsByLeadIdResponse> => {
-  try {
+export const getAllCommentsByLeadId = async (
+  params: GetAllCommentsByLeadIdRequest,
+): Promise<GetAllCommentsByLeadIdResponse> =>
+  withApiHandler(async () => {
+    const { leadId, cursor, limit = 10, search } = params;
     const query = buildQueryParams({ cursor, limit, search });
-    const response = await api.get(`/comment/${leadId}${query ? `?${query}` : ""}`);
+    const response = await api.get<ApiResponse<CommentsData>>(
+      `/comment/${leadId}${query ? `?${query}` : ""}`,
+    );
 
-    const { message } = response.data;
-    const { comments, totalCount } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, comments, totalCount };
-  } catch (error) {
-    console.error("Get all comments by lead ID error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      comments: data.comments,
+      totalCount: data.totalCount,
+    };
+  });
 
-export const createCommentForLead = async ({
-  leadId,
-  comment,
-}: {
-  leadId: string;
-  comment: string;
-}): Promise<CreateCommentForLeadResponse> => {
-  try {
-    const response = await api.post(`/comment/${leadId}`, {
-      comment,
-    });
+export const createCommentForLead = async (
+  params: CreateCommentForLeadRequest,
+): Promise<CreateCommentForLeadResponse> =>
+  withApiHandler(async () => {
+    const { leadId, comment } = params;
+    const response = await api.post<ApiResponse<CommentData>>(
+      `/comment/${leadId}`,
+      { comment },
+    );
 
-    const { message } = response.data;
-    const { comment: createdComment } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, comment: createdComment };
-  } catch (error) {
-    console.error("Create comment error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      comment: data.comment,
+    };
+  });

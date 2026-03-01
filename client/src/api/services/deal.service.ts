@@ -1,32 +1,70 @@
 import { api } from "@/api";
+import { withApiHandler } from "@/api/api-handler";
 import { buildQueryParams } from "@/api/query-params";
-import type { Deal } from "@/types";
+import type { ApiResponse } from "@/api/api-response";
+import type {
+  DealData,
+  DealsData,
+  DeleteDealRequest,
+  DeleteDealResponse,
+  GetAllDealsRequest,
+  GetAllDealsResponse,
+  GetDealRequest,
+  GetDealResponse,
+  UpdateDealRequest,
+  UpdateDealResponse,
+} from "@/types/services";
 
-export type GetAllDealsResponse = {
-  message: string;
-  deals: Deal[];
-  totalCount: number;
-};
-
-export const getAllDeals = async ({
-  cursor,
-  limit = 10,
-  search,
-}: {
-  cursor?: string;
-  limit?: number;
-  search?: string;
-}): Promise<GetAllDealsResponse> => {
-  try {
+export const getAllDeals = async (
+  params: GetAllDealsRequest,
+): Promise<GetAllDealsResponse> =>
+  withApiHandler(async () => {
+    const { cursor, limit = 10, search } = params;
     const query = buildQueryParams({ cursor, limit, search });
-    const response = await api.get(`/deal${query ? `?${query}` : ""}`);
+    const response = await api.get<ApiResponse<DealsData>>(
+      `/deal${query ? `?${query}` : ""}`,
+    );
 
-    const { message } = response.data;
-    const { deals, totalCount } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, deals, totalCount };
-  } catch (error) {
-    console.error("Get all deals error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      deals: data.deals,
+      totalCount: data.totalCount,
+    };
+  });
+
+export const getDeal = async ({
+  id,
+}: GetDealRequest): Promise<GetDealResponse> =>
+  withApiHandler(async () => {
+    const response = await api.get<ApiResponse<DealData>>(`/deal/${id}`);
+
+    const { message, data } = response.data;
+
+    return { message, deal: data.deal };
+  });
+
+export const updateDeal = async ({
+  id,
+  ...data
+}: UpdateDealRequest): Promise<UpdateDealResponse> =>
+  withApiHandler(async () => {
+    const response = await api.patch<ApiResponse<DealData>>(
+      `/deal/${id}`,
+      data,
+    );
+
+    const { message, data: updatedDealData } = response.data;
+
+    return { message, deal: updatedDealData.deal };
+  });
+
+export const deleteDeal = async ({
+  id,
+}: DeleteDealRequest): Promise<DeleteDealResponse> =>
+  withApiHandler(async () => {
+    const response = await api.delete<ApiResponse<void>>(`/deal/${id}`);
+
+    return { message: response.data.message };
+  });

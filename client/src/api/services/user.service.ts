@@ -1,160 +1,107 @@
 import { api } from "@/api";
+import { withApiHandler } from "@/api/api-handler";
 import { buildQueryParams } from "@/api/query-params";
-import type { User } from "@/types";
+import type { ApiResponse } from "@/api/api-response";
+import type {
+  CreatedUserData,
+  CreateUserRequest,
+  CreateUserResponse,
+  DeletedUserData,
+  DeleteUserRequest,
+  DeleteUserResponse,
+  GetAllUsersRequest,
+  GetAllUsersResponse,
+  GetUserByIdRequest,
+  GetUserByIdResponse,
+  UpdatedUserData,
+  UpdateUserRequest,
+  UpdateUserResponse,
+  UserData,
+  UsersData,
+} from "@/types/services";
 
-export type GetAllUsersResponse = {
-  message: string;
-  users: User[];
-  totalCount: number;
-};
-
-export type GetUserByIdResponse = {
-  message: string;
-  user: User;
-};
-
-export type CreateUserResponse = {
-  message: string;
-  user: User;
-};
-
-export type UpdateUserResponse = {
-  message: string;
-  user: User;
-};
-
-export type DeleteUserResponse = {
-  message: string;
-  id: string;
-};
-
-export const getAllUsers = async ({
-  cursor,
-  limit = 10,
-  search,
-}: {
-  cursor?: string;
-  limit?: number;
-  search?: string;
-}): Promise<GetAllUsersResponse> => {
-  try {
+export const getAllUsers = async (
+  params: GetAllUsersRequest,
+): Promise<GetAllUsersResponse> =>
+  withApiHandler(async () => {
+    const { cursor, limit = 10, search } = params;
     const query = buildQueryParams({ cursor, limit, search });
-    const response = await api.get(`/user${query ? `?${query}` : ""}`);
+    const response = await api.get<ApiResponse<UsersData>>(
+      `/user${query ? `?${query}` : ""}`,
+    );
 
-    const { message } = response.data;
-    const { users, totalCount } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, users, totalCount };
-  } catch (error) {
-    console.error("Get all users error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      users: data.users,
+      totalCount: data.totalCount,
+    };
+  });
 
-export const getUserById = async ({
-  id,
-}: {
-  id: string;
-}): Promise<GetUserByIdResponse> => {
-  try {
-    const response = await api.get(`/user/${id}`);
+export const getUserById = async (
+  params: GetUserByIdRequest,
+): Promise<GetUserByIdResponse> =>
+  withApiHandler(async () => {
+    const { id } = params;
+    const response = await api.get<ApiResponse<UserData>>(`/user/${id}`);
 
-    const { message } = response.data;
-    const { user } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, user };
-  } catch (error) {
-    console.error("Get user by ID error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      user: data.user,
+    };
+  });
 
-export const createUser = async ({
-  firstName,
-  lastName,
-  email,
-  mobile,
-  password,
-  role,
-}: {
-  firstName: string;
-  lastName?: string;
-  email: string;
-  mobile?: string;
-  password: string;
-  role?: string;
-}): Promise<CreateUserResponse> => {
-  try {
-    const response = await api.post("/user", {
-      firstName,
-      lastName,
-      email,
-      mobile,
-      password,
-      role,
-    });
+export const createUser = async (
+  params: CreateUserRequest,
+): Promise<CreateUserResponse> =>
+  withApiHandler(async () => {
+    const response = await api.post<ApiResponse<CreatedUserData>>(
+      "/user",
+      params,
+    );
 
-    const { message } = response.data;
-    const { createdUser } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, user: createdUser };
-  } catch (error) {
-    console.error("Create user error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      user: data.createdUser,
+    };
+  });
 
-export const updateUser = async ({
-  id,
-  firstName,
-  lastName,
-  email,
-  mobile,
-  password,
-  role,
-}: {
-  id: string;
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  mobile?: string;
-  password?: string;
-  role?: string;
-}): Promise<UpdateUserResponse> => {
-  try {
-    const response = await api.patch(`/user/${id}`, {
-      firstName,
-      lastName,
-      email,
-      mobile,
-      password,
-      role,
-    });
+export const updateUser = async (
+  params: UpdateUserRequest,
+): Promise<UpdateUserResponse> =>
+  withApiHandler(async () => {
+    const { id, ...body } = params;
+    const response = await api.patch<ApiResponse<UpdatedUserData>>(
+      `/user/${id}`,
+      body,
+    );
 
-    const { message } = response.data;
-    const { updatedUser } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, user: updatedUser };
-  } catch (error) {
-    console.error("Update user error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      user: data.updatedUser,
+    };
+  });
 
-export const deleteUser = async ({
-  id,
-}: {
-  id: string;
-}): Promise<DeleteUserResponse> => {
-  try {
-    const response = await api.delete(`/user/${id}`);
+export const deleteUser = async (
+  params: DeleteUserRequest,
+): Promise<DeleteUserResponse> =>
+  withApiHandler(async () => {
+    const { id } = params;
+    const response = await api.delete<ApiResponse<DeletedUserData>>(
+      `/user/${id}`,
+    );
 
-    const { message } = response.data;
-    const { id: deletedId } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, id: deletedId };
-  } catch (error) {
-    console.error("Delete user error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      id: data.id,
+    };
+  });

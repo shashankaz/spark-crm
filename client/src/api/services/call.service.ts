@@ -1,67 +1,49 @@
 import { api } from "@/api";
+import { withApiHandler } from "@/api/api-handler";
 import { buildQueryParams } from "@/api/query-params";
-import type { Call } from "@/types";
+import type { ApiResponse } from "@/api/api-response";
+import type {
+  CallData,
+  CallsData,
+  CreateCallForLeadRequest,
+  CreateCallForLeadResponse,
+  GetAllCallsByLeadIdRequest,
+  GetAllCallsByLeadIdResponse,
+} from "@/types/services";
 
-export type GetAllCallsByLeadIdResponse = {
-  message: string;
-  calls: Call[];
-  totalCount: number;
-};
+export const getAllCallsByLeadId = async (
+  params: GetAllCallsByLeadIdRequest,
+): Promise<GetAllCallsByLeadIdResponse> =>
+  withApiHandler(async () => {
+    const { leadId, ...queryParams } = params;
+    const query = buildQueryParams(queryParams);
+    const response = await api.get<ApiResponse<CallsData>>(
+      `/call/${leadId}${query ? `?${query}` : ""}`,
+    );
 
-export type CreateCallForLeadResponse = {
-  message: string;
-  call: Call;
-};
+    const { message, data } = response.data;
 
-export const getAllCallsByLeadId = async ({
-  leadId,
-  cursor,
-  limit = 10,
-  search,
-}: {
-  leadId: string;
-  cursor?: string;
-  limit?: number;
-  search?: string;
-}): Promise<GetAllCallsByLeadIdResponse> => {
-  try {
-    const query = buildQueryParams({ cursor, limit, search });
-    const response = await api.get(`/call/${leadId}${query ? `?${query}` : ""}`);
+    return {
+      message,
+      calls: data.calls,
+      totalCount: data.totalCount,
+    };
+  });
 
-    const { message } = response.data;
-    const { calls, totalCount } = response.data.data;
+export const createCallForLead = async (
+  params: CreateCallForLeadRequest,
+): Promise<CreateCallForLeadResponse> =>
+  withApiHandler(async () => {
+    const { leadId, ...body } = params;
+    const response = await api.post<ApiResponse<CallData>>(
+      `/call/${leadId}`,
+      body,
+    );
 
-    return { message, calls, totalCount };
-  } catch (error) {
-    console.error("Get all calls by lead ID error:", error);
-    throw error;
-  }
-};
+    const { message, data } = response.data;
 
-export const createCallForLead = async ({
-  leadId,
-  type,
-  status,
-  duration,
-}: {
-  leadId: string;
-  type: string;
-  status: string;
-  duration: number;
-}): Promise<CreateCallForLeadResponse> => {
-  try {
-    const response = await api.post(`/call/${leadId}`, {
-      type,
-      status,
-      duration,
-    });
-
-    const { message } = response.data;
-    const { call } = response.data.data;
-
-    return { message, call };
-  } catch (error) {
-    console.error("Create call error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      call: data.call,
+    };
+  });

@@ -1,0 +1,81 @@
+import type { User } from "@/types/domain";
+
+export type UsersData = {
+  users: User[];
+  totalCount: number;
+};
+
+export type UserData = {
+  user: User;
+};
+
+export type CreatedUserData = {
+  createdUser: User;
+};
+
+export type UpdatedUserData = {
+  updatedUser: User;
+};
+
+export type DeletedUserData = {
+  id: string;
+};
+
+export type GetAllUsersRequest = {
+  cursor?: string;
+  limit?: number;
+  search?: string;
+};
+
+export type GetUserByIdRequest = {
+  id: string;
+};
+
+export type CreateUserRequest = {
+  firstName: string;
+  lastName?: string;
+  email: string;
+  mobile?: string;
+  password: string;
+  role?: string;
+};
+
+export type UpdateUserRequest = {
+  id: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  mobile?: string;
+  password?: string;
+  role?: string;
+};
+
+export type DeleteUserRequest = {
+  id: string;
+};
+
+export type GetAllUsersResponse = {
+  message: string;
+  users: User[];
+  totalCount: number;
+};
+
+export type GetUserByIdResponse = {
+  message: string;
+  user: User;
+};
+
+export type CreateUserResponse = {
+  message: string;
+  user: User;
+};
+
+export type UpdateUserResponse = {
+  message: string;
+  user: User;
+};
+
+export type DeleteUserResponse = {
+  message: string;
+  id: string;
+};

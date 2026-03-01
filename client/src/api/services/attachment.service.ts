@@ -1,113 +1,88 @@
 import { api } from "@/api";
+import { withApiHandler } from "@/api/api-handler";
 import { buildQueryParams } from "@/api/query-params";
-import type { Attachment } from "@/types/domain/attachment";
+import type { ApiResponse } from "@/api/api-response";
+import type {
+  AttachmentData,
+  AttachmentsData,
+  CreateAttachmentForLeadRequest,
+  CreateAttachmentResponse,
+  GenerateUploadUrlRequest,
+  GenerateUploadUrlResponse,
+  GetAllAttachmentsByLeadIdRequest,
+  GetAttachmentsResponse,
+  UploadUrlData,
+} from "@/types/services";
 
-export type GetAttachmentsResponse = {
-  message: string;
-  attachments: Attachment[];
-  totalCount: number;
-};
-
-export type CreateAttachmentResponse = {
-  message: string;
-  attachment: Attachment;
-};
-
-export type GenerateUploadUrlResponse = {
-  message: string;
-  signedUrl: string;
-  key: string;
-  fileUrl: string;
-};
-
-export const getAllAttachmentsByLeadId = async ({
-  leadId,
-  cursor,
-  limit = 10,
-  search,
-}: {
-  leadId: string;
-  cursor?: string;
-  limit?: number;
-  search?: string;
-}): Promise<GetAttachmentsResponse> => {
-  try {
+export const getAllAttachmentsByLeadId = async (
+  params: GetAllAttachmentsByLeadIdRequest,
+): Promise<GetAttachmentsResponse> =>
+  withApiHandler(async () => {
+    const { leadId, cursor, limit = 10, search } = params;
     const query = buildQueryParams({ cursor, limit, search });
-    const response = await api.get(
+    const response = await api.get<ApiResponse<AttachmentsData>>(
       `/attachment/${leadId}${query ? `?${query}` : ""}`,
     );
 
-    const { message } = response.data;
-    const { attachments, totalCount } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, attachments, totalCount };
-  } catch (error) {
-    console.error("Get attachments error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      attachments: data.attachments,
+      totalCount: data.totalCount,
+    };
+  });
 
-export const createAttachmentForLead = async ({
-  leadId,
-  fileName,
-  fileUrl,
-  fileType,
-}: {
-  leadId: string;
-  fileName: string;
-  fileUrl: string;
-  fileType?: string;
-}): Promise<CreateAttachmentResponse> => {
-  try {
-    const response = await api.post(`/attachment/${leadId}`, {
-      leadId,
-      fileName,
-      fileUrl,
-      fileType,
-    });
+export const createAttachmentForLead = async (
+  params: CreateAttachmentForLeadRequest,
+): Promise<CreateAttachmentResponse> =>
+  withApiHandler(async () => {
+    const { leadId, fileName, fileUrl, fileType } = params;
+    const response = await api.post<ApiResponse<AttachmentData>>(
+      `/attachment/${leadId}`,
+      {
+        leadId,
+        fileName,
+        fileUrl,
+        fileType,
+      },
+    );
 
-    const { message } = response.data;
-    const { attachment } = response.data.data;
+    const { message, data } = response.data;
 
-    return { message, attachment };
-  } catch (error) {
-    console.error("Create attachment error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      attachment: data.attachment,
+    };
+  });
 
-export const generateUploadUrl = async ({
-  type,
-  fileName,
-  fileType,
-}: {
-  type: string;
-  fileName: string;
-  fileType: string;
-}): Promise<GenerateUploadUrlResponse> => {
-  try {
-    const response = await api.post("/upload", {
+export const generateUploadUrl = async (
+  params: GenerateUploadUrlRequest,
+): Promise<GenerateUploadUrlResponse> =>
+  withApiHandler(async () => {
+    const { type, fileName, fileType } = params;
+    const response = await api.post<ApiResponse<UploadUrlData>>("/upload", {
       type,
       fileName,
       fileType,
     });
 
-    const { message } = response.data;
-    const { signedUrl, key, fileUrl } = response.data.data.data;
+    const { message, data } = response.data;
 
-    return { message, signedUrl, key, fileUrl };
-  } catch (error) {
-    console.error("Generate upload URL error:", error);
-    throw error;
-  }
-};
+    return {
+      message,
+      signedUrl: data.signedUrl,
+      key: data.key,
+      fileUrl: data.fileUrl,
+    };
+  });
 
 export const uploadFileToS3 = async (
   signedUrl: string,
   file: File,
   fileType: string,
-): Promise<void> => {
-  try {
+): Promise<void> =>
+  withApiHandler(async () => {
     const response = await fetch(signedUrl, {
       method: "PUT",
       headers: {
@@ -119,8 +94,4 @@ export const uploadFileToS3 = async (
     if (!response.ok) {
       throw new Error(`S3 upload failed with status ${response.status}`);
     }
-  } catch (error) {
-    console.error("Upload file to S3 error:", error);
-    throw error;
-  }
-};
+  });

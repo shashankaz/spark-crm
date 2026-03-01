@@ -1,51 +1,22 @@
 import { api } from "@/api";
+import { withApiHandler } from "@/api/api-handler";
+import type { ApiResponse } from "@/api/api-response";
+import type {
+  DashboardStatsData,
+  GetDashboardStatsResponse,
+} from "@/types/services";
 
-export type DashboardStat = {
-  value: number;
-  change: string;
-  trend: "up" | "down";
-};
+export const getDashboardStats = async (): Promise<GetDashboardStatsResponse> =>
+  withApiHandler(async () => {
+    const response =
+      await api.get<ApiResponse<DashboardStatsData>>("/dashboard");
 
-export type DashboardRecentLead = {
-  _id: string;
-  name: string;
-  email: string;
-  organization: string;
-  score: number;
-  updatedAt: string;
-};
+    const { message, data } = response.data;
 
-export type DashboardRecentDeal = {
-  _id: string;
-  title: string;
-  value: number;
-  status: string;
-  updatedAt: string;
-};
-
-export type GetDashboardStatsResponse = {
-  message: string;
-  stats: {
-    totalLeads: DashboardStat;
-    totalDeals: DashboardStat;
-    totalOrganizations: DashboardStat;
-    totalUsers: DashboardStat;
-  };
-  recentLeads: DashboardRecentLead[];
-  recentDeals: DashboardRecentDeal[];
-};
-
-export const getDashboardStats =
-  async (): Promise<GetDashboardStatsResponse> => {
-    try {
-      const response = await api.get("/dashboard");
-
-      const { message } = response.data;
-      const { stats, recentLeads, recentDeals } = response.data.data;
-
-      return { message, stats, recentLeads, recentDeals };
-    } catch (error) {
-      console.error("Get dashboard stats error:", error);
-      throw error;
-    }
-  };
+    return {
+      message,
+      stats: data.stats,
+      recentLeads: data.recentLeads,
+      recentDeals: data.recentDeals,
+    };
+  });
