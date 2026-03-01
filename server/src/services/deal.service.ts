@@ -3,6 +3,8 @@ import { Deal } from "../models/deal.model";
 import {
   FetchDealsInput,
   DeleteDealInput,
+  GetDealInput,
+  UpdateDealInput,
 } from "../types/services/deal.service.types";
 
 export const fetchDealsService = async ({
@@ -42,4 +44,27 @@ export const deleteDealByIdService = async ({
   tenantId,
 }: DeleteDealInput) => {
   return await Deal.deleteOne({ _id: id, tenantId }).exec();
+};
+
+export const getDealByIdService = async ({ id, tenantId }: GetDealInput) => {
+  return await Deal.findOne({ _id: id, tenantId }).exec();
+};
+
+export const updateDealByIdService = async ({
+  id,
+  tenantId,
+  name,
+  value,
+  probability,
+}: UpdateDealInput) => {
+  const updateData: any = {};
+
+  if (name !== undefined) updateData.name = name;
+  if (value !== undefined) updateData.value = value;
+  if (probability !== undefined) updateData.probability = probability;
+
+  return await Deal.findOneAndUpdate(
+    { _id: id, tenantId },
+    { $set: updateData },
+  ).exec();
 };
