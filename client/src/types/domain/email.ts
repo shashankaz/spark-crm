@@ -2,8 +2,6 @@ export type Email = {
   _id: string;
 
   leadId: string;
-  tenantId: string;
-  userId: string;
 
   from: string;
   to: string;
@@ -11,7 +9,6 @@ export type Email = {
   bodyHtml: string;
   bodyText: string;
   status: "sent" | "failed" | "draft";
-  sentAt?: string;
 
   createdAt: string;
   updatedAt: string;

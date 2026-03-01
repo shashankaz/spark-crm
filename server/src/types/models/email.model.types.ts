@@ -1,0 +1,19 @@
+import { Types, Document } from "mongoose";
+
+export interface EmailBase {
+  leadId: Types.ObjectId;
+
+  from: string;
+  to: string;
+  subject: string;
+  bodyHtml: string;
+  bodyText: string;
+  status: "sent" | "failed" | "draft";
+
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface EmailDocument extends EmailBase, Document {
+  _id: Types.ObjectId;
+}

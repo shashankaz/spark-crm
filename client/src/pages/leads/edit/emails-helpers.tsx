@@ -75,9 +75,10 @@ export const EmailCard = ({ email }: { email: Email }) => {
             <span>
               <strong>To:</strong> {email.to}
             </span>
-            {email.sentAt && (
+            {email.createdAt && (
               <span>
-                <strong>Sent:</strong> {new Date(email.sentAt).toLocaleString()}
+                <strong>Sent:</strong>{" "}
+                {new Date(email.createdAt).toLocaleString()}
               </span>
             )}
           </div>
