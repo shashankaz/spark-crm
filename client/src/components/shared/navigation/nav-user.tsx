@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router";
-import { EllipsisVertical, LogOut, User } from "lucide-react";
+import { EllipsisVertical, Keyboard, LogOut, User } from "lucide-react";
 
 import { logout } from "@/api/services";
 
@@ -22,7 +22,7 @@ import {
 
 import { useUser } from "@/hooks/use-user";
 
-import type { User as UserType } from "@/types";
+import type { User as UserType } from "@/types/domain";
 
 export const NavUser = ({ user }: { user: UserType }) => {
   const { isMobile } = useSidebar();
@@ -99,6 +99,15 @@ export const NavUser = ({ user }: { user: UserType }) => {
                 <DropdownMenuItem>
                   <User />
                   Profile
+                </DropdownMenuItem>
+              </Link>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <Link to={`${base}/shortcuts`}>
+                <DropdownMenuItem>
+                  <Keyboard />
+                  Keyboard Shortcuts
                 </DropdownMenuItem>
               </Link>
             </DropdownMenuGroup>

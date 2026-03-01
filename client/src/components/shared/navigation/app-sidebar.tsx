@@ -8,6 +8,7 @@ import {
   Handshake,
   Users,
   Workflow,
+  Contact,
 } from "lucide-react";
 
 import {
@@ -51,6 +52,7 @@ const allLinks: {
       { to: "/deals", label: "Deals", icon: Handshake },
       { to: "/workflows", label: "Workflows", icon: Workflow },
       { to: "/users", label: "Users", icon: Users },
+      { to: "/groups", label: "Groups", icon: Contact },
     ],
     user: [
       { to: "", label: "Dashboard", icon: LayoutDashboard },
@@ -58,6 +60,7 @@ const allLinks: {
       { to: "/leads", label: "Leads", icon: UserPlus },
       { to: "/deals", label: "Deals", icon: Handshake },
       { to: "/workflows", label: "Workflows", icon: Workflow },
+      { to: "/groups", label: "Groups", icon: Contact },
     ],
   },
 };
