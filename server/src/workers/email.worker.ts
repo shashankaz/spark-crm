@@ -2,6 +2,7 @@ import {
   ReceiveMessageCommand,
   DeleteMessageCommand,
 } from "@aws-sdk/client-sqs";
+import { SendMailOptions } from "nodemailer";
 
 import { sqs } from "../utils/sqs";
 import { env } from "../config/env";
@@ -12,7 +13,11 @@ import {
   MAX_MESSAGES,
 } from "./constants";
 
-const processEmailMessage = async (payload: any): Promise<void> => {
+const processEmailMessage = async ({
+  payload,
+}: {
+  payload: SendMailOptions;
+}): Promise<void> => {
   await transport.sendMail(payload);
 };
 
@@ -36,7 +41,7 @@ export const startEmailWorker = (): void => {
       for (const message of messages) {
         if (!message.Body || !message.ReceiptHandle) continue;
 
-        let payload: any;
+        let payload: SendMailOptions;
 
         try {
           payload = JSON.parse(message.Body);
@@ -56,7 +61,7 @@ export const startEmailWorker = (): void => {
         }
 
         try {
-          await processEmailMessage(payload);
+          await processEmailMessage({ payload });
         } catch (err) {
           console.error(
             `[EmailWorker] Failed to send email to ${payload?.to}:`,
