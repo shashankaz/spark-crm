@@ -24,3 +24,16 @@ export interface DeleteDealInput {
   id: Types.ObjectId;
   tenantId: Types.ObjectId;
 }
+
+export interface GetDealInput {
+  id: Types.ObjectId;
+  tenantId: Types.ObjectId;
+}
+
+export interface UpdateDealInput {
+  id: Types.ObjectId;
+  tenantId: Types.ObjectId;
+  name?: string;
+  value?: number;
+  probability?: number;
+}

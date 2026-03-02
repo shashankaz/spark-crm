@@ -16,6 +16,7 @@ import { enqueueLeadExportService } from "../services/lead-export.service";
 import { AppError } from "../shared/app-error";
 import { sendSuccess } from "../shared/api-response";
 import { asyncHandler } from "../shared/async-handler";
+import { importLeadsService } from "../services/lead-import.service";
 
 export const getAllLeads = asyncHandler(async (req: Request, res: Response) => {
   const { tenantId, _id: userId, role } = req.user;
@@ -50,12 +51,17 @@ export const getLeadById = asyncHandler(async (req: Request, res: Response) => {
     throw new AppError("Tenant ID is missing in user data", 400);
   }
 
-  const { id } = req.params;
+  const id = req.params.id as unknown as Types.ObjectId;
   if (!id) {
     throw new AppError("Lead ID is required", 400);
   }
 
-  const lead = await fetchLeadByIdService({ id, tenantId, userId, role });
+  const lead = await fetchLeadByIdService({
+    id,
+    tenantId,
+    userId,
+    role,
+  });
   if (!lead) {
     throw new AppError("Lead not found", 404);
   }
@@ -115,7 +121,7 @@ export const updateLeadById = asyncHandler(
       throw new AppError("Tenant ID is missing in user data", 400);
     }
 
-    const { id } = req.params;
+    const id = req.params.id as unknown as Types.ObjectId;
     if (!id) {
       throw new AppError("Lead ID is required", 400);
     }
@@ -162,7 +168,7 @@ export const deleteLeadById = asyncHandler(
       throw new AppError("Tenant ID is missing in user data", 400);
     }
 
-    const { id } = req.params;
+    const id = req.params.id as unknown as Types.ObjectId;
     if (!id) {
       throw new AppError("Lead ID is required", 400);
     }
@@ -170,8 +176,6 @@ export const deleteLeadById = asyncHandler(
     const deleted = await deleteLeadByIdService({
       id,
       tenantId,
-      userId: req.user._id,
-      userName: req.user.firstName,
     });
     if (!deleted) {
       throw new AppError("Lead not found", 404);
@@ -204,6 +208,29 @@ export const bulkWriteLeads = asyncHandler(
   },
 );
 
+export const importLeads = asyncHandler(async (req: Request, res: Response) => {
+  const { tenantId, _id: userId } = req.user;
+  if (!tenantId) {
+    throw new AppError("Tenant ID is missing in user data", 400);
+  }
+
+  if (!req.file) {
+    throw new AppError("CSV file is required", 400);
+  }
+
+  const result = await importLeadsService({
+    filePath: req.file.path,
+    tenantId,
+    userId,
+  });
+
+  sendSuccess(res, 200, "Lead import completed", {
+    inserted: result.inserted,
+    failed: result.failed,
+    failedLeadIds: result.failedLeadIds,
+  });
+});
+
 export const convertLeadToDeal = asyncHandler(
   async (req: Request, res: Response) => {
     const { tenantId } = req.user;
@@ -211,7 +238,7 @@ export const convertLeadToDeal = asyncHandler(
       throw new AppError("Tenant ID is missing in user data", 400);
     }
 
-    const { id } = req.params;
+    const id = req.params.id as unknown as Types.ObjectId;
     if (!id) {
       throw new AppError("Lead ID is required", 400);
     }
@@ -262,7 +289,7 @@ export const getAllOrganizations = asyncHandler(
 
 export const getLeadActivityByLeadId = asyncHandler(
   async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const id = req.params.id as unknown as Types.ObjectId;
     if (!id) {
       throw new AppError("Lead ID is required", 400);
     }
@@ -283,7 +310,7 @@ export const assignLead = asyncHandler(async (req: Request, res: Response) => {
     throw new AppError("Tenant ID is missing in user data", 400);
   }
 
-  const { id } = req.params;
+  const id = req.params.id as unknown as Types.ObjectId;
   if (!id) {
     throw new AppError("Lead ID is required", 400);
   }
@@ -313,11 +340,11 @@ export const exportLeads = asyncHandler(async (req: Request, res: Response) => {
   const { leadIds, recipientEmail } = req.body;
 
   if (!Array.isArray(leadIds) || leadIds.length === 0) {
-    throw new AppError("leadIds must be a non-empty array", 400);
+    throw new AppError("Lead Ids must be a non-empty array", 400);
   }
 
-  if (!recipientEmail || typeof recipientEmail !== "string") {
-    throw new AppError("recipientEmail is required", 400);
+  if (!recipientEmail) {
+    throw new AppError("Email is required", 400);
   }
 
   const { messageId } = await enqueueLeadExportService({
@@ -329,7 +356,7 @@ export const exportLeads = asyncHandler(async (req: Request, res: Response) => {
   sendSuccess(
     res,
     202,
-    "Export job queued. You will receive an email shortly.",
+    "Your export is being prepared. You'll receive an email when it's ready.",
     {
       messageId,
       leadCount: leadIds.length,
