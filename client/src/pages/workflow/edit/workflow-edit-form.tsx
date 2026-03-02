@@ -121,7 +121,7 @@ export const WorkflowEditForm: React.FC<WorkflowEditFormProps> = ({
       {
         onSuccess: ({ message }) => {
           toast.success(message);
-          navigate("/admin/workflows");
+          navigate("/dashboard/workflows");
         },
         onError: ({ message }) => {
           toast.error(message);
