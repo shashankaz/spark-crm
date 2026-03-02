@@ -13,8 +13,10 @@ export type OrganizationSize = "smb" | "mid-market" | "enterprise";
 
 export interface OrganizationBase {
   idempotentId: Types.UUID;
+
   tenantId: Types.ObjectId;
   userId: Types.ObjectId;
+
   name: string;
   industry?: OrganizationIndustry;
   size?: OrganizationSize;
@@ -25,6 +27,7 @@ export interface OrganizationBase {
   contactName?: string;
   contactEmail?: string;
   contactMobile?: string;
+
   createdAt: Date;
   updatedAt: Date;
 }

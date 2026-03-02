@@ -10,11 +10,15 @@ export type LeadStatus =
 
 export interface LeadBase {
   idempotentId: Types.UUID;
+
   tenantId: Types.ObjectId;
+
   orgId?: Types.ObjectId;
   orgName?: string;
+
   dealId?: Types.ObjectId;
   userId: Types.ObjectId;
+
   firstName: string;
   lastName?: string;
   email: string;
@@ -23,6 +27,7 @@ export interface LeadBase {
   source?: string;
   score: number;
   status: LeadStatus;
+
   createdAt: Date;
   updatedAt: Date;
 }
