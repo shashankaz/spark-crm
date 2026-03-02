@@ -4,7 +4,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 
-import type { Lead } from "@/types";
+import type { Lead } from "@/types/domain";
 
 import { ActionCell } from "./action-cell";
 
@@ -60,7 +60,7 @@ export const columns: ColumnDef<Lead>[] = [
       );
     },
     cell: ({ row }) => {
-      const lastName = row.getValue("lastName") as string;
+      const lastName = row.original.lastName;
 
       if (!lastName) return <span className="text-muted-foreground">—</span>;
 
@@ -96,10 +96,10 @@ export const columns: ColumnDef<Lead>[] = [
     },
     cell: ({ row }) => (
       <a
-        href={`mailto:${row.getValue("email")}`}
+        href={`mailto:${row.original.email}`}
         className="text-blue-600 dark:text-blue-400 hover:underline"
       >
-        {row.getValue("email")}
+        {row.original.email}
       </a>
     ),
   },
