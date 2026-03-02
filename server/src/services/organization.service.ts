@@ -20,7 +20,7 @@ export const fetchOrganizationsService = async ({
   limit,
   search,
 }: FetchOrganizationsInput) => {
-  const countQuery = { tenantId };
+  const countQuery: any = { tenantId };
   if (search) {
     countQuery.$or = [
       { name: { $regex: search, $options: "i" } },
@@ -29,7 +29,7 @@ export const fetchOrganizationsService = async ({
     ];
   }
 
-  const whereQuery = { ...countQuery };
+  const whereQuery: any = { ...countQuery };
   if (cursor) {
     whereQuery._id = { $gt: cursor };
   }

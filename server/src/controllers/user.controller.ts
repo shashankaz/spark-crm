@@ -40,7 +40,7 @@ export const getUserById = asyncHandler(async (req: Request, res: Response) => {
     throw new AppError("Tenant ID is missing in user data", 400);
   }
 
-  const { id } = req.params;
+  const id = req.params.id as unknown as Types.ObjectId;
   if (!id) {
     throw new AppError("User ID is required", 400);
   }
@@ -86,7 +86,7 @@ export const updateUser = asyncHandler(async (req: Request, res: Response) => {
     throw new AppError("Tenant ID is missing in user data", 400);
   }
 
-  const { id } = req.params;
+  const id = req.params.id as unknown as Types.ObjectId;
   if (!id) {
     throw new AppError("User ID is required", 400);
   }
@@ -123,7 +123,7 @@ export const deleteUser = asyncHandler(async (req: Request, res: Response) => {
     throw new AppError("Tenant ID is missing in user data", 400);
   }
 
-  const { id } = req.params;
+  const id = req.params.id as unknown as Types.ObjectId;
   if (!id) {
     throw new AppError("User ID is required", 400);
   }

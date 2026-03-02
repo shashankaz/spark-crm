@@ -8,7 +8,6 @@ export interface FetchCallsByLeadInput {
 }
 
 export interface CreateCallForLeadInput {
-  tenantId: Types.ObjectId;
   leadId: Types.ObjectId;
   userId: Types.ObjectId;
   userName: string;

@@ -8,7 +8,6 @@ export interface FetchAttachmentsByLeadInput {
 }
 
 export interface CreateAttachmentForLeadInput {
-  tenantId: Types.ObjectId;
   leadId: Types.ObjectId;
   userId: Types.ObjectId;
   userName: string;

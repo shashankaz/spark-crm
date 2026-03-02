@@ -22,7 +22,7 @@ export interface CreateLeadInput {
   tenantId: Types.ObjectId;
   orgId?: Types.ObjectId;
   orgName?: string;
-  userId?: Types.ObjectId;
+  userId: Types.ObjectId;
   userName: string;
   firstName?: string;
   lastName?: string;
@@ -37,7 +37,7 @@ export interface UpdateLeadByIdInput {
   tenantId: Types.ObjectId;
   orgId?: Types.ObjectId;
   orgName?: string;
-  userId?: Types.ObjectId;
+  userId: Types.ObjectId;
   userName: string;
   firstName?: string;
   lastName?: string;
@@ -51,8 +51,6 @@ export interface UpdateLeadByIdInput {
 export interface DeleteLeadByIdInput {
   id: Types.ObjectId;
   tenantId: Types.ObjectId;
-  userId: Types.ObjectId;
-  userName: string;
 }
 
 export interface BulkWriteLeadsInput {

@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { Types } from "mongoose";
 import {
   fetchEmailsByLeadService,
   sendEmailForLeadService,
@@ -9,7 +10,7 @@ import { asyncHandler } from "../shared/async-handler";
 
 export const getAllEmailsByLeadId = asyncHandler(
   async (req: Request, res: Response) => {
-    const { leadId } = req.params;
+    const leadId = req.params.leadId as unknown as Types.ObjectId;
     if (!leadId) {
       throw new AppError("Lead ID is required", 400);
     }
@@ -34,7 +35,7 @@ export const getAllEmailsByLeadId = asyncHandler(
 
 export const sendEmailForLead = asyncHandler(
   async (req: Request, res: Response) => {
-    const { leadId } = req.params;
+    const leadId = req.params.leadId as unknown as Types.ObjectId;
     if (!leadId) {
       throw new AppError("Lead ID is required", 400);
     }

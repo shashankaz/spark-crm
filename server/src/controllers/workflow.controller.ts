@@ -45,7 +45,7 @@ export const getWorkflowById = asyncHandler(
       throw new AppError("Tenant ID is missing in user data", 400);
     }
 
-    const { id } = req.params;
+    const id = req.params.id as unknown as Types.ObjectId;
     if (!id) {
       throw new AppError("Workflow ID is required", 400);
     }
@@ -103,7 +103,7 @@ export const updateWorkflowById = asyncHandler(
       throw new AppError("Tenant ID is missing in user data", 400);
     }
 
-    const { id } = req.params;
+    const id = req.params.id as unknown as Types.ObjectId;
     if (!id) {
       throw new AppError("Workflow ID is required", 400);
     }
@@ -135,7 +135,7 @@ export const deleteWorkflowById = asyncHandler(
       throw new AppError("Tenant ID is missing in user data", 400);
     }
 
-    const { id } = req.params;
+    const id = req.params.id as unknown as Types.ObjectId;
     if (!id) {
       throw new AppError("Workflow ID is required", 400);
     }
@@ -153,7 +153,7 @@ export const toggleWorkflow = asyncHandler(
       throw new AppError("Tenant ID is missing in user data", 400);
     }
 
-    const { id } = req.params;
+    const id = req.params.id as unknown as Types.ObjectId;
     if (!id) {
       throw new AppError("Workflow ID is required", 400);
     }

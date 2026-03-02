@@ -48,7 +48,7 @@ export const getAllTenants = asyncHandler(
 
 export const getTenantById = asyncHandler(
   async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const id = req.params.id as unknown as Types.ObjectId;
     if (!id) {
       throw new AppError("Tenant ID is required", 400);
     }
@@ -64,7 +64,7 @@ export const getTenantById = asyncHandler(
 
 export const getUsersByTenantId = asyncHandler(
   async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const id = req.params.id as unknown as Types.ObjectId;
     if (!id) {
       throw new AppError("Tenant ID is required", 400);
     }
@@ -107,7 +107,7 @@ export const createTenant = asyncHandler(
 
 export const updateTenantById = asyncHandler(
   async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const id = req.params.id as unknown as Types.ObjectId;
     if (!id) {
       throw new AppError("Tenant ID is required", 400);
     }
@@ -142,7 +142,7 @@ export const updateTenantById = asyncHandler(
 
 export const deleteTenantById = asyncHandler(
   async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const id = req.params.id as unknown as Types.ObjectId;
     if (!id) {
       throw new AppError("Tenant ID is required", 400);
     }
@@ -158,7 +158,7 @@ export const deleteTenantById = asyncHandler(
 
 export const createUserForTenant = asyncHandler(
   async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const id = req.params.id as unknown as Types.ObjectId;
     if (!id) {
       throw new AppError("Tenant ID is required", 400);
     }

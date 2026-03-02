@@ -43,7 +43,7 @@ export const getOrganizationById = asyncHandler(
       throw new AppError("Tenant ID is missing in user data", 400);
     }
 
-    const { id } = req.params;
+    const id = req.params.id as unknown as Types.ObjectId;
     if (!id) {
       throw new AppError("Organization ID is required", 400);
     }
@@ -119,7 +119,7 @@ export const updateOrganizationById = asyncHandler(
       throw new AppError("Tenant ID is missing in user data", 400);
     }
 
-    const { id } = req.params;
+    const id = req.params.id as unknown as Types.ObjectId;
     if (!id) {
       throw new AppError("Organization ID is required", 400);
     }
@@ -169,7 +169,7 @@ export const deleteOrganizationById = asyncHandler(
       throw new AppError("Tenant ID is missing in user data", 400);
     }
 
-    const { id } = req.params;
+    const id = req.params.id as unknown as Types.ObjectId;
     if (!id) {
       throw new AppError("Organization ID is required", 400);
     }

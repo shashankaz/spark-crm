@@ -21,7 +21,11 @@ import {
   FetchLeadActivityByLeadIdInput,
   AssignLeadInput,
 } from "../types/services/lead.service.types";
-import { LeadGender, LeadStatus } from "../types/models/lead.model.types";
+import {
+  LeadBase,
+  LeadGender,
+  LeadStatus,
+} from "../types/models/lead.model.types";
 
 export const fetchLeadsService = async ({
   tenantId,
@@ -185,8 +189,6 @@ export const updateLeadByIdService = async ({
 export const deleteLeadByIdService = async ({
   id,
   tenantId,
-  userId,
-  userName,
 }: DeleteLeadByIdInput) => {
   const lead = await Lead.findOne({ _id: id, tenantId }).exec();
   if (!lead) {
@@ -207,7 +209,7 @@ export const bulkWriteLeadsService = async ({
   tenantId,
   leads,
 }: BulkWriteLeadsInput) => {
-  const operations = leads.map((lead) => {
+  const operations = leads.map((lead: LeadBase) => {
     const document = {
       idempotentId: lead.idempotentId,
       tenantId,

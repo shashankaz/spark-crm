@@ -10,7 +10,7 @@ import { asyncHandler } from "../shared/async-handler";
 
 export const getAllAttachmentsByLeadId = asyncHandler(
   async (req: Request, res: Response) => {
-    const { leadId } = req.params;
+    const leadId = req.params.leadId as unknown as Types.ObjectId;
     if (!leadId) {
       throw new AppError("Lead ID is required", 400);
     }
@@ -35,7 +35,7 @@ export const getAllAttachmentsByLeadId = asyncHandler(
 
 export const createAttachmentForLead = asyncHandler(
   async (req: Request, res: Response) => {
-    const { leadId } = req.params;
+    const leadId = req.params.leadId as unknown as Types.ObjectId;
     if (!leadId) {
       throw new AppError("Lead ID is required", 400);
     }

@@ -14,7 +14,7 @@ export interface FetchWorkflowsInput {
 }
 
 export interface FetchWorkflowByIdInput {
-  id: string;
+  id: Types.ObjectId;
   tenantId: Types.ObjectId;
   userId: Types.ObjectId;
 }
@@ -31,7 +31,7 @@ export interface CreateWorkflowInput {
 }
 
 export interface UpdateWorkflowByIdInput {
-  id: string;
+  id: Types.ObjectId;
   tenantId: Types.ObjectId;
   userId: Types.ObjectId;
   name?: string;
@@ -43,13 +43,13 @@ export interface UpdateWorkflowByIdInput {
 }
 
 export interface DeleteWorkflowByIdInput {
-  id: string;
+  id: Types.ObjectId;
   tenantId: Types.ObjectId;
   userId: Types.ObjectId;
 }
 
 export interface ToggleWorkflowInput {
-  id: string;
+  id: Types.ObjectId;
   tenantId: Types.ObjectId;
   userId: Types.ObjectId;
 }
