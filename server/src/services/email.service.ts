@@ -1,3 +1,5 @@
+import { SendMessageCommand } from "@aws-sdk/client-sqs";
+import { SendMailOptions } from "nodemailer";
 import {
   TenantForAdminMail,
   UserWelcomeMail,
@@ -10,7 +12,21 @@ import {
   userWelcomeMailTemplate,
   passwordChangedMailTemplate,
 } from "../email/templates";
-import { transport } from "../utils/mail-transport";
+import { sqs } from "../utils/sqs";
+import { env } from "../config/env";
+
+const enqueueEmail = async ({
+  mailOptions,
+}: {
+  mailOptions: SendMailOptions;
+}): Promise<void> => {
+  await sqs.send(
+    new SendMessageCommand({
+      QueueUrl: env.AWS_SQS_EMAIL_QUEUE_URL,
+      MessageBody: JSON.stringify(mailOptions),
+    }),
+  );
+};
 
 export const sendAdminMail = async (
   tenant: TenantForAdminMail,
@@ -18,7 +34,7 @@ export const sendAdminMail = async (
 ) => {
   try {
     const mailOptions = adminMailTemplate(tenant, randomPassword);
-    return await transport.sendMail(mailOptions);
+    return await enqueueEmail({ mailOptions });
   } catch (error) {
     console.error("Error sending admin mail:", error);
     throw error;
@@ -32,7 +48,7 @@ export const sendLeadReminderMail = async (
 ) => {
   try {
     const mailOptions = leadReminderMailTemplate(userEmail, userName, leadName);
-    return await transport.sendMail(mailOptions);
+    return await enqueueEmail({ mailOptions });
   } catch (error) {
     console.error("Error sending lead reminder mail:", error);
     throw error;
@@ -50,7 +66,7 @@ export const sendLeadExportMail = async (
       fileUrl,
       leadCount,
     );
-    return await transport.sendMail(mailOptions);
+    return await enqueueEmail({ mailOptions });
   } catch (error) {
     console.error("Error sending lead export mail:", error);
     throw error;
@@ -60,7 +76,7 @@ export const sendLeadExportMail = async (
 export const sendUserWelcomeMail = async (payload: UserWelcomeMail) => {
   try {
     const mailOptions = userWelcomeMailTemplate(payload);
-    return await transport.sendMail(mailOptions);
+    return await enqueueEmail({ mailOptions });
   } catch (error) {
     console.error("Error sending user welcome mail:", error);
     throw error;
@@ -70,7 +86,7 @@ export const sendUserWelcomeMail = async (payload: UserWelcomeMail) => {
 export const sendPasswordChangedMail = async (payload: PasswordChangedMail) => {
   try {
     const mailOptions = passwordChangedMailTemplate(payload);
-    return await transport.sendMail(mailOptions);
+    return await enqueueEmail({ mailOptions });
   } catch (error) {
     console.error("Error sending password changed mail:", error);
     throw error;
