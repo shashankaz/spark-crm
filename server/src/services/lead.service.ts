@@ -8,6 +8,7 @@ import { AppError } from "../shared/app-error";
 import { calculateLeadScore } from "../utils/calculate-score";
 import { createLeadActionHistoryService } from "./lead-action-history.service";
 import { LeadActionHistory } from "../models/lead-action-history.model";
+import { deleteLeadWithCascade } from "./cascade-delete.service";
 import {
   FetchLeadsInput,
   FetchLeadByIdInput,
@@ -199,15 +200,7 @@ export const deleteLeadByIdService = async ({
     );
   }
 
-  await createLeadActionHistoryService({
-    leadId: lead._id,
-    actionType: "lead_deleted",
-    message: `Lead deleted by ${userName}`,
-    userId,
-    userName,
-  });
-
-  return await Lead.deleteOne({ _id: id, tenantId }).exec();
+  return await deleteLeadWithCascade({ leadId: id });
 };
 
 export const bulkWriteLeadsService = async ({

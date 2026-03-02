@@ -2,6 +2,7 @@ import { formatDate } from "date-fns";
 import { User } from "../models/user.model";
 import { hashPassword } from "../utils/auth/bcrypt";
 import { AppError } from "../shared/app-error";
+import { deleteUserWithCascade } from "./cascade-delete.service";
 import {
   FetchUsersInput,
   FetchUserByIdInput,
@@ -110,5 +111,5 @@ export const removeUserService = async ({ tenantId, id }: RemoveUserInput) => {
     throw new AppError("User not found", 404);
   }
 
-  return await User.deleteOne({ _id: id, tenantId }).exec();
+  return await deleteUserWithCascade({ userId: id });
 };
