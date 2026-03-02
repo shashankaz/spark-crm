@@ -2,7 +2,11 @@ import dns from "dns";
 import "dotenv/config";
 
 import { Database } from "./utils/db";
-import { startLeadExportWorker, startEmailWorker } from "./workers";
+import {
+  startLeadExportWorker,
+  startEmailWorker,
+  startLeadReminderWorker,
+} from "./workers";
 import { registerGracefulShutdown } from "./utils/graceful-shut-down";
 
 dns.setServers(["1.1.1.1", "8.8.8.8"]);
@@ -12,6 +16,7 @@ Database.connect()
     console.log("Connected to MongoDB");
     startLeadExportWorker();
     startEmailWorker();
+    startLeadReminderWorker();
     console.log("[Worker] All workers started.");
   })
   .catch((error) => {
