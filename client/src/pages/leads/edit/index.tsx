@@ -39,12 +39,16 @@ import { Description } from "@/components/shared/typography/description";
 import { LeadEditForm } from "./lead-edit-form";
 import { CallLogCreateForm } from "./call-log-create-form";
 import { CommentCreateForm } from "./comment-create-form";
+import { AttachmentsTab } from "./attachments-tab";
+import { EmailsTab } from "./emails-tab";
 import { getActivityStyle } from "./helper";
 
 import {
   useOrganizations,
   useCalls,
   useComments,
+  useAttachments,
+  useEmails,
   useConvertLeadToDeal,
   useLead,
   useLeadActivity,
@@ -98,6 +102,18 @@ const LeadsEditPage = () => {
     enabled: activeTab === "comments",
   });
   const comments = commentsData?.comments ?? [];
+
+  const { data: attachmentsData } = useAttachments({
+    leadId: leadId!,
+    enabled: activeTab === "attachments",
+  });
+  const attachments = attachmentsData?.attachments ?? [];
+
+  const { data: emailsData } = useEmails({
+    leadId: leadId!,
+    enabled: activeTab === "emails",
+  });
+  const emails = emailsData?.emails ?? [];
 
   const { data: leadActivityData } = useLeadActivity({ id: leadId! });
   const activities = leadActivityData?.activities ?? [];
@@ -268,6 +284,18 @@ const LeadsEditPage = () => {
                   {comments.length}
                 </span>
               </TabsTrigger>
+              <TabsTrigger value="attachments">
+                Attachments
+                <span className="ml-1.5 rounded-full bg-muted text-muted-foreground text-xs px-1.5 py-0.5">
+                  {attachments.length}
+                </span>
+              </TabsTrigger>
+              <TabsTrigger value="emails">
+                Emails
+                <span className="ml-1.5 rounded-full bg-muted text-muted-foreground text-xs px-1.5 py-0.5">
+                  {emails.length}
+                </span>
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="details" className="mt-6">
@@ -400,6 +428,14 @@ const LeadsEditPage = () => {
                 )}
               </div>
             </TabsContent>
+
+            <TabsContent value="attachments" className="mt-6">
+              <AttachmentsTab fullName={fullName} />
+            </TabsContent>
+
+            <TabsContent value="emails" className="mt-6">
+              <EmailsTab fullName={fullName} />
+            </TabsContent>
           </Tabs>
         </div>
 
@@ -440,7 +476,9 @@ const LeadsEditPage = () => {
                         {event.message}
                       </p>
                       <p className="text-[11px] text-muted-foreground mt-0.5">
-                        {formatDistanceToNow(event.createdAt)}
+                        {formatDistanceToNow(event.createdAt, {
+                          addSuffix: true,
+                        })}
                       </p>
                     </li>
                   );
