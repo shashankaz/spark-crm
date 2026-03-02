@@ -1,8 +1,10 @@
+import { SendMessageCommand } from "@aws-sdk/client-sqs";
 import { Types } from "mongoose";
 import { Email } from "../models/email.model";
 import { Lead } from "../models/lead.model";
 import { AppError } from "../shared/app-error";
-import { transport } from "../utils/mail-transport";
+import { sqs } from "../utils/sqs";
+import { env } from "../config/env";
 import { createLeadActionHistoryService } from "./lead-action-history.service";
 import {
   FetchEmailsByLeadInput,
@@ -64,13 +66,18 @@ export const sendEmailForLeadService = async ({
   });
 
   try {
-    await transport.sendMail({
-      from: `"Spark CRM" <${from}>`,
-      to,
-      subject,
-      html: bodyHtml,
-      text: bodyText,
-    });
+    await sqs.send(
+      new SendMessageCommand({
+        QueueUrl: env.AWS_SQS_EMAIL_QUEUE_URL,
+        MessageBody: JSON.stringify({
+          from: `"Spark CRM" <${from}>`,
+          to,
+          subject,
+          html: bodyHtml,
+          text: bodyText,
+        }),
+      }),
+    );
 
     emailRecord.status = "sent";
     await emailRecord.save();
