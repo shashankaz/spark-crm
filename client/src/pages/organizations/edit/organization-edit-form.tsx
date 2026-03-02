@@ -28,7 +28,7 @@ import { useUpdateOrganization } from "@/hooks";
 
 import { countriesFlag } from "@/utils/countries/countries-flag";
 
-import type { Organization } from "@/types";
+import type { Organization } from "@/types/domain";
 
 interface OrganizationEditFormProps {
   organization: Organization;

@@ -15,7 +15,7 @@ import { DeleteDialog } from "@/components/shared/dashboard/delete-dialog";
 
 import { useDeleteOrganization } from "@/hooks";
 
-import type { Organization } from "@/types";
+import type { Organization } from "@/types/domain";
 
 export const ActionCell = ({
   organization,

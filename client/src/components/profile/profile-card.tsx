@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
-import type { User } from "@/types";
+import type { User } from "@/types/domain";
 
 interface ProfileCardProps {
   user: User;

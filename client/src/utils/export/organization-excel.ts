@@ -1,6 +1,6 @@
 import * as XLSX from "xlsx";
 
-import type { Organization } from "@/types";
+import type { Organization } from "@/types/domain";
 
 export const exportOrganizationsToExcel = (
   organizations: Organization[],

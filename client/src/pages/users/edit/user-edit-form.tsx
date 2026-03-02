@@ -29,7 +29,7 @@ import { PasswordInput } from "@/components/shared/password-input";
 
 import { useUpdateUser } from "@/hooks";
 
-import type { User } from "@/types";
+import type { User } from "@/types/domain";
 
 interface UserEditFormProps {
   user: User;

@@ -29,7 +29,7 @@ import type { TenantFormValues } from "../tenant-form-schema";
 
 import { useUpdateTenant } from "@/hooks";
 
-import type { Tenant } from "@/types";
+import type { Tenant } from "@/types/domain";
 
 interface TenantEditFormProps {
   tenant: Tenant;

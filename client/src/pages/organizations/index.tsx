@@ -23,7 +23,7 @@ import { useOrganizations } from "@/hooks";
 
 import { exportOrganizationsToExcel } from "@/utils/export/organization-excel";
 
-import type { Organization } from "@/types";
+import type { Organization } from "@/types/domain";
 
 const OrganizationsPage = () => {
   const [open, setOpen] = useState(false);

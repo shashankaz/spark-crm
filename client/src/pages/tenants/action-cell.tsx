@@ -15,7 +15,7 @@ import { DeleteDialog } from "@/components/shared/dashboard/delete-dialog";
 
 import { useDeleteTenant } from "@/hooks";
 
-import type { Tenant } from "@/types";
+import type { Tenant } from "@/types/domain";
 
 export const ActionCell = ({ tenant }: { tenant: Tenant }) => {
   const [deleteOpen, setDeleteOpen] = useState(false);

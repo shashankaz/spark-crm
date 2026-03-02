@@ -1,6 +1,6 @@
 import * as XLSX from "xlsx";
 
-import type { Tenant } from "@/types";
+import type { Tenant } from "@/types/domain";
 
 export const exportTenantsToExcel = (
   tenants: Tenant[],

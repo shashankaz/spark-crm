@@ -16,7 +16,7 @@ import { useDeals } from "@/hooks";
 
 import { exportDealsToExcel } from "@/utils/export/deal-excel";
 
-import type { Deal } from "@/types";
+import type { Deal } from "@/types/domain";
 
 const DealPage = () => {
   const [selectedDeals, setSelectedDeals] = useState<Deal[]>([]);

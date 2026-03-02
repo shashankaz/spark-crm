@@ -22,7 +22,8 @@ import { Description } from "@/components/shared/typography/description";
 import { useUsers } from "@/hooks";
 
 import { exportUsersToExcel } from "@/utils/export/user";
-import type { User } from "@/types";
+
+import type { User } from "@/types/domain";
 
 const UsersPage = () => {
   const [open, setOpen] = useState(false);

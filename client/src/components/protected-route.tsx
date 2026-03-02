@@ -4,7 +4,7 @@ import { LoadingPage } from "@/components/shared/loading";
 
 import { useUser } from "@/hooks";
 
-import type { User } from "@/types";
+import type { User } from "@/types/domain";
 
 type Role = User["role"];
 

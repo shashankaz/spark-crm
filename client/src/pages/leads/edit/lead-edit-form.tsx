@@ -25,7 +25,7 @@ import type { LeadFormValues } from "../lead-form-schema";
 
 import { useUpdateLead } from "@/hooks";
 
-import type { Lead } from "@/types";
+import type { Lead } from "@/types/domain";
 
 interface LeadEditFormProps {
   lead: Omit<

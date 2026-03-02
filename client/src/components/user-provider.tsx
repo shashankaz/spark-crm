@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { UserContext } from "@/context/user-context";
-import type { User } from "@/types";
+import type { User } from "@/types/domain";
 
 import { getProfile } from "@/api/services";
 

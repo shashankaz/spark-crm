@@ -1,6 +1,6 @@
 import * as XLSX from "xlsx";
 
-import type { User } from "@/types";
+import type { User } from "@/types/domain";
 
 export const exportUsersToExcel = (users: User[], filename = "users") => {
   const rows = users.map((user) => ({

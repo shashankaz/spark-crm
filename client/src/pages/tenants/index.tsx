@@ -23,7 +23,7 @@ import { useTenants } from "@/hooks";
 
 import { exportTenantsToExcel } from "@/utils/export/tenant-excel";
 
-import type { Tenant } from "@/types";
+import type { Tenant } from "@/types/domain";
 
 const TenantsPage = () => {
   const [open, setOpen] = useState(false);
