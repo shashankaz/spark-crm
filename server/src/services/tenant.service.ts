@@ -55,7 +55,8 @@ export const fetchTenantDashboardStatsService = async () => {
           ],
         },
       },
-    ]),
+    ]).allowDiskUse(true),
+
     User.aggregate([
       { $match: { role: { $ne: "super_admin" } } },
       {
@@ -67,7 +68,7 @@ export const fetchTenantDashboardStatsService = async () => {
           ],
         },
       },
-    ]),
+    ]).allowDiskUse(true),
   ]);
 
   const totalTenants = tenantAgg[0].total[0]?.count ?? 0;

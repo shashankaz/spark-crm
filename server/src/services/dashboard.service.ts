@@ -41,7 +41,8 @@ export const fetchDashboardStatsService = async ({
           ],
         },
       },
-    ]),
+    ]).allowDiskUse(true),
+
     Deal.aggregate([
       { $match: { tenantId } },
       {
@@ -66,7 +67,8 @@ export const fetchDashboardStatsService = async ({
           ],
         },
       },
-    ]),
+    ]).allowDiskUse(true),
+
     Organization.aggregate([
       { $match: { tenantId } },
       {
@@ -78,7 +80,8 @@ export const fetchDashboardStatsService = async ({
           ],
         },
       },
-    ]),
+    ]).allowDiskUse(true),
+
     User.aggregate([
       { $match: { tenantId } },
       {
@@ -90,7 +93,7 @@ export const fetchDashboardStatsService = async ({
           ],
         },
       },
-    ]),
+    ]).allowDiskUse(true),
   ]);
 
   const totalLeads = leadAgg[0].total[0]?.count ?? 0;
