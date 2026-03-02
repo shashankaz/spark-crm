@@ -1,4 +1,5 @@
 import { Types } from "mongoose";
+import { LeadBase } from "../models/lead.model.types";
 
 export interface FetchLeadsInput {
   tenantId: Types.ObjectId;
@@ -55,7 +56,7 @@ export interface DeleteLeadByIdInput {
 
 export interface BulkWriteLeadsInput {
   tenantId: Types.ObjectId;
-  leads: string[];
+  leads: LeadBase[];
 }
 
 export interface ConvertLeadToDealInput {

@@ -209,27 +209,36 @@ export const bulkWriteLeadsService = async ({
   tenantId,
   leads,
 }: BulkWriteLeadsInput) => {
-  const operations = leads.map((lead: LeadBase) => {
-    const document = {
-      idempotentId: lead.idempotentId,
-      tenantId,
-      orgId: lead.orgId || undefined,
-      orgName: lead.orgName || undefined,
-      dealId: undefined,
-      userId: lead.userId || undefined,
-      firstName: lead.firstName || undefined,
-      lastName: lead.lastName || undefined,
-      email: lead.email || undefined,
-      mobile: lead.mobile || undefined,
-      gender: lead.gender || undefined,
-      source: lead.source || undefined,
-    };
+  const operations = leads
+    .map((lead: LeadBase) => {
+      if (!lead.firstName || !lead.email || !lead.mobile) {
+        return null;
+      }
 
-    document.score = calculateLeadScore(document);
+      const document: LeadBase = {
+        idempotentId: lead.idempotentId,
+        tenantId,
+        orgId: lead.orgId || undefined,
+        orgName: lead.orgName || undefined,
+        dealId: undefined,
+        userId: lead.userId || undefined,
+        firstName: lead.firstName,
+        lastName: lead.lastName || undefined,
+        email: lead.email,
+        mobile: lead.mobile,
+        gender: lead.gender || undefined,
+        source: lead.source || undefined,
+        score: 0,
+        status: "new" as LeadBase["status"],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
 
-    return { insertOne: { document } };
-  });
+      document.score = calculateLeadScore(document);
 
+      return { insertOne: { document } };
+    })
+    .filter((op): op is { insertOne: { document: LeadBase } } => op !== null);
   return await Lead.bulkWrite(operations, { ordered: false });
 };
 
