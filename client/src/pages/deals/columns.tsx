@@ -4,7 +4,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 
-import type { Deal } from "@/types";
+import type { Deal } from "@/types/domain";
 
 import { ActionCell } from "./action-cell";
 
@@ -60,7 +60,7 @@ export const columns: ColumnDef<Deal>[] = [
       );
     },
     cell: ({ row }) => {
-      const value = row.getValue<number>("value");
+      const value = row.original.value;
       return new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "INR",
@@ -81,7 +81,7 @@ export const columns: ColumnDef<Deal>[] = [
       );
     },
     cell: ({ row }) => {
-      const probability = row.getValue<number>("probability");
+      const probability = row.original.probability;
       return `${probability}%`;
     },
   },

@@ -4,7 +4,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 
-import type { Tenant } from "@/types";
+import type { Tenant } from "@/types/domain";
 
 import { ActionCell } from "./action-cell";
 import { countriesFlag } from "@/utils/countries/countries-flag";
@@ -46,7 +46,7 @@ export const columns: ColumnDef<Tenant>[] = [
       </Button>
     ),
     cell: ({ row }) => (
-      <div className="truncate max-w-40">{row.getValue("name")}</div>
+      <div className="truncate max-w-40">{row.original.name}</div>
     ),
   },
   {
@@ -62,10 +62,10 @@ export const columns: ColumnDef<Tenant>[] = [
     ),
     cell: ({ row }) => (
       <a
-        href={`mailto:${row.getValue("email")}`}
+        href={`mailto:${row.original.email}`}
         className="text-blue-600 dark:text-blue-400 hover:underline"
       >
-        {row.getValue("email")}
+        {row.original.email}
       </a>
     ),
   },

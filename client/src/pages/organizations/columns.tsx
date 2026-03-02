@@ -4,7 +4,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 
-import type { Organization } from "@/types";
+import type { Organization } from "@/types/domain";
 
 import { ActionCell } from "./action-cell";
 
@@ -56,7 +56,7 @@ export const columns: ColumnDef<Organization>[] = [
       </Button>
     ),
     cell: ({ row }) => {
-      return <span className="capitalize">{row.getValue("industry")}</span>;
+      return <span className="capitalize">{row.original.industry}</span>;
     },
   },
   {
@@ -71,7 +71,7 @@ export const columns: ColumnDef<Organization>[] = [
       </Button>
     ),
     cell: ({ row }) => {
-      const country = row.getValue("country") as string;
+      const country = row.original.country;
 
       if (!country) return <span className="text-muted-foreground">—</span>;
 
@@ -90,7 +90,7 @@ export const columns: ColumnDef<Organization>[] = [
       </Button>
     ),
     cell: ({ row }) => {
-      return <span className="uppercase">{row.getValue("size")}</span>;
+      return <span className="uppercase">{row.original.size}</span>;
     },
   },
   {
@@ -105,7 +105,7 @@ export const columns: ColumnDef<Organization>[] = [
       </Button>
     ),
     cell: ({ row }) => {
-      const website = row.getValue("website") as string;
+      const website = row.original.website;
 
       if (!website) return <span className="text-muted-foreground">—</span>;
 

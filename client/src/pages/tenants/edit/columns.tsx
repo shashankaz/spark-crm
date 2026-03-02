@@ -3,7 +3,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
 
-import type { User } from "@/types";
+import type { User } from "@/types/domain";
 
 export const columns: ColumnDef<User>[] = [
   {
@@ -35,10 +35,10 @@ export const columns: ColumnDef<User>[] = [
     },
     cell: ({ row }) => (
       <a
-        href={`mailto:${row.getValue("email")}`}
+        href={`mailto:${row.original.email}`}
         className="text-blue-600 dark:text-blue-400 hover:underline"
       >
-        {row.getValue("email")}
+        {row.original.email}
       </a>
     ),
   },
@@ -70,7 +70,7 @@ export const columns: ColumnDef<User>[] = [
       );
     },
     cell: ({ row }) => {
-      const role = row.getValue("role") as string;
+      const role = row.original.role;
 
       return <span className="capitalize">{role.split("_").join(" ")}</span>;
     },
