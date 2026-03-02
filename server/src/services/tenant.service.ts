@@ -79,22 +79,28 @@ export const fetchTenantDashboardStatsService = async () => {
   const usersLastMonth = userAgg[0].lastMonth[0]?.count ?? 0;
 
   const currentRevenue = planCounts.reduce(
-    (sum: number, p) =>
+    (sum: number, p: { _id: string; count: number }) =>
       sum + (PLAN_PRICES[p._id as keyof typeof PLAN_PRICES] || 0) * p.count,
     0,
   );
   const lastMonthRevenue = lastMonthPlanCounts.reduce(
-    (sum: number, p) =>
+    (sum: number, p: { _id: string; count: number }) =>
       sum + (PLAN_PRICES[p._id as keyof typeof PLAN_PRICES] || 0) * p.count,
     0,
   );
 
   const paidPlans = planCounts
-    .filter((p) => p._id !== "free")
-    .reduce((sum: number, p) => sum + p.count, 0);
+    .filter((p: { _id: string; count: number }) => p._id !== "free")
+    .reduce(
+      (sum: number, p: { _id: string; count: number }) => sum + p.count,
+      0,
+    );
   const lastMonthPaidPlans = lastMonthPlanCounts
-    .filter((p) => p._id !== "free")
-    .reduce((sum: number, p) => sum + p.count, 0);
+    .filter((p: { _id: string; count: number }) => p._id !== "free")
+    .reduce(
+      (sum: number, p: { _id: string; count: number }) => sum + p.count,
+      0,
+    );
 
   const stats = {
     totalTenants: {
@@ -129,10 +135,12 @@ export const fetchTenantDashboardStatsService = async () => {
     createdAt: formatDate(new Date(t.createdAt), "yyyy-MM-dd"),
   }));
 
-  const planDistribution = planCounts.map((p) => ({
-    plan: p._id,
-    count: p.count,
-  }));
+  const planDistribution = planCounts.map(
+    (p: { _id: string; count: number }) => ({
+      plan: p._id,
+      count: p.count,
+    }),
+  );
 
   return { stats, recentTenants, planDistribution };
 };
