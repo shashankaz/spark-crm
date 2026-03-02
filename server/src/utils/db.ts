@@ -17,6 +17,8 @@ export class Database {
 
       this.connection = await mongoose.connect(uri, {
         dbName: "spark",
+        maxPoolSize: 10,
+        minPoolSize: 2,
       });
 
       return this.connection;
