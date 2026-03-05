@@ -18,7 +18,7 @@ import { PasswordInput } from "@/components/shared/password-input";
 import { loginFormSchema } from "./login-form-schema";
 import type { LoginFormValues } from "./login-form-schema";
 
-import { useLogin, useUser } from "@/hooks";
+import { useLogin } from "@/hooks";
 
 export const LoginForm = () => {
   const form = useForm<LoginFormValues>({
@@ -33,15 +33,15 @@ export const LoginForm = () => {
   const navigate = useNavigate();
 
   const { mutate, isPending } = useLogin();
-  const { setUser } = useUser();
 
   const onSubmit = (data: LoginFormValues) => {
     mutate(data, {
-      onSuccess: ({ user, message }) => {
+      onSuccess: ({ userId, message }) => {
         toast.success(message);
-        setUser(user);
-        if (user.role === "super_admin") navigate("/admin", { replace: true });
-        else navigate("/dashboard", { replace: true });
+        navigate("/login/otp", {
+          replace: true,
+          state: { userId, email: data.email },
+        });
       },
       onError: ({ message }) => {
         toast.error(message);

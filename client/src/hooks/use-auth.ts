@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   login,
+  verifyOtp,
+  resendOtp,
   logout,
   refreshToken,
   getProfile,
@@ -10,14 +12,26 @@ import {
 } from "@/api/services";
 
 export const useLogin = () => {
+  return useMutation({
+    mutationFn: login,
+  });
+};
+
+export const useVerifyOtp = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: login,
+    mutationFn: verifyOtp,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["auth", "profile"] });
       queryClient.invalidateQueries({ queryKey: ["auth", "sessions"] });
     },
+  });
+};
+
+export const useResendOtp = () => {
+  return useMutation({
+    mutationFn: resendOtp,
   });
 };
 

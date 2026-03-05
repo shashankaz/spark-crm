@@ -9,6 +9,15 @@ export type LoginRequest = {
   password: string;
 };
 
+export type VerifyOtpRequest = {
+  userId: string;
+  otp: string;
+};
+
+export type ResendOtpRequest = {
+  userId: string;
+};
+
 export type EditProfileRequest = {
   firstName?: string;
   lastName?: string;
@@ -22,7 +31,15 @@ export type ChangePasswordRequest = {
 
 export type LoginResponse = {
   message: string;
-  user: User;
+  userId: string;
+};
+
+export type VerifyOtpResponse = {
+  message: string;
+};
+
+export type ResendOtpResponse = {
+  message: string;
 };
 
 export type RefreshTokenResponse = {

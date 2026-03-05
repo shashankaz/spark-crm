@@ -20,6 +20,8 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
+    "gridstack": "^12.4.2",
+    "input-otp": "^1.4.2",
     "lodash": "^4.17.23",
     "lucide-react": "^0.574.0",
     "radix-ui": "^1.4.3",

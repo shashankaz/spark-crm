@@ -12,13 +12,17 @@ import type {
   LoginResponse,
   LogoutResponse,
   RefreshTokenResponse,
+  ResendOtpRequest,
+  ResendOtpResponse,
   SessionsData,
   UserData,
+  VerifyOtpRequest,
+  VerifyOtpResponse,
 } from "@/types/services";
 
 export const login = async (params: LoginRequest): Promise<LoginResponse> =>
   withApiHandler(async () => {
-    const response = await api.post<ApiResponse<UserData>>(
+    const response = await api.post<ApiResponse<{ userId: string }>>(
       "/auth/login",
       params,
     );
@@ -27,7 +31,35 @@ export const login = async (params: LoginRequest): Promise<LoginResponse> =>
 
     return {
       message,
-      user: data.user,
+      userId: data.userId,
+    };
+  });
+
+export const verifyOtp = async (
+  params: VerifyOtpRequest,
+): Promise<VerifyOtpResponse> =>
+  withApiHandler(async () => {
+    const response = await api.post<ApiResponse<void>>(
+      "/auth/verify-otp",
+      params,
+    );
+
+    return {
+      message: response.data.message,
+    };
+  });
+
+export const resendOtp = async (
+  params: ResendOtpRequest,
+): Promise<ResendOtpResponse> =>
+  withApiHandler(async () => {
+    const response = await api.post<ApiResponse<void>>(
+      "/auth/resend-otp",
+      params,
+    );
+
+    return {
+      message: response.data.message,
     };
   });
 
