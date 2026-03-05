@@ -1,0 +1,62 @@
+[
+  {
+    "idempotentId": null,
+    "tenantId": null,
+    "userId": null,
+    "name": "TechNova Solutions",
+    "industry": "technology",
+    "size": "enterprise",
+    "country": "United States",
+    "email": "contact@technova.com",
+    "mobile": "+1-202-555-0101",
+    "website": "https://technova.com"
+  },
+  {
+    "idempotentId": null,
+    "tenantId": null,
+    "userId": null,
+    "name": "GreenField Finance",
+    "industry": "finance",
+    "size": "mid-market",
+    "country": "United Kingdom",
+    "email": "info@greenfieldfinance.co.uk",
+    "mobile": "+44-20-7946-0958",
+    "website": "https://greenfieldfinance.co.uk"
+  },
+  {
+    "idempotentId": null,
+    "tenantId": null,
+    "userId": null,
+    "name": "MediCare Plus",
+    "industry": "healthcare",
+    "size": "enterprise",
+    "country": "Canada",
+    "email": "support@medicareplus.ca",
+    "mobile": "+1-416-555-0198",
+    "website": "https://medicareplus.ca"
+  },
+  {
+    "idempotentId": null,
+    "tenantId": null,
+    "userId": null,
+    "name": "BrightFuture Academy",
+    "industry": "education",
+    "size": "smb",
+    "country": "Australia",
+    "email": "admin@brightfuture.edu.au",
+    "mobile": "+61-2-9374-4000",
+    "website": "https://brightfuture.edu.au"
+  },
+  {
+    "idempotentId": null,
+    "tenantId": null,
+    "userId": null,
+    "name": "UrbanStyle Retailers",
+    "industry": "retail",
+    "size": "mid-market",
+    "country": "Germany",
+    "email": "sales@urbanstyle.de",
+    "mobile": "+49-30-123456",
+    "website": "https://urbanstyle.de"
+  }
+]
