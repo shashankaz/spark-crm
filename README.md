@@ -4,44 +4,64 @@ Spark CRM is a full-stack Customer Relationship Management application designed 
 
 ## Features
 
-- Authentication with session management
+- Authentication with JWT-based session management
 - Lead and deal tracking with action history
 - Organization and contact management
 - Call logging and comments
+- File attachments with cloud storage (AWS S3)
+- Email notifications via SMTP
+- CSV and XLSX data import/export
 - Admin dashboard with tenant management
-- Data export (XLSX)
 - Role-based access control (admin, manager, user)
 - Multi-tenant support
+- Background job processing with worker queues (AWS SQS)
+- Scheduled jobs and automation
+- Keyboard shortcuts
 
 ## Tech Stack
 
 ### Frontend
 
-| Technology | Purpose |
-|---|---|
-| React 19 | UI framework |
-| TypeScript | Type safety |
-| Vite | Build tool & dev server |
-| Tailwind CSS v4 | Utility-first styling |
-| shadcn/ui + Radix UI | Component library |
-| TanStack Query | Server state & data fetching |
-| TanStack Table | Data tables |
-| React Router v7 | Client-side routing |
-| React Hook Form + Zod | Form handling & validation |
-| Axios | HTTP client |
-| Lucide React | Icons |
-| xlsx | Data export |
+| Technology | Version | Purpose |
+|---|---|---|
+| React | 19 | UI framework |
+| TypeScript | ~5.9 | Type safety |
+| Vite | 7 | Build tool & dev server |
+| Tailwind CSS | v4 | Utility-first styling |
+| shadcn/ui + Radix UI | latest | Component library |
+| TanStack Query | v5 | Server state & data fetching |
+| TanStack Table | v8 | Data tables |
+| TanStack Hotkeys | latest | Keyboard shortcuts |
+| React Router | v7 | Client-side routing |
+| React Hook Form + Zod | latest | Form handling & validation |
+| Axios | latest | HTTP client |
+| Lucide React | latest | Icons |
+| date-fns | v4 | Date utilities |
+| GridStack | latest | Dashboard grid layout |
+| react-hot-toast | latest | Toast notifications |
+| react-helmet-async | latest | Document head management |
+| xlsx | latest | XLSX data export |
+| cmdk | latest | Command menu |
 
 ### Backend
 
-| Technology | Purpose |
-|---|---|
-| Node.js | Runtime |
-| Express v5 | Web framework |
-| MongoDB + Mongoose | Database & ODM |
-| JSON Web Tokens | Authentication |
-| bcrypt | Password hashing |
-| Zod | Request validation |
-| Helmet + CORS | Security headers |
-| express-rate-limit | Rate limiting |
-| Morgan | HTTP request logging |
+| Technology | Version | Purpose |
+|---|---|---|
+| Node.js | - | Runtime |
+| Express | v5 | Web framework |
+| TypeScript | 5.9 | Type safety |
+| MongoDB + Mongoose | v9 | Database & ODM |
+| Redis (ioredis) | v5 | Caching & session store |
+| AWS S3 | SDK v3 | File attachment storage |
+| AWS SQS | SDK v3 | Background job queues |
+| JSON Web Tokens | v9 | Authentication |
+| bcrypt | v6 | Password hashing |
+| Zod | v4 | Request validation |
+| Nodemailer | v8 | Email sending |
+| Multer | v2 | File upload handling |
+| node-cron | v4 | Scheduled jobs |
+| csv-parser + csv-stringify | latest | CSV import/export |
+| date-fns | v4 | Date utilities |
+| Helmet + CORS | latest | Security headers |
+| express-rate-limit | v8 | Rate limiting |
+| Morgan | latest | HTTP request logging |
