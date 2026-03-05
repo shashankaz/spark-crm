@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { Tenant } from "../models/tenant.model";
 import { User } from "../models/user.model";
 import { verifyAccessToken } from "../utils/auth/jwt";
 
@@ -24,6 +25,20 @@ export const requireAuth = async (
     if (!userData) {
       res.status(404).json({ success: false, message: "User not found" });
       return;
+    }
+
+    if (userData.role !== "super_admin") {
+      const tenant = await Tenant.findOne({
+        _id: userData.tenantId,
+        isDeleted: false,
+      });
+      if (!tenant) {
+        res.status(403).json({
+          success: false,
+          message: "Tenant not found or has been deleted",
+        });
+        return;
+      }
     }
 
     req.user = Object.freeze(userData.toJSON());

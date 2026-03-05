@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import {
   loginService,
+  verifyOTPService,
+  resendOtpService,
   refreshAuthTokenService,
   logoutService,
   getUserProfileService,
@@ -19,10 +21,18 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
     throw new AppError("Email and password are required", 400);
   }
 
-  const { accessToken, refreshToken, user } = await loginService({
-    email,
-    password,
-  });
+  const { userId } = await loginService({ email, password });
+
+  sendSuccess(res, 200, "OTP sent to your registered email", { userId });
+});
+
+export const verifyOtp = asyncHandler(async (req: Request, res: Response) => {
+  const { userId, otp } = req.body;
+  if (!userId || !otp) {
+    throw new AppError("User ID and OTP are required", 400);
+  }
+
+  const { accessToken, refreshToken } = await verifyOTPService({ userId, otp });
 
   res.cookie("__auth_at", accessToken, {
     httpOnly: true,
@@ -38,7 +48,18 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
   });
 
-  sendSuccess(res, 200, "Login successful", { user });
+  sendSuccess(res, 200, "Login successful", {});
+});
+
+export const resendOtp = asyncHandler(async (req: Request, res: Response) => {
+  const { userId } = req.body;
+  if (!userId) {
+    throw new AppError("User ID is required", 400);
+  }
+
+  await resendOtpService({ userId });
+
+  sendSuccess(res, 200, "OTP resent successfully", {});
 });
 
 export const refreshToken = asyncHandler(

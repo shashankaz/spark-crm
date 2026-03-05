@@ -12,3 +12,9 @@ export interface PasswordChangedMail {
   userEmail: string;
   userName: string;
 }
+
+export interface OtpMail {
+  userEmail: string;
+  userName: string;
+  otp: number;
+}

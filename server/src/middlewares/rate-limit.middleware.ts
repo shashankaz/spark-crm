@@ -1,25 +1,21 @@
 import rateLimit from "express-rate-limit";
 
-export const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5,
-  message: {
-    success: false,
-    message: "Too many login attempts. Try again after 15 minutes.",
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-  skipSuccessfulRequests: true,
-});
-
-export const refreshLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 20,
-  message: {
-    success: false,
-    message: "Too many token refresh requests. Please slow down.",
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-  skipSuccessfulRequests: true,
-});
+export const rateLimiter = ({
+  windowMs = 15 * 60 * 1000,
+  max = 100,
+}: {
+  windowMs?: number;
+  max?: number;
+}) => {
+  return rateLimit({
+    windowMs: windowMs,
+    max: max,
+    message: {
+      success: false,
+      message: "Too many requests. Please slow down.",
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+    skipSuccessfulRequests: true,
+  });
+};

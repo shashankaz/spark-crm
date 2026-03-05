@@ -46,9 +46,7 @@ export interface UserResponse {
 }
 
 export interface LoginResponse {
-  accessToken: string;
-  refreshToken: string;
-  user: UserResponse;
+  userId: Types.ObjectId;
 }
 
 export interface RefreshTokenResponse {

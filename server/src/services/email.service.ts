@@ -4,6 +4,7 @@ import {
   TenantForAdminMail,
   UserWelcomeMail,
   PasswordChangedMail,
+  OtpMail,
 } from "../types/email";
 import {
   adminMailTemplate,
@@ -11,6 +12,7 @@ import {
   leadExportMailTemplate,
   userWelcomeMailTemplate,
   passwordChangedMailTemplate,
+  otpMailTemplate,
 } from "../email/templates";
 import { sqs } from "../utils/sqs";
 import { env } from "../config/env";
@@ -89,6 +91,16 @@ export const sendPasswordChangedMail = async (payload: PasswordChangedMail) => {
     return await enqueueEmail({ mailOptions });
   } catch (error) {
     console.error("Error sending password changed mail:", error);
+    throw error;
+  }
+};
+
+export const sendOtpMail = async (payload: OtpMail) => {
+  try {
+    const mailOptions = otpMailTemplate(payload);
+    return await enqueueEmail({ mailOptions });
+  } catch (error) {
+    console.error("Error sending OTP mail:", error);
     throw error;
   }
 };

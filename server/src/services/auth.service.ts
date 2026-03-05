@@ -2,6 +2,7 @@ import { format } from "date-fns";
 import { Types } from "mongoose";
 import { DeleteResult } from "mongodb";
 import { Session } from "../models/session.model";
+import { Tenant } from "../models/tenant.model";
 import { User } from "../models/user.model";
 import { AppError } from "../shared/app-error";
 import {
@@ -15,7 +16,8 @@ import {
   generateRefreshToken,
   verifyRefreshToken,
 } from "../utils/auth/jwt";
-import { sendPasswordChangedMail } from "./email.service";
+import { redis } from "../utils/redis";
+import { sendPasswordChangedMail, sendOtpMail } from "./email.service";
 import {
   LoginInput,
   LoginResponse,
@@ -41,44 +43,41 @@ export const loginService = async ({
     throw new AppError("Invalid email or password", 401);
   }
 
+  if (user.role !== "super_admin") {
+    const tenant = await Tenant.findOne({
+      _id: user.tenantId,
+      isDeleted: false,
+    });
+    if (!tenant) {
+      throw new AppError("Tenant not found or has been deleted", 403);
+    }
+  }
+
   const isMatch = await verifyPassword(password, user.password);
   if (!isMatch) {
     throw new AppError("Invalid email or password", 401);
   }
 
-  const session = await Session.create({
-    userId: user._id,
-  });
-
-  const accessToken = generateAccessToken(user._id.toString());
-  const refreshToken = generateRefreshToken(session._id.toString());
-
-  if (!accessToken || !refreshToken) {
-    throw new AppError("Failed to generate tokens", 500);
+  const otp = await redis.get(`otp:${user._id}`);
+  if (otp) {
+    await redis.del(`otp:${user._id}`);
   }
 
-  const hashedRefreshToken = await hashRefreshToken(refreshToken);
+  const newOtp = Number(Math.floor(100000 + Math.random() * 900000).toString());
 
-  await Session.findByIdAndUpdate(session._id, {
-    token: hashedRefreshToken,
+  const payload = {
+    otp: newOtp,
+  };
+
+  await redis.set(`otp:${user._id}`, JSON.stringify(payload), "EX", 600);
+
+  await sendOtpMail({
+    userEmail: user.email,
+    userName: user.firstName,
+    otp: newOtp,
   });
 
-  const responseUser: UserResponse = {
-    _id: user._id,
-    firstName: user.firstName,
-    lastName: user.lastName ?? "-",
-    email: user.email,
-    mobile: user.mobile ?? "-",
-    role: user.role,
-    createdAt: format(user.createdAt, "dd/MM/yyyy"),
-    updatedAt: format(user.updatedAt, "dd/MM/yyyy"),
-  };
-
-  return {
-    accessToken,
-    refreshToken,
-    user: responseUser,
-  };
+  return { userId: user._id };
 };
 
 export const refreshAuthTokenService = async ({
@@ -129,6 +128,76 @@ export const logoutService = async ({
 }: LogoutInput): Promise<DeleteResult> => {
   return await Session.deleteMany({
     userId: new Types.ObjectId(userId),
+  });
+};
+
+export const verifyOTPService = async ({
+  userId,
+  otp,
+}: {
+  userId: string;
+  otp: string;
+}) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new AppError("Unauthorized", 401);
+  }
+
+  const userData = await redis.get(`otp:${userId}`);
+  if (!userData) {
+    throw new AppError("OTP expired or not found", 400);
+  }
+
+  const parsedUserData = JSON.parse(userData);
+  if (!parsedUserData || parsedUserData.otp !== Number(otp)) {
+    throw new AppError("Invalid OTP", 400);
+  }
+
+  const session = await Session.create({
+    userId,
+  });
+
+  const accessToken = generateAccessToken(user._id.toString());
+  const refreshToken = generateRefreshToken(session._id.toString());
+
+  if (!accessToken || !refreshToken) {
+    throw new AppError("Failed to generate tokens", 500);
+  }
+
+  const hashedRefreshToken = await hashRefreshToken(refreshToken);
+
+  await Session.findByIdAndUpdate(session._id, {
+    token: hashedRefreshToken,
+  });
+
+  await redis.del(`otp:${userId}`);
+
+  return {
+    accessToken,
+    refreshToken,
+  };
+};
+
+export const resendOtpService = async ({
+  userId,
+}: {
+  userId: string;
+}): Promise<void> => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
+  await redis.del(`otp:${userId}`);
+
+  const newOtp = Number(Math.floor(100000 + Math.random() * 900000).toString());
+
+  await redis.set(`otp:${userId}`, JSON.stringify({ otp: newOtp }), "EX", 600);
+
+  await sendOtpMail({
+    userEmail: user.email,
+    userName: user.firstName,
+    otp: newOtp,
   });
 };
 
