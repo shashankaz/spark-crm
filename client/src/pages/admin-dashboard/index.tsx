@@ -1,9 +1,8 @@
 import { Helmet } from "react-helmet-async";
 
-import { StatsSection } from "@/components/admin-dashboard/stats-section";
-import { TenantsStats } from "@/components/admin-dashboard/tenants-stats";
 import { Heading } from "@/components/shared/typography/heading";
 import { Description } from "@/components/shared/typography/description";
+import { AdminDashboardGrid } from "@/components/admin-dashboard/admin-dashboard-grid";
 
 import { useTenantDashboardStats } from "@/hooks";
 
@@ -23,9 +22,8 @@ const AdminDashboard = () => {
           <Description description="Platform-wide overview — tenants, users, and revenue at a glance." />
         </div>
 
-        <StatsSection stats={data?.stats} isLoading={isPending} />
-
-        <TenantsStats
+        <AdminDashboardGrid
+          stats={data?.stats}
           recentTenants={data?.recentTenants}
           planDistribution={data?.planDistribution}
           isLoading={isPending}

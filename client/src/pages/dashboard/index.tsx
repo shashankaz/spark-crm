@@ -1,9 +1,8 @@
 import { Helmet } from "react-helmet-async";
 
-import { Stats } from "@/components/dashboard/stats";
-import { RecentLeadsDeals } from "@/components/dashboard/recent-leads-deals";
 import { Heading } from "@/components/shared/typography/heading";
 import { Description } from "@/components/shared/typography/description";
+import { DashboardGrid } from "@/components/dashboard/dashboard-grid";
 
 import { useDashboardStats } from "@/hooks";
 
@@ -23,9 +22,8 @@ const DashboardPage = () => {
           <Description description="Welcome back! Here's what's happening in your CRM." />
         </div>
 
-        <Stats stats={data?.stats} isLoading={isPending} />
-
-        <RecentLeadsDeals
+        <DashboardGrid
+          stats={data?.stats}
           recentLeads={data?.recentLeads}
           recentDeals={data?.recentDeals}
           isLoading={isPending}

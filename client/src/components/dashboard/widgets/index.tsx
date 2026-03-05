@@ -1,0 +1,13 @@
+export { CallActivityWidget } from "./call-activity-widget";
+export { ConversionFunnelWidget } from "./conversion-funnel-widget";
+export { DealPipelineWidget } from "./deal-pipeline-widget";
+export { DealWinRateWidget } from "./deal-win-rate-widget";
+export { LeadScoreWidget } from "./lead-score-widget";
+export { LeadSourcesWidget } from "./lead-sources-widget";
+export { LeadStatusWidget } from "./lead-status-widget";
+export { MonthlyRevenueWidget } from "./monthly-revenue-widget";
+export { OrgIndustryWidget } from "./org-industary-widget";
+export { RevenueTargetWidget } from "./revenue-target-widget";
+export { StatCardWidget } from "./stat-card-widget";
+export { RecentLeadsWidget } from "./recent-leads-widget";
+export { RecentDealsWidget } from "./recent-deal-widget";
