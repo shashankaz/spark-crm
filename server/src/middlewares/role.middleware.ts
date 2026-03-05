@@ -1,19 +1,18 @@
 import { Request, Response, NextFunction } from "express";
+import { AppError } from "../shared/app-error";
 
 export const requireSuperAdmin = (
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ) => {
   try {
     if (!req.user) {
-      res.status(401).json({ success: false, message: "Unauthorized" });
-      return;
+      throw new AppError("Unauthorized", 401);
     }
 
     if (req.user.role !== "super_admin") {
-      res.status(403).json({ success: false, message: "Forbidden" });
-      return;
+      throw new AppError("Forbidden", 403);
     }
 
     next();
@@ -24,20 +23,16 @@ export const requireSuperAdmin = (
 
 export const requireAdmin = (
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ) => {
   try {
     if (!req.user) {
-      res.status(401).json({ success: false, message: "Unauthorized" });
-      return;
+      throw new AppError("Unauthorized", 401);
     }
 
     if (req.user.role !== "admin" && req.user.role !== "super_admin") {
-      res
-        .status(403)
-        .json({ success: false, message: "Forbidden: Admin access required" });
-      return;
+      throw new AppError("Forbidden", 403);
     }
 
     next();

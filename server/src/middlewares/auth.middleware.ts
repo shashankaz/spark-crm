@@ -2,28 +2,27 @@ import { NextFunction, Request, Response } from "express";
 import { Tenant } from "../models/tenant.model";
 import { User } from "../models/user.model";
 import { verifyAccessToken } from "../utils/auth/jwt";
+import { AppError } from "../shared/app-error";
 
 export const requireAuth = async (
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ): Promise<void> => {
   try {
     const accessToken = req.cookies["__auth_at"];
     if (!accessToken) {
-      res.status(401).json({ success: false, message: "Unauthorized" });
-      return;
+      throw new AppError("Unauthorized", 401);
     }
 
     const decoded = verifyAccessToken(accessToken);
     if (!decoded || !decoded._id) {
-      res.status(401).json({ success: false, message: "Unauthorized" });
-      return;
+      throw new AppError("Unauthorized", 401);
     }
 
     const userData = await User.findOne({ _id: decoded._id });
     if (!userData) {
-      res.status(404).json({ success: false, message: "User not found" });
+      throw new AppError("User not found", 404);
       return;
     }
 
@@ -33,11 +32,7 @@ export const requireAuth = async (
         isDeleted: false,
       });
       if (!tenant) {
-        res.status(403).json({
-          success: false,
-          message: "Tenant not found or has been deleted",
-        });
-        return;
+        throw new AppError("Tenant not found or has been deleted", 403);
       }
     }
 
