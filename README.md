@@ -18,6 +18,10 @@ Spark CRM is a full-stack Customer Relationship Management application designed 
 - Scheduled jobs and automation
 - Keyboard shortcuts
 
+## DB Schema
+
+![Entity–relationship model](entity–relationship-model.png)
+
 ## Tech Stack
 
 ### Frontend
