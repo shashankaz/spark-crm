@@ -16,6 +16,7 @@ export interface TenantBase {
   gstNumber?: string;
   panNumber?: string;
   email: string;
+  slug: string;
   mobile: string;
   address?: TenantAddress;
   logoUrl?: string;

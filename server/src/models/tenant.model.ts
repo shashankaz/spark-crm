@@ -23,6 +23,13 @@ const tenantSchema = new Schema<TenantDocument>(
       lowercase: true,
       trim: true,
     },
+    slug: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+    },
     mobile: {
       type: String,
       required: true,
