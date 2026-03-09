@@ -228,6 +228,7 @@ export const fetchUsersByTenantIdService = async ({
 
 export const createTenantService = async ({
   name,
+  slug,
   gstNumber,
   panNumber,
   email,
@@ -246,6 +247,7 @@ export const createTenantService = async ({
           gstNumber: gstNumber || undefined,
           panNumber: panNumber || undefined,
           email,
+          slug,
           mobile,
           address: {
             line1: address?.line1 || undefined,
@@ -297,6 +299,7 @@ export const createTenantService = async ({
 export const updateTenantByIdService = async ({
   id,
   name,
+  slug,
   gstNumber,
   panNumber,
   email,
@@ -313,6 +316,7 @@ export const updateTenantByIdService = async ({
   tenant.gstNumber = gstNumber || tenant.gstNumber;
   tenant.panNumber = panNumber || tenant.panNumber;
   tenant.email = email || tenant.email;
+  tenant.slug = slug || tenant.slug;
   tenant.mobile = mobile || tenant.mobile;
   tenant.address = address || tenant.address;
   tenant.plan = (plan as TenantPlan) || tenant.plan;

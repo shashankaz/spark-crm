@@ -17,6 +17,7 @@ export interface FetchUsersByTenantIdInput {
 
 export interface CreateTenantInput {
   name: string;
+  slug: string;
   gstNumber?: string;
   panNumber?: string;
   email: string;
@@ -32,22 +33,8 @@ export interface CreateTenantInput {
   plan: string;
 }
 
-export interface UpdateTenantByIdInput {
+export interface UpdateTenantByIdInput extends Partial<CreateTenantInput> {
   id: Types.ObjectId;
-  name?: string;
-  gstNumber?: string;
-  panNumber?: string;
-  email?: string;
-  mobile?: string;
-  address?: {
-    line1?: string;
-    line2?: string;
-    city?: string;
-    state?: string;
-    country?: string;
-    postalCode?: string;
-  };
-  plan?: string;
 }
 
 export interface DeleteTenantByIdInput {

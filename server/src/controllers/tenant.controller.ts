@@ -82,14 +82,18 @@ export const getUsersByTenantId = asyncHandler(
 
 export const createTenant = asyncHandler(
   async (req: Request, res: Response) => {
-    const { name, gstNumber, panNumber, email, mobile, address, plan } =
+    const { name, slug, gstNumber, panNumber, email, mobile, address, plan } =
       req.body;
-    if (!name || !email || !mobile || !plan) {
-      throw new AppError("Name, Email, Mobile, and Plan are required", 400);
+    if (!name || !slug || !email || !mobile || !plan) {
+      throw new AppError(
+        "Name, Slug, Email, Mobile, and Plan are required",
+        400,
+      );
     }
 
     const tenant = await createTenantService({
       name,
+      slug,
       gstNumber,
       panNumber,
       email,
@@ -112,18 +116,13 @@ export const updateTenantById = asyncHandler(
       throw new AppError("Tenant ID is required", 400);
     }
 
-    const { name, gstNumber, panNumber, email, mobile, address, plan } =
+    const { name, slug, gstNumber, panNumber, email, mobile, address, plan } =
       req.body;
-    if (!name && !email && !mobile) {
-      throw new AppError(
-        "At least one field (name, email, mobile) is required to update",
-        400,
-      );
-    }
 
     const updatedTenant = await updateTenantByIdService({
       id,
       name,
+      slug,
       gstNumber,
       panNumber,
       email,
