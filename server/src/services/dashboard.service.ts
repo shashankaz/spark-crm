@@ -3,20 +3,27 @@ import { Lead } from "../models/lead.model";
 import { Deal } from "../models/deal.model";
 import { Organization } from "../models/organization.model";
 import { User } from "../models/user.model";
+import { Call } from "../models/call.model";
 import { calcChange, getDealStatus } from "../utils/stats-helper";
 import { FetchDashboardStatsInput } from "../types/services/dashboard.service.types";
 import { LeadDocument } from "../types/models/lead.model.types";
 import { DealDocument } from "../types/models/deal.model.types";
+import { MONTHS } from "../utils/months";
 
 export const fetchDashboardStatsService = async ({
   tenantId,
+  userId,
+  role,
 }: FetchDashboardStatsInput) => {
   const now = new Date();
   const startOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
+  const baseMatch: Record<string, any> = { tenantId };
+  if (role === "user") baseMatch.userId = userId;
+
   const [leadAgg, dealAgg, orgAgg, userAgg] = await Promise.all([
     Lead.aggregate([
-      { $match: { tenantId } },
+      { $match: baseMatch },
       {
         $facet: {
           total: [{ $count: "count" }],
@@ -44,7 +51,7 @@ export const fetchDashboardStatsService = async ({
     ]).allowDiskUse(true),
 
     Deal.aggregate([
-      { $match: { tenantId } },
+      { $match: baseMatch },
       {
         $facet: {
           total: [{ $count: "count" }],
@@ -70,7 +77,7 @@ export const fetchDashboardStatsService = async ({
     ]).allowDiskUse(true),
 
     Organization.aggregate([
-      { $match: { tenantId } },
+      { $match: baseMatch },
       {
         $facet: {
           total: [{ $count: "count" }],
@@ -146,4 +153,380 @@ export const fetchDashboardStatsService = async ({
   }));
 
   return { stats, recentLeads, recentDeals };
+};
+
+export const fetchCallActivityService = async ({
+  tenantId,
+  userId,
+  role,
+}: FetchDashboardStatsInput) => {
+  const now = new Date();
+  const since = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
+
+  const leadMatch: Record<string, any> = { "lead.tenantId": tenantId };
+  if (role === "user") leadMatch["lead.userId"] = userId;
+
+  const result = await Call.aggregate([
+    { $match: { createdAt: { $gte: since } } },
+    {
+      $lookup: {
+        from: "leads",
+        localField: "leadId",
+        foreignField: "_id",
+        as: "lead",
+      },
+    },
+    { $unwind: "$lead" },
+    { $match: leadMatch },
+    {
+      $group: {
+        _id: { month: { $month: "$createdAt" }, type: "$type" },
+        count: { $sum: 1 },
+      },
+    },
+  ]).allowDiskUse(true);
+
+  const data = MONTHS.map((month, index) => {
+    const monthNum = index + 1;
+    const inbound =
+      result.find(
+        (r: any) => r._id.month === monthNum && r._id.type === "inbound",
+      )?.count ?? 0;
+    const outbound =
+      result.find(
+        (r: any) => r._id.month === monthNum && r._id.type === "outbound",
+      )?.count ?? 0;
+    return { month, inbound, outbound };
+  });
+
+  return { data };
+};
+
+export const fetchConversionFunnelService = async ({
+  tenantId,
+  userId,
+  role,
+}: FetchDashboardStatsInput) => {
+  const now = new Date();
+  const since = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
+
+  const baseMatch: Record<string, any> = {
+    tenantId,
+    createdAt: { $gte: since },
+  };
+  if (role === "user") baseMatch.userId = userId;
+
+  const [leadCounts, wonDeals] = await Promise.all([
+    Lead.aggregate([
+      { $match: baseMatch },
+      { $group: { _id: "$status", count: { $sum: 1 } } },
+    ]).allowDiskUse(true),
+    Deal.countDocuments({
+      ...baseMatch,
+      probability: { $gte: 100 },
+    }),
+  ]);
+
+  const get = (status: string) =>
+    leadCounts.find((l: any) => l._id === status)?.count ?? 0;
+  const total = leadCounts.reduce((sum: number, l: any) => sum + l.count, 0);
+
+  const data = [
+    { stage: "Leads", count: total },
+    {
+      stage: "Contacted",
+      count: get("contacted") + get("qualified") + get("converted"),
+    },
+    { stage: "Qualified", count: get("qualified") + get("converted") },
+    { stage: "Proposal", count: get("converted") },
+    { stage: "Closed", count: wonDeals },
+  ];
+
+  return { data };
+};
+
+export const fetchDealPipelineService = async ({
+  tenantId,
+  userId,
+  role,
+}: FetchDashboardStatsInput) => {
+  const now = new Date();
+  const since = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
+
+  const baseMatch: Record<string, any> = {
+    tenantId,
+    createdAt: { $gte: since },
+  };
+  if (role === "user") baseMatch.userId = userId;
+
+  const result = await Deal.aggregate([
+    { $match: baseMatch },
+    {
+      $bucket: {
+        groupBy: "$value",
+        boundaries: [0, 5000, 20000, 50000, 100000],
+        default: "100k+",
+        output: { count: { $sum: 1 }, value: { $sum: "$value" } },
+      },
+    },
+  ]).allowDiskUse(true);
+
+  const rangeLabels: Record<string, string> = {
+    "0": "$0-5k",
+    "5000": "$5-20k",
+    "20000": "$20-50k",
+    "50000": "$50-100k",
+    "100k+": "$100k+",
+  };
+
+  const data = result.map((r: any) => ({
+    range: rangeLabels[String(r._id)] ?? String(r._id),
+    count: r.count,
+    value: r.value,
+  }));
+
+  return { data };
+};
+
+export const fetchDealWinRateService = async ({
+  tenantId,
+  userId,
+  role,
+}: FetchDashboardStatsInput) => {
+  const now = new Date();
+  const since = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
+
+  const baseMatch: Record<string, any> = {
+    tenantId,
+    createdAt: { $gte: since },
+  };
+  if (role === "user") baseMatch.userId = userId;
+
+  const [agg] = await Deal.aggregate([
+    { $match: baseMatch },
+    {
+      $facet: {
+        won: [{ $match: { probability: { $gte: 100 } } }, { $count: "count" }],
+        lost: [{ $match: { probability: { $lte: 0 } } }, { $count: "count" }],
+        inProgress: [
+          { $match: { probability: { $gt: 0, $lt: 100 } } },
+          { $count: "count" },
+        ],
+      },
+    },
+  ]).allowDiskUse(true);
+
+  const data = [
+    { name: "Closed Won", value: agg.won[0]?.count ?? 0 },
+    { name: "In Progress", value: agg.inProgress[0]?.count ?? 0 },
+    { name: "Closed Lost", value: agg.lost[0]?.count ?? 0 },
+  ];
+
+  return { data };
+};
+
+export const fetchLeadScoreService = async ({
+  tenantId,
+  userId,
+  role,
+}: FetchDashboardStatsInput) => {
+  const now = new Date();
+  const since = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
+
+  const baseMatch: Record<string, any> = {
+    tenantId,
+    createdAt: { $gte: since },
+  };
+  if (role === "user") baseMatch.userId = userId;
+
+  const result = await Lead.aggregate([
+    { $match: baseMatch },
+    {
+      $bucket: {
+        groupBy: "$score",
+        boundaries: [0, 26, 51, 76, 101],
+        default: "other",
+        output: { count: { $sum: 1 } },
+      },
+    },
+  ]).allowDiskUse(true);
+
+  const rangeLabels: Record<number, string> = {
+    0: "0-25",
+    26: "26-50",
+    51: "51-75",
+    76: "76-100",
+  };
+
+  const data = result
+    .filter((r: any) => typeof r._id === "number")
+    .map((r: any) => ({
+      range: rangeLabels[r._id as number] ?? String(r._id),
+      count: r.count,
+    }));
+
+  return { data };
+};
+
+export const fetchLeadSourcesService = async ({
+  tenantId,
+  userId,
+  role,
+}: FetchDashboardStatsInput) => {
+  const now = new Date();
+  const since = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
+
+  const baseMatch: Record<string, any> = {
+    tenantId,
+    createdAt: { $gte: since },
+  };
+  if (role === "user") baseMatch.userId = userId;
+
+  const result = await Lead.aggregate([
+    { $match: baseMatch },
+    {
+      $group: {
+        _id: { $ifNull: ["$source", "other"] },
+        count: { $sum: 1 },
+      },
+    },
+    { $sort: { count: -1 } },
+  ]).allowDiskUse(true);
+
+  const data = result.map((r: any) => ({ source: r._id, count: r.count }));
+
+  return { data };
+};
+
+export const fetchLeadStatusService = async ({
+  tenantId,
+  userId,
+  role,
+}: FetchDashboardStatsInput) => {
+  const now = new Date();
+  const since = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
+
+  const baseMatch: Record<string, any> = {
+    tenantId,
+    createdAt: { $gte: since },
+  };
+  if (role === "user") baseMatch.userId = userId;
+
+  const result = await Lead.aggregate([
+    { $match: baseMatch },
+    { $group: { _id: "$status", count: { $sum: 1 } } },
+  ]).allowDiskUse(true);
+
+  const statusOrder = ["new", "contacted", "qualified", "converted", "lost"];
+  const data = statusOrder.map((status) => ({
+    status: status.charAt(0).toUpperCase() + status.slice(1),
+    count: result.find((r: any) => r._id === status)?.count ?? 0,
+  }));
+
+  return { data };
+};
+
+export const fetchMonthlyRevenueService = async ({
+  tenantId,
+  userId,
+  role,
+}: FetchDashboardStatsInput) => {
+  const now = new Date();
+  const since = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
+
+  const baseMatch: Record<string, any> = {
+    tenantId,
+    createdAt: { $gte: since },
+  };
+  if (role === "user") baseMatch.userId = userId;
+
+  const result = await Deal.aggregate([
+    { $match: baseMatch },
+    {
+      $group: {
+        _id: { $month: "$createdAt" },
+        revenue: { $sum: "$value" },
+        deals: { $sum: 1 },
+      },
+    },
+    { $sort: { _id: 1 } },
+  ]).allowDiskUse(true);
+
+  const data = MONTHS.map((month, index) => {
+    const monthData = result.find((r: any) => r._id === index + 1);
+    return {
+      month,
+      revenue: monthData?.revenue ?? 0,
+      deals: monthData?.deals ?? 0,
+    };
+  });
+
+  return { data };
+};
+
+export const fetchOrgIndustryService = async ({
+  tenantId,
+  userId,
+  role,
+}: FetchDashboardStatsInput) => {
+  const now = new Date();
+  const since = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
+
+  const baseMatch: Record<string, any> = {
+    tenantId,
+    createdAt: { $gte: since },
+  };
+  if (role === "user") baseMatch.userId = userId;
+
+  const result = await Organization.aggregate([
+    { $match: baseMatch },
+    {
+      $group: {
+        _id: { $ifNull: ["$industry", "other"] },
+        count: { $sum: 1 },
+      },
+    },
+    { $sort: { count: -1 } },
+  ]).allowDiskUse(true);
+
+  const data = result.map((r: any) => ({ industry: r._id, count: r.count }));
+
+  return { data };
+};
+
+export const fetchRevenueTargetService = async ({
+  tenantId,
+  userId,
+  role,
+}: FetchDashboardStatsInput) => {
+  const now = new Date();
+  const since = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
+
+  const baseMatch: Record<string, any> = {
+    tenantId,
+    probability: { $gte: 100 },
+    createdAt: { $gte: since },
+  };
+  if (role === "user") baseMatch.userId = userId;
+
+  const result = await Deal.aggregate([
+    { $match: baseMatch },
+    {
+      $group: {
+        _id: { $month: "$createdAt" },
+        actual: { $sum: "$value" },
+      },
+    },
+    { $sort: { _id: 1 } },
+  ]).allowDiskUse(true);
+
+  const data = MONTHS.map((month, index) => {
+    const monthData = result.find((r: any) => r._id === index + 1);
+    return {
+      month,
+      actual: monthData?.actual ?? 0,
+    };
+  });
+
+  return { data };
 };
