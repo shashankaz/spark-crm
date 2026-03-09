@@ -9,6 +9,7 @@ import {
   Target,
   GitBranch,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 export type CustomWidgetId =
   | "chart-lead-status"
@@ -26,7 +27,7 @@ export type WidgetMeta = {
   id: CustomWidgetId;
   title: string;
   description: string;
-  icon: React.ElementType;
+  icon: LucideIcon;
   category: "Leads" | "Deals" | "Organizations" | "Calls";
   defaultSize: { w: number; h: number; minW: number; minH: number };
 };

@@ -13,87 +13,91 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const monthlyRevenueData = [
-  { month: "Jan", revenue: 82000, deals: 34 },
-  { month: "Feb", revenue: 91000, deals: 39 },
-  { month: "Mar", revenue: 105000, deals: 44 },
-  { month: "Apr", revenue: 97000, deals: 40 },
-  { month: "May", revenue: 115000, deals: 49 },
-  { month: "Jun", revenue: 123000, deals: 53 },
-  { month: "Jul", revenue: 118000, deals: 50 },
-  { month: "Aug", revenue: 110000, deals: 46 },
-  { month: "Sep", revenue: 126000, deals: 55 },
-  { month: "Oct", revenue: 134000, deals: 58 },
-  { month: "Nov", revenue: 142000, deals: 61 },
-  { month: "Dec", revenue: 158000, deals: 67 },
-];
+import { useMonthlyRevenue } from "@/hooks";
 
 const revenueConfig: ChartConfig = {
-  revenue: { label: "Revenue ($)", color: "hsl(var(--chart-1))" },
-  deals: { label: "Deals Closed", color: "hsl(var(--chart-2))" },
+  revenue: { label: "Revenue ($)", color: "#06B6D4" },
+  deals: { label: "Deals Closed", color: "#22C55E" },
 };
 
-export const MonthlyRevenueWidget = () => (
-  <Card className="h-full flex flex-col">
-    <CardHeader className="pb-2">
-      <CardTitle className="text-base">Monthly Revenue Trend</CardTitle>
-      <CardDescription>Deal revenue over the last 8 months</CardDescription>
-    </CardHeader>
-    <CardContent className="flex-1 min-h-0 pb-4">
-      <ChartContainer config={revenueConfig} className="h-full w-full">
-        <AreaChart data={monthlyRevenueData} margin={{ left: 8, right: 8 }}>
-          <defs>
-            <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-              <stop
-                offset="5%"
-                stopColor="hsl(var(--chart-1))"
-                stopOpacity={0.3}
-              />
-              <stop
-                offset="95%"
-                stopColor="hsl(var(--chart-1))"
-                stopOpacity={0.0}
-              />
-            </linearGradient>
-          </defs>
-          <CartesianGrid
-            vertical={false}
-            strokeDasharray="3 3"
-            className="stroke-border"
-          />
-          <XAxis
-            dataKey="month"
-            tickLine={false}
-            axisLine={false}
-            tickMargin={8}
-          />
-          <YAxis
-            tickLine={false}
-            axisLine={false}
-            tickMargin={8}
-            tickFormatter={(v: number) => `$${(v / 1000).toFixed(0)}k`}
-          />
-          <ChartTooltip
-            content={
-              <ChartTooltipContent
-                formatter={(value, name) =>
-                  name === "revenue"
-                    ? [`$${Number(value).toLocaleString()}`, "Revenue"]
-                    : [value, "Deals Closed"]
-                }
-              />
-            }
-          />
-          <Area
-            type="monotone"
-            dataKey="revenue"
-            stroke="hsl(var(--chart-1))"
-            strokeWidth={2}
-            fill="url(#colorRevenue)"
-          />
-        </AreaChart>
-      </ChartContainer>
-    </CardContent>
-  </Card>
-);
+export const MonthlyRevenueWidget = () => {
+  const { data, isPending } = useMonthlyRevenue();
+
+  if (isPending) return <MonthlyRevenueSkeleton />;
+
+  if (!data) return null;
+
+  const monthlyRevenueData = data.data;
+
+  return (
+    <Card className="h-full flex flex-col">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-base">Monthly Revenue Trend</CardTitle>
+        <CardDescription>Deal revenue over the last 8 months</CardDescription>
+      </CardHeader>
+      <CardContent className="flex-1 min-h-0 pb-4">
+        <ChartContainer config={revenueConfig} className="h-full w-full">
+          <AreaChart data={monthlyRevenueData} margin={{ left: 8, right: 8 }}>
+            <defs>
+              <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#06B6D4" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#06B6D4" stopOpacity={0.0} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid
+              vertical={false}
+              strokeDasharray="3 3"
+              className="stroke-border"
+            />
+            <XAxis
+              dataKey="month"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+            />
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tickFormatter={(v: number) => `$${(v / 1000).toFixed(0)}k`}
+            />
+            <ChartTooltip
+              content={
+                <ChartTooltipContent
+                  formatter={(value, name) =>
+                    name === "revenue"
+                      ? [`$${Number(value).toLocaleString()}`, "Revenue"]
+                      : [value, "Deals Closed"]
+                  }
+                />
+              }
+            />
+            <Area
+              type="monotone"
+              dataKey="revenue"
+              stroke="#06B6D4"
+              strokeWidth={2}
+              fill="url(#colorRevenue)"
+            />
+          </AreaChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
+  );
+};
+
+const MonthlyRevenueSkeleton = () => {
+  return (
+    <Card className="h-full flex flex-col">
+      <CardHeader className="pb-2">
+        <Skeleton className="h-5 w-44" />
+        <Skeleton className="h-4 w-52" />
+      </CardHeader>
+      <CardContent className="flex-1 min-h-0 pb-4">
+        <Skeleton className="h-full w-full" />
+      </CardContent>
+    </Card>
+  );
+};
