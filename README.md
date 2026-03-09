@@ -17,6 +17,8 @@ Spark CRM is a full-stack Customer Relationship Management application designed 
 - Background job processing with worker queues (AWS SQS)
 - Scheduled jobs and automation
 - Keyboard shortcuts
+- AI-powered features via LangChain (Google Gemini + Tavily search)
+- Image processing for attachments
 
 ## DB Schema
 
@@ -41,11 +43,15 @@ Spark CRM is a full-stack Customer Relationship Management application designed 
 | Axios | latest | HTTP client |
 | Lucide React | latest | Icons |
 | date-fns | v4 | Date utilities |
-| GridStack | latest | Dashboard grid layout |
+| GridStack | v12 | Dashboard grid layout |
+| Recharts | v2 | Charts & data visualization |
 | react-hot-toast | latest | Toast notifications |
 | react-helmet-async | latest | Document head management |
 | xlsx | latest | XLSX data export |
 | cmdk | latest | Command menu |
+| lodash | v4 | Utility functions |
+| input-otp | latest | OTP input |
+| uuid | v13 | Unique ID generation |
 
 ### Backend
 
@@ -69,3 +75,10 @@ Spark CRM is a full-stack Customer Relationship Management application designed 
 | Helmet + CORS | latest | Security headers |
 | express-rate-limit | v8 | Rate limiting |
 | Morgan | latest | HTTP request logging |
+| LangChain Core | v1 | AI orchestration framework |
+| LangChain Google | latest | Google Gemini LLM integration |
+| LangChain Tavily | latest | AI web search tool |
+| sharp | v0.34 | Image processing |
+| Axios | v1 | HTTP client |
+| cookie-parser | latest | Cookie handling |
+| uuid | v13 | Unique ID generation |
