@@ -86,9 +86,9 @@ export const createLead = asyncHandler(async (req: Request, res: Response) => {
     gender,
     source,
   } = req.body;
-  if (!idempotentId || !tenantId || !orgId || !orgName) {
+  if (!idempotentId || !tenantId) {
     throw new AppError(
-      "Idempotent ID, Tenant ID, Organization ID, and Organization Name are required",
+      "Idempotent ID and Tenant ID are required",
       400,
     );
   }
