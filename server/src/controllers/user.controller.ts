@@ -7,6 +7,7 @@ import {
   updateUserService,
   removeUserService,
 } from "../services/user.service";
+import { enqueueUserExportService } from "../services/export.service";
 import { AppError } from "../shared/app-error";
 import { sendSuccess } from "../shared/api-response";
 import { asyncHandler } from "../shared/async-handler";
@@ -134,4 +135,38 @@ export const deleteUser = asyncHandler(async (req: Request, res: Response) => {
   }
 
   sendSuccess(res, 200, "User deleted successfully", { id });
+});
+
+export const exportUsers = asyncHandler(async (req: Request, res: Response) => {
+  const { tenantId } = req.user;
+  if (!tenantId) {
+    throw new AppError("Tenant ID is missing in user data", 400);
+  }
+
+  const { userIds, recipientEmail } = req.body;
+
+  if (!Array.isArray(userIds) || userIds.length === 0) {
+    throw new AppError("User IDs must be a non-empty array", 400);
+  }
+
+  if (!recipientEmail) {
+    throw new AppError("Email is required", 400);
+  }
+
+  const { messageId } = await enqueueUserExportService({
+    tenantId,
+    userIds,
+    recipientEmail,
+  });
+
+  sendSuccess(
+    res,
+    202,
+    "Your export is being prepared. You'll receive an email when it's ready.",
+    {
+      messageId,
+      userCount: userIds.length,
+      recipientEmail,
+    },
+  );
 });

@@ -5,6 +5,7 @@ import {
   createUser,
   updateUser,
   deleteUser,
+  exportUsers,
 } from "../../controllers/user.controller";
 import { requireAuth } from "../../middlewares/auth.middleware";
 
@@ -15,6 +16,7 @@ router.use(requireAuth);
 router.get("/", getAllUsers);
 router.get("/:id", getUserById);
 router.post("/", createUser);
+router.post("/export", exportUsers);
 router.patch("/:id", updateUser);
 router.delete("/:id", deleteUser);
 

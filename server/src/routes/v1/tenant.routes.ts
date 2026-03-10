@@ -8,6 +8,7 @@ import {
   deleteTenantById,
   createUserForTenant,
   getUsersByTenantId,
+  exportTenants,
 } from "../../controllers/tenant.controller";
 import { requireAuth } from "../../middlewares/auth.middleware";
 import { requireSuperAdmin } from "../../middlewares/role.middleware";
@@ -23,6 +24,7 @@ router.get("/", getAllTenants);
 router.get("/:id", getTenantById);
 router.get("/:id/users", getUsersByTenantId);
 router.post("/", createTenant);
+router.post("/export", exportTenants);
 router.patch("/:id", updateTenantById);
 router.delete("/:id", deleteTenantById);
 

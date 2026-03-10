@@ -4,6 +4,7 @@ import {
   getAllDeals,
   getDealById,
   updateDealById,
+  exportDeals,
 } from "../../controllers/deal.controller";
 import { requireAuth } from "../../middlewares/auth.middleware";
 
@@ -13,6 +14,7 @@ router.use(requireAuth);
 
 router.get("/", getAllDeals);
 router.get("/:id", getDealById);
+router.post("/export", exportDeals);
 router.patch("/:id", updateDealById);
 router.delete("/:id", deleteDealById);
 

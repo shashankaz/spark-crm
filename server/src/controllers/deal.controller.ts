@@ -6,6 +6,7 @@ import {
   getDealByIdService,
   updateDealByIdService,
 } from "../services/deal.service";
+import { enqueueDealExportService } from "../services/export.service";
 import { AppError } from "../shared/app-error";
 import { sendSuccess } from "../shared/api-response";
 import { asyncHandler } from "../shared/async-handler";
@@ -107,3 +108,37 @@ export const updateDealById = asyncHandler(
     sendSuccess(res, 200, "Deal updated successfully", { deal: updatedDeal });
   },
 );
+
+export const exportDeals = asyncHandler(async (req: Request, res: Response) => {
+  const { tenantId } = req.user;
+  if (!tenantId) {
+    throw new AppError("Tenant ID is missing in user data", 400);
+  }
+
+  const { dealIds, recipientEmail } = req.body;
+
+  if (!Array.isArray(dealIds) || dealIds.length === 0) {
+    throw new AppError("Deal IDs must be a non-empty array", 400);
+  }
+
+  if (!recipientEmail) {
+    throw new AppError("Email is required", 400);
+  }
+
+  const { messageId } = await enqueueDealExportService({
+    tenantId,
+    dealIds,
+    recipientEmail,
+  });
+
+  sendSuccess(
+    res,
+    202,
+    "Your export is being prepared. You'll receive an email when it's ready.",
+    {
+      messageId,
+      dealCount: dealIds.length,
+      recipientEmail,
+    },
+  );
+});

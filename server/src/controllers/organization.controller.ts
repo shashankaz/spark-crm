@@ -7,6 +7,7 @@ import {
   updateOrganizationByIdService,
   deleteOrganizationByIdService,
 } from "../services/organization.service";
+import { enqueueOrganizationExportService } from "../services/export.service";
 import { AppError } from "../shared/app-error";
 import { sendSuccess } from "../shared/api-response";
 import { asyncHandler } from "../shared/async-handler";
@@ -180,5 +181,41 @@ export const deleteOrganizationById = asyncHandler(
     }
 
     sendSuccess(res, 200, "Organization deleted successfully", { id });
+  },
+);
+
+export const exportOrganizations = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { tenantId } = req.user;
+    if (!tenantId) {
+      throw new AppError("Tenant ID is missing in user data", 400);
+    }
+
+    const { organizationIds, recipientEmail } = req.body;
+
+    if (!Array.isArray(organizationIds) || organizationIds.length === 0) {
+      throw new AppError("Organization IDs must be a non-empty array", 400);
+    }
+
+    if (!recipientEmail) {
+      throw new AppError("Email is required", 400);
+    }
+
+    const { messageId } = await enqueueOrganizationExportService({
+      tenantId,
+      organizationIds,
+      recipientEmail,
+    });
+
+    sendSuccess(
+      res,
+      202,
+      "Your export is being prepared. You'll receive an email when it's ready.",
+      {
+        messageId,
+        organizationCount: organizationIds.length,
+        recipientEmail,
+      },
+    );
   },
 );

@@ -10,6 +10,7 @@ import {
   createUserForTenantService,
   fetchUsersByTenantIdService,
 } from "../services/tenant.service";
+import { enqueueTenantExportService } from "../services/export.service";
 import { AppError } from "../shared/app-error";
 import { sendSuccess } from "../shared/api-response";
 import { asyncHandler } from "../shared/async-handler";
@@ -180,5 +181,35 @@ export const createUserForTenant = asyncHandler(
     }
 
     sendSuccess(res, 200, "Tenant user created successfully", { user });
+  },
+);
+
+export const exportTenants = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { tenantIds, recipientEmail } = req.body;
+
+    if (!Array.isArray(tenantIds) || tenantIds.length === 0) {
+      throw new AppError("Tenant IDs must be a non-empty array", 400);
+    }
+
+    if (!recipientEmail) {
+      throw new AppError("Email is required", 400);
+    }
+
+    const { messageId } = await enqueueTenantExportService({
+      tenantIds,
+      recipientEmail,
+    });
+
+    sendSuccess(
+      res,
+      202,
+      "Your export is being prepared. You'll receive an email when it's ready.",
+      {
+        messageId,
+        tenantCount: tenantIds.length,
+        recipientEmail,
+      },
+    );
   },
 );

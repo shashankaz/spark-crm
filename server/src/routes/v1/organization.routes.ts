@@ -5,6 +5,7 @@ import {
   createOrganization,
   updateOrganizationById,
   deleteOrganizationById,
+  exportOrganizations,
 } from "../../controllers/organization.controller";
 import { requireAuth } from "../../middlewares/auth.middleware";
 
@@ -15,6 +16,7 @@ router.use(requireAuth);
 router.get("/", getAllOrganizations);
 router.get("/:id", getOrganizationById);
 router.post("/", createOrganization);
+router.post("/export", exportOrganizations);
 router.patch("/:id", updateOrganizationById);
 router.delete("/:id", deleteOrganizationById);
 

@@ -11,6 +11,10 @@ import {
   adminMailTemplate,
   leadReminderMailTemplate,
   leadExportMailTemplate,
+  dealExportMailTemplate,
+  organizationExportMailTemplate,
+  userExportMailTemplate,
+  tenantExportMailTemplate,
   userWelcomeMailTemplate,
   passwordChangedMailTemplate,
   otpMailTemplate,
@@ -62,17 +66,77 @@ export const sendLeadReminderMail = async (
 export const sendLeadExportMail = async (
   recipientEmail: string,
   fileUrl: string,
-  leadCount: number,
+  count: number,
 ) => {
   try {
-    const mailOptions = leadExportMailTemplate(
-      recipientEmail,
-      fileUrl,
-      leadCount,
-    );
+    const mailOptions = leadExportMailTemplate(recipientEmail, fileUrl, count);
     return await enqueueEmail({ mailOptions });
   } catch (error) {
     console.error("Error sending lead export mail:", error);
+    throw error;
+  }
+};
+
+export const sendDealExportMail = async (
+  recipientEmail: string,
+  fileUrl: string,
+  count: number,
+) => {
+  try {
+    const mailOptions = dealExportMailTemplate(recipientEmail, fileUrl, count);
+    return await enqueueEmail({ mailOptions });
+  } catch (error) {
+    console.error("Error sending deal export mail:", error);
+    throw error;
+  }
+};
+
+export const sendOrganizationExportMail = async (
+  recipientEmail: string,
+  fileUrl: string,
+  count: number,
+) => {
+  try {
+    const mailOptions = organizationExportMailTemplate(
+      recipientEmail,
+      fileUrl,
+      count,
+    );
+    return await enqueueEmail({ mailOptions });
+  } catch (error) {
+    console.error("Error sending organization export mail:", error);
+    throw error;
+  }
+};
+
+export const sendUserExportMail = async (
+  recipientEmail: string,
+  fileUrl: string,
+  count: number,
+) => {
+  try {
+    const mailOptions = userExportMailTemplate(recipientEmail, fileUrl, count);
+    return await enqueueEmail({ mailOptions });
+  } catch (error) {
+    console.error("Error sending user export mail:", error);
+    throw error;
+  }
+};
+
+export const sendTenantExportMail = async (
+  recipientEmail: string,
+  fileUrl: string,
+  count: number,
+) => {
+  try {
+    const mailOptions = tenantExportMailTemplate(
+      recipientEmail,
+      fileUrl,
+      count,
+    );
+    return await enqueueEmail({ mailOptions });
+  } catch (error) {
+    console.error("Error sending tenant export mail:", error);
     throw error;
   }
 };
