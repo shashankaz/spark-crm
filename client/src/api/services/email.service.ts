@@ -18,7 +18,7 @@ export const getAllEmailsByLeadId = async (
     const { leadId, cursor, limit = 10, search } = params;
     const query = buildQueryParams({ cursor, limit, search });
     const response = await api.get<ApiResponse<EmailsData>>(
-      `/lead-email/${leadId}${query ? `?${query}` : ""}`,
+      `/email/${leadId}${query ? `?${query}` : ""}`,
     );
 
     const { message, data } = response.data;
@@ -36,7 +36,7 @@ export const sendEmailForLead = async (
   withApiHandler(async () => {
     const { leadId, to, subject, bodyHtml, bodyText, from } = params;
     const response = await api.post<ApiResponse<EmailData>>(
-      `/lead-email/${leadId}`,
+      `/email/${leadId}`,
       {
         to,
         subject,
