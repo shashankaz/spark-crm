@@ -6,7 +6,29 @@ import {
   EnqueueOrganizationExportInput,
   EnqueueUserExportInput,
   EnqueueTenantExportInput,
+  EnqueueLeadExportInput,
 } from "../types/services/export.service.types";
+
+export const enqueueLeadExportService = async ({
+  tenantId,
+  leadIds,
+  recipientEmail,
+}: EnqueueLeadExportInput) => {
+  const messageBody = JSON.stringify({
+    type: "lead",
+    tenantId,
+    leadIds,
+    recipientEmail,
+  });
+
+  const command = new SendMessageCommand({
+    QueueUrl: env.AWS_SQS_EXPORT_QUEUE_URL,
+    MessageBody: messageBody,
+  });
+
+  const result = await sqs.send(command);
+  return { messageId: result.MessageId };
+};
 
 export const enqueueDealExportService = async ({
   tenantId,

@@ -12,7 +12,7 @@ import {
   fetchLeadActivityByLeadIdService,
   assignLeadService,
 } from "../services/lead.service";
-import { enqueueLeadExportService } from "../services/lead-export.service";
+import { enqueueLeadExportService } from "../services/export.service";
 import { AppError } from "../shared/app-error";
 import { sendSuccess } from "../shared/api-response";
 import { asyncHandler } from "../shared/async-handler";
