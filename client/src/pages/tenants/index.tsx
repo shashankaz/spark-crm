@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { debounce } from "lodash";
+import debounce from "lodash/debounce";
 import { Helmet } from "react-helmet-async";
 import { Download, Plus } from "lucide-react";
 

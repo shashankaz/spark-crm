@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { debounce } from "lodash";
+import debounce from "lodash/debounce";
 import { useParams } from "react-router";
 import { Helmet } from "react-helmet-async";
 

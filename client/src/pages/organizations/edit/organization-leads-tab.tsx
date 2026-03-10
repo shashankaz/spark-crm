@@ -7,7 +7,7 @@ import {
   XCircle,
   PhoneCall,
 } from "lucide-react";
-import { debounce } from "lodash";
+import debounce from "lodash/debounce";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
