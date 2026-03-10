@@ -3,7 +3,7 @@ import "dotenv/config";
 
 import { Database } from "./utils/db";
 import {
-  startLeadExportWorker,
+  startExportWorker,
   startEmailWorker,
   startLeadReminderWorker,
 } from "./workers";
@@ -14,7 +14,7 @@ dns.setServers(["1.1.1.1", "8.8.8.8"]);
 Database.connect()
   .then(() => {
     console.log("Connected to MongoDB");
-    startLeadExportWorker();
+    startExportWorker();
     startEmailWorker();
     startLeadReminderWorker();
     console.log("[Worker] All workers started.");
