@@ -9,7 +9,13 @@ import { ErrorBoundary } from "./components/error-boundary";
 import { ThemeProvider } from "./components/theme-provider";
 import { UserProvider } from "./components/user-provider";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const App = () => {
   return (
