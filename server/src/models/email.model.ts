@@ -33,6 +33,11 @@ const emailSchema = new Schema<EmailDocument>(
       enum: ["sent", "failed", "draft"],
       default: "draft",
     },
+    trackingId: {
+      type: Schema.Types.ObjectId,
+      ref: "Tracking",
+      default: null,
+    },
   },
   {
     timestamps: true,

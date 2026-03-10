@@ -9,6 +9,7 @@ export interface EmailBase {
   bodyHtml: string;
   bodyText: string;
   status: "sent" | "failed" | "draft";
+  trackingId: Types.ObjectId | null;
 
   createdAt: Date;
   updatedAt: Date;
