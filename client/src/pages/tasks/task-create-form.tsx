@@ -100,7 +100,7 @@ export const TaskCreateForm = ({ setOpen }: TaskCreateFormProps) => {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
               <FieldLabel htmlFor="title">
-                Title <span className="text-destructive">*</span>
+                Title <span className="text-error">*</span>
               </FieldLabel>
               <Input
                 {...field}
@@ -111,7 +111,7 @@ export const TaskCreateForm = ({ setOpen }: TaskCreateFormProps) => {
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -135,7 +135,7 @@ export const TaskCreateForm = ({ setOpen }: TaskCreateFormProps) => {
               />
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -167,7 +167,7 @@ export const TaskCreateForm = ({ setOpen }: TaskCreateFormProps) => {
               </Select>
               {fieldState.invalid && (
                 <FieldError
-                  className="text-destructive text-xs"
+                  className="text-error text-xs"
                   errors={[fieldState.error]}
                 />
               )}
@@ -214,7 +214,7 @@ export const TaskCreateForm = ({ setOpen }: TaskCreateFormProps) => {
                 </Popover>
                 {fieldState.invalid && (
                   <FieldError
-                    className="text-destructive text-xs"
+                    className="text-error text-xs"
                     errors={[fieldState.error]}
                   />
                 )}
@@ -292,7 +292,7 @@ export const TaskCreateForm = ({ setOpen }: TaskCreateFormProps) => {
                 </Popover>
                 {fieldState.invalid && (
                   <FieldError
-                    className="text-destructive text-xs"
+                    className="text-error text-xs"
                     errors={[fieldState.error]}
                   />
                 )}
@@ -330,7 +330,7 @@ export const TaskCreateForm = ({ setOpen }: TaskCreateFormProps) => {
                     <Badge
                       key={label}
                       variant="secondary"
-                      className="cursor-pointer hover:bg-destructive hover:text-destructive-foreground transition-colors"
+                      className="cursor-pointer hover:bg-error hover:text-error/50 transition-colors"
                       onClick={() => removeLabel(label)}
                     >
                       {label} ×
