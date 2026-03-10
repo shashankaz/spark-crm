@@ -18,7 +18,12 @@ const app = express();
 
 const PORT = env.PORT || 5000;
 
-const allowedOrigins = ["http://localhost:5173"];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://sparkcrm.me",
+  "https://sparkcrm.me",
+  "https://spark-crm.vercel.app",
+];
 
 app.use(
   cors({
