@@ -1,4 +1,5 @@
 import { Database } from "./db";
+import { RedisService } from "./redis";
 
 export const registerGracefulShutdown = (label: string): void => {
   const handler = async () => {
@@ -11,6 +12,8 @@ export const registerGracefulShutdown = (label: string): void => {
       .catch((error) => {
         console.error("❌ Error disconnecting MongoDB:", error);
       });
+
+    RedisService.disconnect();
 
     process.exit(0);
   };

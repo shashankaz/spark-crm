@@ -24,6 +24,12 @@ const envSchema = z.object({
   MAILTRAP_USER: z.string().min(1, "MAILTRAP_USER is required"),
   MAILTRAP_PASS: z.string().min(1, "MAILTRAP_PASS is required"),
 
+  REDIS_HOST: z.string().default("127.0.0.1"),
+  REDIS_PORT: z.coerce.number().int().positive().default(6379),
+  REDIS_USERNAME: z.string().default("default"),
+  REDIS_PASSWORD: z.string().optional(),
+  REDIS_TLS: z.coerce.boolean().default(false),
+
   NODE_ENV: z.enum(["development", "production"]).default("development"),
 
   GOOGLE_API_KEY: z.string().min(1, "GOOGLE_API_KEY is required"),

@@ -1,15 +1,22 @@
 import Redis, { RedisOptions } from "ioredis";
+import { env } from "../config/env";
 
 export class RedisService {
   private static client: Redis | null = null;
 
   private static get options(): RedisOptions {
     return {
-      host: "127.0.0.1",
-      port: 6379,
-      username: "default",
+      host: env.REDIS_HOST,
+      port: env.REDIS_PORT,
+      username: env.REDIS_USERNAME,
+      password: env.REDIS_PASSWORD,
+      tls: env.REDIS_TLS ? {} : undefined,
       maxRetriesPerRequest: null,
       lazyConnect: true,
+      retryStrategy(times) {
+        if (times > 5) return null;
+        return Math.min(times * 300, 3000);
+      },
     };
   }
 
@@ -17,12 +24,16 @@ export class RedisService {
     if (!this.client) {
       this.client = new Redis(this.options);
 
-      this.client.on("connect", () => {
+      this.client.once("connect", () => {
         console.log("Connected to Redis");
       });
 
+      this.client.on("reconnecting", () => {
+        console.log("Reconnecting to Redis...");
+      });
+
       this.client.on("error", (err) => {
-        console.error("Redis error:", err);
+        console.error("Redis error:", err.message);
       });
     }
 
@@ -31,6 +42,7 @@ export class RedisService {
 
   static disconnect(): void {
     if (this.client) {
+      this.client.removeAllListeners();
       this.client.disconnect();
       this.client = null;
     }
