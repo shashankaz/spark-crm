@@ -18,3 +18,11 @@ export interface OtpMail {
   userName: string;
   otp: number;
 }
+
+export interface TaskReminderJobPayload {
+  userEmail: string;
+  userFirstName: string;
+  taskTitle: string;
+  taskDescription?: string;
+  dueDate?: string;
+}

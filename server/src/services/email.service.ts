@@ -5,6 +5,7 @@ import {
   UserWelcomeMail,
   PasswordChangedMail,
   OtpMail,
+  TaskReminderJobPayload,
 } from "../types/email";
 import {
   adminMailTemplate,
@@ -13,6 +14,7 @@ import {
   userWelcomeMailTemplate,
   passwordChangedMailTemplate,
   otpMailTemplate,
+  taskReminderMailTemplate,
 } from "../email/templates";
 import { sqs } from "../utils/sqs";
 import { env } from "../config/env";
@@ -101,6 +103,16 @@ export const sendOtpMail = async (payload: OtpMail) => {
     return await enqueueEmail({ mailOptions });
   } catch (error) {
     console.error("Error sending OTP mail:", error);
+    throw error;
+  }
+};
+
+export const sendTaskReminderMail = async (payload: TaskReminderJobPayload) => {
+  try {
+    const mailOptions = taskReminderMailTemplate(payload);
+    return await enqueueEmail({ mailOptions });
+  } catch (error) {
+    console.error("Error sending task reminder mail:", error);
     throw error;
   }
 };

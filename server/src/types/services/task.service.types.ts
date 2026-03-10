@@ -44,11 +44,3 @@ export interface DeleteTaskInput {
   tenantId: Types.ObjectId;
   userId: Types.ObjectId;
 }
-
-export interface TaskReminderJobPayload {
-  userEmail: string;
-  userFirstName: string;
-  taskTitle: string;
-  taskDescription?: string;
-  dueDate?: string;
-}
