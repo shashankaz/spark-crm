@@ -43,9 +43,8 @@ export const validateWebhookTokenService = async (token: string) => {
   }
 
   webhookToken.lastUsedAt = new Date();
-  await webhookToken.save();
 
-  return webhookToken;
+  return await webhookToken.save();
 };
 
 export const listWebhookTokensService = async (tenantId: Types.ObjectId) => {

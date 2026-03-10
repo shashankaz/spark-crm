@@ -321,9 +321,7 @@ export const updateTenantByIdService = async ({
   tenant.address = address || tenant.address;
   tenant.plan = (plan as TenantPlan) || tenant.plan;
 
-  const updated = await tenant.save();
-
-  return updated;
+  return await tenant.save();
 };
 
 export const deleteTenantByIdService = async ({
@@ -336,9 +334,8 @@ export const deleteTenantByIdService = async ({
 
   tenant.isDeleted = true;
   tenant.deletedAt = new Date();
-  await tenant.save();
 
-  return true;
+  return await tenant.save();
 };
 
 export const createUserForTenantService = async ({

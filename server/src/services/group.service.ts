@@ -75,9 +75,7 @@ export const updateGroupService = async ({
   if (description) group.description = description;
   if (leads) group.leads = leads.map((l) => new Types.ObjectId(l));
 
-  await group.save();
-
-  return group;
+  return await group.save();
 };
 
 export const deleteGroupService = async ({
