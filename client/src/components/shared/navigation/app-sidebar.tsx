@@ -9,6 +9,7 @@ import {
   Users,
   Workflow,
   Contact,
+  ListTodo,
 } from "lucide-react";
 
 import {
@@ -50,6 +51,7 @@ const allLinks: {
       { to: "/organizations", label: "Organizations", icon: Building2 },
       { to: "/leads", label: "Leads", icon: UserPlus },
       { to: "/deals", label: "Deals", icon: Handshake },
+      { to: "/tasks", label: "Tasks", icon: ListTodo },
       { to: "/workflows", label: "Workflows", icon: Workflow },
       { to: "/users", label: "Users", icon: Users },
       { to: "/groups", label: "Groups", icon: Contact },
@@ -59,6 +61,7 @@ const allLinks: {
       { to: "/organizations", label: "Organizations", icon: Building2 },
       { to: "/leads", label: "Leads", icon: UserPlus },
       { to: "/deals", label: "Deals", icon: Handshake },
+      { to: "/tasks", label: "Tasks", icon: ListTodo },
       { to: "/workflows", label: "Workflows", icon: Workflow },
       { to: "/groups", label: "Groups", icon: Contact },
     ],

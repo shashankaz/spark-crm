@@ -11,3 +11,4 @@ export * from "./session";
 export * from "./tenant";
 export * from "./user";
 export * from "./workflow";
+export * from "./task";
