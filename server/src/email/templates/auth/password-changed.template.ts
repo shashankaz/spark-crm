@@ -1,5 +1,5 @@
-import { PasswordChangedMail } from "../../types/email";
-import { FROM_NAME, FROM_EMAIL } from "../constants";
+import { PasswordChangedMail } from "../../../types/email";
+import { FROM_NAME, FROM_EMAIL } from "../../constants";
 
 export const passwordChangedMailTemplate = ({
   userEmail,

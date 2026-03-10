@@ -1,13 +1,13 @@
-import { FROM_NAME, FROM_EMAIL } from "../constants";
+import { FROM_NAME, FROM_EMAIL } from "../../constants";
 
-export const leadExportMailTemplate = (
+export const dealExportMailTemplate = (
   recipientEmail: string,
   fileUrl: string,
-  leadCount: number,
+  count: number,
 ) => ({
   from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
   to: recipientEmail,
-  subject: "Your Lead Export is Ready",
+  subject: "Your Deal Export is Ready",
   html: `
     <div style="margin:0;padding:0;background-color:#f4f6fb;font-family:Arial,Helvetica,sans-serif;">
       <table width="100%" cellpadding="0" cellspacing="0" style="padding:40px 0;">
@@ -23,7 +23,7 @@ export const leadExportMailTemplate = (
                     ⚡ Spark CRM
                   </h1>
                   <p style="margin:8px 0 0;font-size:14px;opacity:0.9;">
-                    Lead Export Ready
+                    Deal Export Ready
                   </p>
                 </td>
               </tr>
@@ -33,7 +33,7 @@ export const leadExportMailTemplate = (
                     Your export is ready! 🎉
                   </h2>
                   <p style="color:#4b5563;font-size:14px;line-height:1.6;">
-                    Your requested export of <strong>${leadCount} lead${leadCount !== 1 ? "s" : ""}</strong>
+                    Your requested export of <strong>${count} deal${count !== 1 ? "s" : ""}</strong>
                     has been processed and is ready to download.
                   </p>
                   <p style="color:#4b5563;font-size:14px;line-height:1.6;">

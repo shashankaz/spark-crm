@@ -1,13 +1,13 @@
-import { TenantForAdminMail } from "../../types/email";
-import { FROM_NAME, FROM_EMAIL } from "../constants";
+import { FROM_NAME, FROM_EMAIL } from "../../constants";
 
-export const adminMailTemplate = (
-  tenant: TenantForAdminMail,
-  randomPassword: string,
+export const leadExportMailTemplate = (
+  recipientEmail: string,
+  fileUrl: string,
+  leadCount: number,
 ) => ({
   from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
-  to: tenant.userEmail,
-  subject: "Your Admin Account Credentials have been created",
+  to: recipientEmail,
+  subject: "Your Lead Export is Ready",
   html: `
     <div style="margin:0;padding:0;background-color:#f4f6fb;font-family:Arial,Helvetica,sans-serif;">
       <table width="100%" cellpadding="0" cellspacing="0" style="padding:40px 0;">
@@ -23,24 +23,33 @@ export const adminMailTemplate = (
                     ⚡ Spark CRM
                   </h1>
                   <p style="margin:8px 0 0;font-size:14px;opacity:0.9;">
-                    Admin Account Credentials
+                    Lead Export Ready
                   </p>
                 </td>
               </tr>
               <tr>
                 <td style="padding:40px 30px;">
                   <h2 style="margin-top:0;color:#111827;font-size:20px;">
-                    Welcome to Spark CRM!
+                    Your export is ready! 🎉
                   </h2>
                   <p style="color:#4b5563;font-size:14px;line-height:1.6;">
-                    Your tenant has been created. Here are your admin credentials:
+                    Your requested export of <strong>${leadCount} lead${leadCount !== 1 ? "s" : ""}</strong>
+                    has been processed and is ready to download.
                   </p>
-                  <div style="margin:20px 0;padding:20px;background:#fef3c7;border-radius:10px;text-align:center;border:1px solid #fde68a;">
-                    <p style="margin:0 0 8px;color:#374151;"><strong>Email:</strong> ${tenant.userEmail}</p>
-                    <p style="margin:0;color:#374151;"><strong>Password:</strong> ${randomPassword}</p>
+                  <p style="color:#4b5563;font-size:14px;line-height:1.6;">
+                    Click the button below to download the CSV file. The link will expire in <strong>7 days</strong>.
+                  </p>
+                  <div style="text-align:center;margin:30px 0;">
+                    <a href="${fileUrl}"
+                       style="display:inline-block;background:linear-gradient(135deg,#D97706,#B45309);
+                              color:#ffffff;text-decoration:none;padding:14px 32px;
+                              border-radius:8px;font-size:15px;font-weight:600;">
+                      Download CSV
+                    </a>
                   </div>
-                  <p style="color:#6b7280;font-size:13px;text-align:center;">
-                    Please change your password after logging in.
+                  <p style="color:#9ca3af;font-size:12px;line-height:1.6;text-align:center;">
+                    If the button doesn't work, copy and paste this link into your browser:<br/>
+                    <a href="${fileUrl}" style="color:#D97706;word-break:break-all;">${fileUrl}</a>
                   </p>
                 </td>
               </tr>

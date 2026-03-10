@@ -1,7 +1,11 @@
-export { adminMailTemplate } from "./admin-credentials.template";
-export { leadReminderMailTemplate } from "./lead-reminder.template";
-export { leadExportMailTemplate } from "./lead-export.template";
+export { adminMailTemplate } from "./auth/admin-credentials.template";
+export { leadReminderMailTemplate } from "./reminder/lead-reminder.template";
+export { leadExportMailTemplate } from "./export/lead-export.template";
+export { dealExportMailTemplate } from "./export/deal-export.template";
+export { organizationExportMailTemplate } from "./export/organization-export.template";
+export { userExportMailTemplate } from "./export/user-export.template";
+export { tenantExportMailTemplate } from "./export/tenant-export.template";
 export { userWelcomeMailTemplate } from "./user-welcome.template";
-export { passwordChangedMailTemplate } from "./password-changed.template";
-export { otpMailTemplate } from "./otp.template";
-export { taskReminderMailTemplate } from "./task-reminder.template";
+export { passwordChangedMailTemplate } from "./auth/password-changed.template";
+export { otpMailTemplate } from "./auth/otp.template";
+export { taskReminderMailTemplate } from "./reminder/task-reminder.template";

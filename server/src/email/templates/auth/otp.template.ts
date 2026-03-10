@@ -1,5 +1,5 @@
-import { OtpMail } from "../../types/email";
-import { FROM_NAME, FROM_EMAIL } from "../constants";
+import { OtpMail } from "../../../types/email";
+import { FROM_NAME, FROM_EMAIL } from "../../constants";
 
 export const otpMailTemplate = ({ userEmail, userName, otp }: OtpMail) => ({
   from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
