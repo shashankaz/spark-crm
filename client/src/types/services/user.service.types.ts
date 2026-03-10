@@ -79,3 +79,21 @@ export type DeleteUserResponse = {
   message: string;
   id: string;
 };
+
+export type ExportUsersRequest = {
+  userIds: string[];
+  recipientEmail: string;
+};
+
+export type ExportUsersData = {
+  messageId: string;
+  userCount: number;
+  recipientEmail: string;
+};
+
+export type ExportUsersResponse = {
+  message: string;
+  messageId: string;
+  userCount: number;
+  recipientEmail: string;
+};

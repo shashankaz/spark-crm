@@ -168,3 +168,21 @@ export type GetUsersByTenantIdResponse = {
   message: string;
   users: User[];
 };
+
+export type ExportTenantsRequest = {
+  tenantIds: string[];
+  recipientEmail: string;
+};
+
+export type ExportTenantsData = {
+  messageId: string;
+  tenantCount: number;
+  recipientEmail: string;
+};
+
+export type ExportTenantsResponse = {
+  message: string;
+  messageId: string;
+  tenantCount: number;
+  recipientEmail: string;
+};

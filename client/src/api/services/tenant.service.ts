@@ -11,6 +11,9 @@ import type {
   DeletedTenantData,
   DeleteTenantByIdRequest,
   DeleteTenantResponse,
+  ExportTenantsData,
+  ExportTenantsRequest,
+  ExportTenantsResponse,
   GetAllTenantsRequest,
   GetAllTenantsResponse,
   GetTenantByIdRequest,
@@ -166,5 +169,24 @@ export const createUserForTenant = async (
     return {
       message,
       user: data.user,
+    };
+  });
+
+export const exportTenants = async (
+  params: ExportTenantsRequest,
+): Promise<ExportTenantsResponse> =>
+  withApiHandler(async () => {
+    const response = await api.post<ApiResponse<ExportTenantsData>>(
+      "/tenant/export",
+      params,
+    );
+
+    const { message, data } = response.data;
+
+    return {
+      message,
+      messageId: data.messageId,
+      tenantCount: data.tenantCount,
+      recipientEmail: data.recipientEmail,
     };
   });

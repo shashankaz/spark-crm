@@ -8,6 +8,9 @@ import type {
   DeletedOrganizationData,
   DeleteOrganizationByIdRequest,
   DeleteOrganizationResponse,
+  ExportOrganizationsData,
+  ExportOrganizationsRequest,
+  ExportOrganizationsResponse,
   GetAllOrganizationsRequest,
   GetAllOrganizationsResponse,
   GetOrganizationByIdRequest,
@@ -104,5 +107,24 @@ export const deleteOrganizationById = async (
     return {
       message,
       id: data.id,
+    };
+  });
+
+export const exportOrganizations = async (
+  params: ExportOrganizationsRequest,
+): Promise<ExportOrganizationsResponse> =>
+  withApiHandler(async () => {
+    const response = await api.post<ApiResponse<ExportOrganizationsData>>(
+      "/organization/export",
+      params,
+    );
+
+    const { message, data } = response.data;
+
+    return {
+      message,
+      messageId: data.messageId,
+      organizationCount: data.organizationCount,
+      recipientEmail: data.recipientEmail,
     };
   });

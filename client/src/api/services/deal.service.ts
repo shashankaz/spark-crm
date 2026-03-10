@@ -7,6 +7,9 @@ import type {
   DealsData,
   DeleteDealRequest,
   DeleteDealResponse,
+  ExportDealsData,
+  ExportDealsRequest,
+  ExportDealsResponse,
   GetAllDealsRequest,
   GetAllDealsResponse,
   GetDealRequest,
@@ -67,4 +70,23 @@ export const deleteDeal = async ({
     const response = await api.delete<ApiResponse<void>>(`/deal/${id}`);
 
     return { message: response.data.message };
+  });
+
+export const exportDeals = async (
+  params: ExportDealsRequest,
+): Promise<ExportDealsResponse> =>
+  withApiHandler(async () => {
+    const response = await api.post<ApiResponse<ExportDealsData>>(
+      "/deal/export",
+      params,
+    );
+
+    const { message, data } = response.data;
+
+    return {
+      message,
+      messageId: data.messageId,
+      dealCount: data.dealCount,
+      recipientEmail: data.recipientEmail,
+    };
   });

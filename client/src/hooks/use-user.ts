@@ -7,6 +7,7 @@ import {
   createUser,
   updateUser,
   deleteUser,
+  exportUsers,
 } from "@/api/services";
 
 export const useUser = () => {
@@ -77,5 +78,11 @@ export const useDeleteUser = () => {
         queryKey: ["user", variables.id],
       });
     },
+  });
+};
+
+export const useExportUsers = () => {
+  return useMutation({
+    mutationFn: exportUsers,
   });
 };

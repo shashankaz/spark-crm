@@ -9,6 +9,9 @@ import type {
   DeletedUserData,
   DeleteUserRequest,
   DeleteUserResponse,
+  ExportUsersData,
+  ExportUsersRequest,
+  ExportUsersResponse,
   GetAllUsersRequest,
   GetAllUsersResponse,
   GetUserByIdRequest,
@@ -103,5 +106,24 @@ export const deleteUser = async (
     return {
       message,
       id: data.id,
+    };
+  });
+
+export const exportUsers = async (
+  params: ExportUsersRequest,
+): Promise<ExportUsersResponse> =>
+  withApiHandler(async () => {
+    const response = await api.post<ApiResponse<ExportUsersData>>(
+      "/user/export",
+      params,
+    );
+
+    const { message, data } = response.data;
+
+    return {
+      message,
+      messageId: data.messageId,
+      userCount: data.userCount,
+      recipientEmail: data.recipientEmail,
     };
   });

@@ -5,6 +5,7 @@ import {
   createOrganization,
   updateOrganizationById,
   deleteOrganizationById,
+  exportOrganizations,
 } from "@/api/services";
 
 export const useOrganizations = ({
@@ -66,5 +67,11 @@ export const useDeleteOrganization = () => {
         queryKey: ["organization", variables.id],
       });
     },
+  });
+};
+
+export const useExportOrganizations = () => {
+  return useMutation({
+    mutationFn: exportOrganizations,
   });
 };

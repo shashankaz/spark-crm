@@ -8,6 +8,7 @@ import {
   updateTenantById,
   deleteTenantById,
   createUserForTenant,
+  exportTenants,
 } from "@/api/services";
 
 export const useTenantDashboardStats = () => {
@@ -109,5 +110,11 @@ export const useCreateUserForTenant = () => {
         queryKey: ["tenant", variables.tenantId],
       });
     },
+  });
+};
+
+export const useExportTenants = () => {
+  return useMutation({
+    mutationFn: exportTenants,
   });
 };

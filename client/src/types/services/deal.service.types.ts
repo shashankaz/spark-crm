@@ -37,3 +37,21 @@ export type GetDealResponse = { message: string; deal: Deal };
 export type UpdateDealResponse = { message: string; deal: Deal };
 
 export type DeleteDealResponse = { message: string };
+
+export type ExportDealsRequest = {
+  dealIds: string[];
+  recipientEmail: string;
+};
+
+export type ExportDealsData = {
+  messageId: string;
+  dealCount: number;
+  recipientEmail: string;
+};
+
+export type ExportDealsResponse = {
+  message: string;
+  messageId: string;
+  dealCount: number;
+  recipientEmail: string;
+};

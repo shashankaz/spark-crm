@@ -84,3 +84,21 @@ export type DeleteOrganizationResponse = {
   message: string;
   id: string;
 };
+
+export type ExportOrganizationsRequest = {
+  organizationIds: string[];
+  recipientEmail: string;
+};
+
+export type ExportOrganizationsData = {
+  messageId: string;
+  organizationCount: number;
+  recipientEmail: string;
+};
+
+export type ExportOrganizationsResponse = {
+  message: string;
+  messageId: string;
+  organizationCount: number;
+  recipientEmail: string;
+};

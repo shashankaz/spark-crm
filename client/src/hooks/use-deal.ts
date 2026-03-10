@@ -1,5 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getAllDeals, getDeal, updateDeal, deleteDeal } from "@/api/services";
+import {
+  getAllDeals,
+  getDeal,
+  updateDeal,
+  deleteDeal,
+  exportDeals,
+} from "@/api/services";
 
 export const useDeals = ({
   cursor,
@@ -51,5 +57,11 @@ export const useDeleteDeal = () => {
       queryClient.invalidateQueries({ queryKey: ["deals"] });
       queryClient.removeQueries({ queryKey: ["deal", variables.id] });
     },
+  });
+};
+
+export const useExportDeals = () => {
+  return useMutation({
+    mutationFn: exportDeals,
   });
 };
