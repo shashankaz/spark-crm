@@ -83,7 +83,7 @@ export const TaskEditForm = ({ task, setOpen }: TaskEditFormProps) => {
         labels,
       },
       {
-        onSuccess: ({message}) => {
+        onSuccess: ({ message }) => {
           toast.success(message);
           setOpen(false);
         },
