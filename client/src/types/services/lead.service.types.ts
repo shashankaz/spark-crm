@@ -42,8 +42,8 @@ export type GetLeadByIdRequest = {
 
 export type CreateLeadRequest = {
   idempotentId: string;
-  orgId: string;
-  orgName: string;
+  orgId?: string;
+  orgName?: string;
   firstName?: string;
   lastName?: string;
   email?: string;
@@ -135,4 +135,65 @@ export type ConvertLeadToDealResponse = {
 export type AssignLeadResponse = {
   message: string;
   lead: Lead;
+};
+
+export type ExportLeadsRequest = {
+  leadIds: string[];
+  recipientEmail: string;
+};
+
+export type ExportLeadsData = {
+  messageId: string;
+  leadCount: number;
+  recipientEmail: string;
+};
+
+export type ExportLeadsResponse = {
+  message: string;
+  messageId: string;
+  leadCount: number;
+  recipientEmail: string;
+};
+
+export type ImportLeadsRequest = {
+  file: File;
+};
+
+export type ImportLeadsData = {
+  inserted: number;
+  failed: number;
+  failedLeadIds: string[];
+};
+
+export type ImportLeadsResponse = {
+  message: string;
+  inserted: number;
+  failed: number;
+  failedLeadIds: string[];
+};
+
+export type LeadResearchResult = {
+  firstName: string;
+  lastName?: string;
+  email: string;
+  mobile: string;
+  gender: "male" | "female" | "other";
+  orgName?: string;
+  source?: string;
+  score: number;
+  status: "new" | "contacted" | "qualified" | "converted" | "lost";
+  summary: string;
+};
+
+export type ResearchLeadRequest = {
+  query: string;
+};
+
+export type ResearchLeadData = {
+  result: LeadResearchResult;
+};
+
+export type ResearchLeadResponse = {
+  message: string;
+  result: LeadResearchResult;
 };

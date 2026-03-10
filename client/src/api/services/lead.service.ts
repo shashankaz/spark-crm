@@ -14,6 +14,12 @@ import type {
   DeletedLeadData,
   DeleteLeadByIdRequest,
   DeleteLeadResponse,
+  ExportLeadsData,
+  ExportLeadsRequest,
+  ExportLeadsResponse,
+  ImportLeadsData,
+  ImportLeadsRequest,
+  ImportLeadsResponse,
   GetAllLeadsRequest,
   GetAllLeadsResponse,
   GetLeadActivityByLeadIdRequest,
@@ -25,6 +31,9 @@ import type {
   LeadData,
   LeadsData,
   OrganizationsData,
+  ResearchLeadData,
+  ResearchLeadRequest,
+  ResearchLeadResponse,
   UpdatedLeadData,
   UpdateLeadByIdRequest,
   UpdateLeadResponse,
@@ -183,5 +192,64 @@ export const assignLead = async (
     return {
       message,
       lead: data.lead,
+    };
+  });
+
+export const exportLeads = async (
+  params: ExportLeadsRequest,
+): Promise<ExportLeadsResponse> =>
+  withApiHandler(async () => {
+    const response = await api.post<ApiResponse<ExportLeadsData>>(
+      "/lead/export",
+      params,
+    );
+
+    const { message, data } = response.data;
+
+    return {
+      message,
+      messageId: data.messageId,
+      leadCount: data.leadCount,
+      recipientEmail: data.recipientEmail,
+    };
+  });
+
+export const importLeads = async (
+  params: ImportLeadsRequest,
+): Promise<ImportLeadsResponse> =>
+  withApiHandler(async () => {
+    const formData = new FormData();
+    formData.append("file", params.file);
+
+    const response = await api.post<ApiResponse<ImportLeadsData>>(
+      "/lead/import",
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } },
+    );
+
+    const { message, data } = response.data;
+
+    return {
+      message,
+      inserted: data.inserted,
+      failed: data.failed,
+      failedLeadIds: data.failedLeadIds,
+    };
+  });
+
+export const researchLead = async (
+  params: ResearchLeadRequest,
+): Promise<ResearchLeadResponse> =>
+  withApiHandler(async () => {
+    const response = await api.post<ApiResponse<ResearchLeadData>>(
+      "/langchain/research",
+      params,
+    );
+
+    const { message, data } = response.data;
+
+    return {
+      message,
+      result: data.result,
     };
   });

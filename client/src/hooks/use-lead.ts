@@ -10,6 +10,9 @@ import {
   getLeadActivityByLeadId,
   convertLeadToDeal,
   assignLead,
+  exportLeads,
+  importLeads,
+  researchLead,
 } from "@/api/services";
 
 export const useLeads = ({
@@ -131,5 +134,28 @@ export const useAssignLead = () => {
         queryKey: ["lead-activity", variables.id],
       });
     },
+  });
+};
+
+export const useExportLeads = () => {
+  return useMutation({
+    mutationFn: exportLeads,
+  });
+};
+
+export const useImportLeads = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: importLeads,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["leads"] });
+    },
+  });
+};
+
+export const useResearchLead = () => {
+  return useMutation({
+    mutationFn: researchLead,
   });
 };
