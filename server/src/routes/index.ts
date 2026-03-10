@@ -1,6 +1,7 @@
 import { Router } from "express";
 import authRoutes from "./v1/auth.routes";
 import tenantRoutes from "./v1/tenant.routes";
+import groupRoutes from "./v1/group.routes";
 import leadRoutes from "./v1/lead.routes";
 import organizationRoutes from "./v1/organization.routes";
 import userRoutes from "./v1/user.routes";
@@ -10,6 +11,13 @@ import dealRoutes from "./v1/deal.routes";
 import dashboardRoutes from "./v1/dashboard.route";
 import uploadRoutes from "./v1/upload.routes";
 import attachmentRoutes from "./v1/attachment.routes";
+import workflowRoutes from "./v1/workflow.routes";
+import leadEmailRoutes from "./v1/lead-email.routes";
+import webhookRoutes from "./v1/webhook.routes";
+import emailTrackingRoutes from "./v1/tracking.routes";
+import taskRoutes from "./v1/task.routes";
+import langchainRoutes from "./v1/langchain.routes";
+import emailTemplateRoutes from "./v1/email-template.routes";
 
 export const router = Router();
 
@@ -22,5 +30,13 @@ router.use("/user", userRoutes);
 router.use("/call", callRoutes);
 router.use("/comment", commentRoutes);
 router.use("/attachment", attachmentRoutes);
+router.use("/email", leadEmailRoutes);
 router.use("/dashboard", dashboardRoutes);
+router.use("/group", groupRoutes);
+router.use("/email-template", emailTemplateRoutes);
 router.use("/upload", uploadRoutes);
+router.use("/workflow", workflowRoutes);
+router.use("/webhook", webhookRoutes);
+router.use("/track", emailTrackingRoutes);
+router.use("/task", taskRoutes);
+router.use("/langchain", langchainRoutes);
