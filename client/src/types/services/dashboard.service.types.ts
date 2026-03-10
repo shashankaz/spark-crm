@@ -43,3 +43,61 @@ export type GetDashboardStatsResponse = {
   recentLeads: DashboardRecentLead[];
   recentDeals: DashboardRecentDeal[];
 };
+
+export type CallActivityItem = {
+  month: string;
+  inbound: number;
+  outbound: number;
+};
+
+export type ConversionFunnelItem = {
+  stage: string;
+  count: number;
+};
+
+export type DealPipelineItem = {
+  range: string;
+  count: number;
+  value: number;
+};
+
+export type DealWinRateItem = {
+  name: string;
+  value: number;
+};
+
+export type LeadScoreItem = {
+  range: string;
+  count: number;
+};
+
+export type LeadSourceItem = {
+  source: string;
+  count: number;
+};
+
+export type LeadStatusItem = {
+  status: string;
+  count: number;
+};
+
+export type MonthlyRevenueItem = {
+  month: string;
+  revenue: number;
+  deals: number;
+};
+
+export type OrgIndustryItem = {
+  industry: string;
+  count: number;
+};
+
+export type RevenueTargetItem = {
+  month: string;
+  actual: number;
+};
+
+export type WidgetResponse<T> = {
+  message: string;
+  data: T[];
+};
