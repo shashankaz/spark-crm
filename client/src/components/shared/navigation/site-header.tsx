@@ -1,6 +1,8 @@
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+
 import { ModeToggle } from "../mode-toggle";
+import { NotificationPanel } from "./notification-panel";
 
 export const SiteHeader = () => {
   return (
@@ -14,7 +16,8 @@ export const SiteHeader = () => {
           />
         </div>
 
-        <div className="ml-auto pr-4">
+        <div className="ml-auto pr-4 flex items-center gap-2">
+          <NotificationPanel />
           <ModeToggle />
         </div>
       </div>
