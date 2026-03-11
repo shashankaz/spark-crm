@@ -13,6 +13,11 @@ import { router } from "./routes/index";
 import { env } from "./config/env";
 import { globalErrorHandler } from "./middlewares/global-error.middleware";
 import { registerGracefulShutdown } from "./utils/graceful-shut-down";
+import {
+  startExportWorker,
+  startEmailWorker,
+  startLeadReminderWorker,
+} from "./workers";
 
 const app = express();
 
@@ -56,6 +61,9 @@ app.use(
 Database.connect()
   .then(() => {
     console.log("Connected to MongoDB");
+    startExportWorker();
+    startEmailWorker();
+    startLeadReminderWorker();
   })
   .catch((error) => {
     console.error("Failed to connect to MongoDB:", error);
