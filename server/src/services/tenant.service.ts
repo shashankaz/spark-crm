@@ -15,6 +15,7 @@ import {
   UpdateTenantByIdInput,
   DeleteTenantByIdInput,
   CreateUserForTenantInput,
+  CheckSlugAvailabilityInput,
 } from "../types/services/tenant.service.types";
 import { TenantDocument, TenantPlan } from "../types/models/tenant.model.types";
 
@@ -224,6 +225,14 @@ export const fetchUsersByTenantIdService = async ({
   return {
     users: formattedUsers,
   };
+};
+
+export const checkSlugAvailabilityService = async ({
+  slug,
+}: CheckSlugAvailabilityInput) => {
+  const existingTenant = await Tenant.findOne({ slug }).exec();
+
+  return !existingTenant;
 };
 
 export const createTenantService = async ({

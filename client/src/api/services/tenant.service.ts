@@ -14,6 +14,8 @@ import type {
   ExportTenantsData,
   ExportTenantsRequest,
   ExportTenantsResponse,
+  GetAvailableSlugRequest,
+  GetAvailableSlugResponse,
   GetAllTenantsRequest,
   GetAllTenantsResponse,
   GetTenantByIdRequest,
@@ -48,6 +50,23 @@ export const getTenantDashboardStats =
         planDistribution: data.planDistribution,
       };
     });
+
+export const getAvailableSlug = async (
+  params: GetAvailableSlugRequest,
+): Promise<GetAvailableSlugResponse> =>
+  withApiHandler(async () => {
+    const { slug } = params;
+    const response = await api.get<ApiResponse<{ isAvailable: boolean }>>(
+      `/tenant/slug/${encodeURIComponent(slug)}`,
+    );
+
+    const { message, data } = response.data;
+
+    return {
+      message,
+      isAvailable: data.isAvailable,
+    };
+  });
 
 export const getAllTenants = async (
   params: GetAllTenantsRequest,

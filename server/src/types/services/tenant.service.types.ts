@@ -15,6 +15,10 @@ export interface FetchUsersByTenantIdInput {
   search?: string;
 }
 
+export interface CheckSlugAvailabilityInput {
+  slug: string;
+}
+
 export interface CreateTenantInput {
   name: string;
   slug: string;

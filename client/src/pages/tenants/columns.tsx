@@ -83,7 +83,15 @@ export const columns: ColumnDef<Tenant>[] = [
   },
   {
     accessorKey: "address",
-    header: "Location",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Location
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
     cell: ({ row }) => {
       const address = row.original.address;
       const country = address?.country;

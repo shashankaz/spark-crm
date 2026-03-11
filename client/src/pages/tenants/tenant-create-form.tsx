@@ -1,7 +1,9 @@
+import { useMemo, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { LoaderCircle } from "lucide-react";
 import toast from "react-hot-toast";
+import debounce from "lodash/debounce";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -26,7 +28,7 @@ import { countriesFlag } from "@/utils/countries/countries-flag";
 import { tenantFormSchema } from "./tenant-form-schema";
 import type { TenantFormValues } from "./tenant-form-schema";
 
-import { useCreateTenant } from "@/hooks";
+import { useCreateTenant, useCheckSlugAvailability } from "@/hooks";
 
 interface TenantCreateFormProps {
   setOpen: (open: boolean) => void;
@@ -35,11 +37,16 @@ interface TenantCreateFormProps {
 export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
   setOpen,
 }) => {
+  const [slugStatus, setSlugStatus] = useState<
+    "idle" | "checking" | "available" | "taken"
+  >("idle");
+
   const form = useForm<TenantFormValues>({
     resolver: zodResolver(tenantFormSchema),
     mode: "onChange",
     defaultValues: {
       name: undefined,
+      slug: undefined,
       gstNumber: undefined,
       panNumber: undefined,
       email: undefined,
@@ -56,6 +63,49 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
     },
   });
 
+  const { mutate: checkSlugAvailability } = useCheckSlugAvailability();
+
+  const debouncedCheckSlug = useMemo(
+    () =>
+      debounce((slug: string) => {
+        checkSlugAvailability(
+          { slug },
+          {
+            onSuccess: (result) => {
+              setSlugStatus(result.isAvailable ? "available" : "taken");
+              if (!result.isAvailable) {
+                form.setError("slug", {
+                  message: "This slug is already taken",
+                });
+              } else {
+                form.clearErrors("slug");
+              }
+            },
+            onError: () => setSlugStatus("idle"),
+          },
+        );
+      }, 500),
+    [checkSlugAvailability, form],
+  );
+
+  const checkSlug = (slug: string) => {
+    if (!slug || slug.length < 2) {
+      debouncedCheckSlug.cancel();
+      setSlugStatus("idle");
+      return;
+    }
+
+    const isValidPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug);
+    if (!isValidPattern) {
+      debouncedCheckSlug.cancel();
+      setSlugStatus("idle");
+      return;
+    }
+
+    setSlugStatus("checking");
+    debouncedCheckSlug(slug);
+  };
+
   const { mutate, isPending } = useCreateTenant();
 
   const onSubmit = (data: TenantFormValues) => {
@@ -68,6 +118,7 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
       },
       onSettled: () => {
         form.reset();
+        setSlugStatus("idle");
         setOpen(false);
       },
     });
@@ -92,6 +143,50 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
                 autoComplete="off"
               />
               {fieldState.invalid && (
+                <FieldError
+                  className="text-error text-xs"
+                  errors={[fieldState.error]}
+                />
+              )}
+            </Field>
+          )}
+        />
+        <Controller
+          name="slug"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field
+              data-invalid={fieldState.invalid || slugStatus === "taken"}
+              className="-space-y-2"
+            >
+              <FieldLabel htmlFor="slug">
+                Slug <span className="text-error">*</span>
+              </FieldLabel>
+              <div className="relative">
+                <Input
+                  {...field}
+                  id="slug"
+                  aria-invalid={fieldState.invalid || slugStatus === "taken"}
+                  placeholder="Enter tenant slug"
+                  autoComplete="off"
+                  onChange={(e) => {
+                    field.onChange(e);
+                    checkSlug(e.target.value);
+                  }}
+                />
+                {slugStatus === "checking" && (
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2">
+                    <LoaderCircle className="h-4 w-4 animate-spin text-muted-foreground" />
+                  </span>
+                )}
+              </div>
+              {slugStatus === "available" && !fieldState.invalid && (
+                <p className="text-xs text-green-600">Slug is available</p>
+              )}
+              {slugStatus === "taken" && (
+                <p className="text-xs text-error">This slug is already taken</p>
+              )}
+              {fieldState.invalid && slugStatus !== "taken" && (
                 <FieldError
                   className="text-error text-xs"
                   errors={[fieldState.error]}
@@ -401,14 +496,22 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
           type="button"
           variant="outline"
           disabled={isPending}
-          onClick={() => form.reset()}
+          onClick={() => {
+            form.reset();
+            setSlugStatus("idle");
+          }}
         >
           Reset
         </Button>
         <Button
           type="submit"
           form="tenant-create-form"
-          disabled={!form.formState.isValid || isPending}
+          disabled={
+            !form.formState.isValid ||
+            isPending ||
+            slugStatus === "taken" ||
+            slugStatus === "checking"
+          }
         >
           {isPending ? (
             <>

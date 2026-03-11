@@ -81,8 +81,18 @@ export type GetTenantByIdRequest = {
   id: string;
 };
 
+export type GetAvailableSlugRequest = {
+  slug: string;
+};
+
+export type GetAvailableSlugResponse = {
+  message: string;
+  isAvailable: boolean;
+};
+
 export type CreateTenantRequest = {
   name: string;
+  slug: string;
   gstNumber?: string;
   panNumber?: string;
   email: string;

@@ -5,6 +5,14 @@ export const tenantFormSchema = z.object({
     .string("Please enter a name")
     .trim()
     .min(2, "Name must be at least 2 characters"),
+  slug: z
+    .string("Please enter a slug")
+    .trim()
+    .min(2, "Slug must be at least 2 characters")
+    .regex(
+      /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+      "Slug must be lowercase letters, numbers, and hyphens only",
+    ),
   gstNumber: z
     .string("Please enter a GST number")
     .regex(

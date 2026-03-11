@@ -9,6 +9,7 @@ import {
   deleteTenantByIdService,
   createUserForTenantService,
   fetchUsersByTenantIdService,
+  checkSlugAvailabilityService,
 } from "../services/tenant.service";
 import { enqueueTenantExportService } from "../services/export.service";
 import { AppError } from "../shared/app-error";
@@ -78,6 +79,21 @@ export const getUsersByTenantId = asyncHandler(
     });
 
     sendSuccess(res, 200, "Tenant users retrieved successfully", { users });
+  },
+);
+
+export const getAvailableSlug = asyncHandler(
+  async (req: Request, res: Response) => {
+    const slug = req.params.slug as string;
+    if (!slug) {
+      throw new AppError("Slug is required", 400);
+    }
+
+    const isAvailable = await checkSlugAvailabilityService({ slug });
+
+    sendSuccess(res, 200, "Slug availability checked successfully", {
+      isAvailable,
+    });
   },
 );
 

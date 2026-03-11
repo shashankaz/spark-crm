@@ -3,6 +3,7 @@ import {
   getTenantDashboardStats,
   getAllTenants,
   getTenantById,
+  getAvailableSlug,
   createTenant,
   updateTenantById,
   deleteTenantById,
@@ -23,6 +24,7 @@ router.get("/dashboard", getTenantDashboardStats);
 router.get("/", getAllTenants);
 router.get("/:id", getTenantById);
 router.get("/:id/users", getUsersByTenantId);
+router.get("/slug/:slug", getAvailableSlug);
 router.post("/", createTenant);
 router.post("/export", exportTenants);
 router.patch("/:id", updateTenantById);

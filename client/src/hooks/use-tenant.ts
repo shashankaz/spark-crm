@@ -9,6 +9,7 @@ import {
   deleteTenantById,
   createUserForTenant,
   exportTenants,
+  getAvailableSlug,
 } from "@/api/services";
 
 export const useTenantDashboardStats = () => {
@@ -116,5 +117,11 @@ export const useCreateUserForTenant = () => {
 export const useExportTenants = () => {
   return useMutation({
     mutationFn: exportTenants,
+  });
+};
+
+export const useCheckSlugAvailability = () => {
+  return useMutation({
+    mutationFn: getAvailableSlug,
   });
 };
