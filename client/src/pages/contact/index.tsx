@@ -43,7 +43,7 @@ const Contact = () => {
 
             <div className="mt-12 space-y-6">
               {[
-                { label: "Email", value: "hello@spark.io" },
+                { label: "Email", value: "contact@sparkcrm.me" },
                 { label: "Office", value: "Mumbai, India" },
               ].map((item) => (
                 <div key={item.label}>
