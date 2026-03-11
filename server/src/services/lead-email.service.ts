@@ -10,6 +10,7 @@ import {
   FetchEmailsByLeadInput,
   SendEmailForLeadInput,
 } from "../types/services/email.service.types";
+import { FROM_EMAIL } from "../email/constants";
 
 export const fetchEmailsByLeadService = async ({
   leadId,
@@ -44,7 +45,6 @@ export const sendEmailForLeadService = async ({
   leadId,
   userId,
   userName,
-  from,
   to,
   subject,
   bodyHtml,
@@ -57,7 +57,6 @@ export const sendEmailForLeadService = async ({
 
   const emailRecord = await Email.create({
     leadId,
-    from,
     to,
     subject,
     bodyHtml,
@@ -70,7 +69,7 @@ export const sendEmailForLeadService = async ({
       new SendMessageCommand({
         QueueUrl: env.AWS_SQS_EMAIL_QUEUE_URL,
         MessageBody: JSON.stringify({
-          from: `"Spark CRM" <${from}>`,
+          from: `"Spark CRM" <${FROM_EMAIL}>`,
           to,
           subject,
           html: bodyHtml,

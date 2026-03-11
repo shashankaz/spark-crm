@@ -8,10 +8,6 @@ const emailSchema = new Schema<EmailDocument>(
       ref: "Lead",
       required: true,
     },
-    from: {
-      type: String,
-      required: true,
-    },
     to: {
       type: String,
       required: true,

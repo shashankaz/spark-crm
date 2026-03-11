@@ -11,7 +11,6 @@ export interface SendEmailForLeadInput {
   leadId: string | Types.ObjectId;
   userId: Types.ObjectId;
   userName: string;
-  from: string;
   to: string;
   subject: string;
   bodyHtml: string;

@@ -3,7 +3,6 @@ import { Types, Document } from "mongoose";
 export interface EmailBase {
   leadId: Types.ObjectId;
 
-  from: string;
   to: string;
   subject: string;
   bodyHtml: string;
