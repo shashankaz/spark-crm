@@ -36,20 +36,92 @@ export const fetchLeadsService = async ({
   userId,
   role,
 }: FetchLeadsInput) => {
+  if (search) {
+    const pipeline: any[] = [
+      {
+        $search: {
+          index: "lead_search",
+          compound: {
+            must: [
+              {
+                text: {
+                  query: search.trim(),
+                  path: ["firstName", "email"],
+                  fuzzy: {
+                    maxEdits: 1,
+                    prefixLength: 2,
+                  },
+                },
+              },
+            ],
+            filter: [
+              {
+                equals: {
+                  path: "tenantId",
+                  value: tenantId,
+                },
+              },
+            ],
+          },
+        },
+      },
+    ];
+
+    if (role !== "admin") {
+      pipeline[0].$search.compound.filter.push({
+        equals: {
+          path: "userId",
+          value: userId,
+        },
+      });
+    }
+
+    if (orgId) {
+      pipeline[0].$search.compound.filter.push({
+        equals: {
+          path: "orgId",
+          value: orgId,
+        },
+      });
+    }
+
+    pipeline.push(
+      { $limit: limit },
+      {
+        $project: {
+          _id: 1,
+          firstName: 1,
+          lastName: 1,
+          email: 1,
+          orgName: 1,
+          score: 1,
+          updatedAt: 1,
+          searchScore: { $meta: "searchScore" },
+        },
+      },
+    );
+
+    const leads = await Lead.aggregate(pipeline);
+
+    const formattedLeads = leads.map((lead: any) => ({
+      _id: lead._id,
+      firstName: lead.firstName,
+      lastName: lead.lastName ?? undefined,
+      email: lead.email,
+      orgName: lead.orgName ?? undefined,
+      score: lead.score ?? 0,
+      updatedAt: formatDate(lead.updatedAt, "dd/MM/yyyy"),
+    }));
+
+    return { leads: formattedLeads, totalCount: leads.length };
+  }
+
   const countQuery: any = { tenantId };
 
   if (role !== "admin") countQuery.userId = userId;
 
   if (orgId) {
     countQuery.orgId = orgId;
-  }
-
-  if (search) {
-    countQuery.$or = [
-      { firstName: { $regex: search, $options: "i" } },
-      { lastName: { $regex: search, $options: "i" } },
-      { email: { $regex: search, $options: "i" } },
-    ];
   }
 
   const whereQuery: any = { ...countQuery };
@@ -65,9 +137,9 @@ export const fetchLeadsService = async ({
   const formattedLeads = leads.map((lead) => ({
     _id: lead._id,
     firstName: lead.firstName,
-    lastName: lead.lastName ?? "-",
+    lastName: lead.lastName ?? undefined,
     email: lead.email,
-    orgName: lead.orgName,
+    orgName: lead.orgName ?? undefined,
     score: lead.score ?? 0,
     updatedAt: formatDate(lead.updatedAt, "dd/MM/yyyy"),
   }));
@@ -110,16 +182,16 @@ export const createLeadService = async ({
   const lead = new Lead({
     idempotentId,
     tenantId,
-    orgId,
-    orgName,
+    orgId: orgId ?? undefined,
+    orgName: orgName ?? undefined,
     dealId: undefined,
     userId,
-    firstName: firstName || undefined,
-    lastName: lastName || undefined,
-    email: email || undefined,
-    mobile: mobile || undefined,
-    gender: gender || undefined,
-    source: source || undefined,
+    firstName: firstName ?? undefined,
+    lastName: lastName ?? undefined,
+    email: email ?? undefined,
+    mobile: mobile ?? undefined,
+    gender: gender ?? undefined,
+    source: source ?? undefined,
   });
 
   lead.score = calculateLeadScore(lead);
