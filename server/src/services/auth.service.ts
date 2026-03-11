@@ -213,9 +213,9 @@ export const getUserProfileService = async ({
   return {
     _id: user._id,
     firstName: user.firstName,
-    lastName: user.lastName ?? "-",
+    lastName: user.lastName ?? undefined,
     email: user.email,
-    mobile: user.mobile ?? "-",
+    mobile: user.mobile ?? undefined,
     role: user.role,
     createdAt: format(user.createdAt, "dd/MM/yyyy"),
     updatedAt: format(user.updatedAt, "dd/MM/yyyy"),

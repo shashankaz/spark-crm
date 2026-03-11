@@ -37,9 +37,9 @@ export interface ChangePasswordInput {
 export interface UserResponse {
   _id: Types.ObjectId;
   firstName: string;
-  lastName: string;
+  lastName?: string;
   email: string;
-  mobile: string;
+  mobile?: string;
   role: string;
   createdAt?: string;
   updatedAt: string;
