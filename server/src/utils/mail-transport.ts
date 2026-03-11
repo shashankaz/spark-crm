@@ -2,11 +2,11 @@ import { createTransport } from "nodemailer";
 import { env } from "../config/env";
 
 export const transport = createTransport({
-  host: env.MAILTRAP_HOST,
-  port: Number(env.MAILTRAP_PORT),
-  secure: false,
+  host: env.SMTP_HOST,
+  port: Number(env.SMTP_PORT),
+  secure: true,
   auth: {
-    user: env.MAILTRAP_USER,
-    pass: env.MAILTRAP_PASS,
+    user: env.SMTP_USER,
+    pass: env.SMTP_PASS,
   },
 });
