@@ -5,7 +5,7 @@ export interface CreateGroupInput {
   description?: string;
   tenantId: Types.ObjectId;
   userId: Types.ObjectId;
-  leads?: Types.ObjectId[];
+  leads: Types.ObjectId[];
 }
 
 export interface UpdateGroupInput {

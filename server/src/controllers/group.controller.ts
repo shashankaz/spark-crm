@@ -41,12 +41,12 @@ export const getGroups = asyncHandler(async (req: Request, res: Response) => {
     throw new AppError("Tenant ID is missing in user data", 400);
   }
 
-  const groups = await fetchGroupsService({
+  const { groups, totalCount } = await fetchGroupsService({
     tenantId,
     userId,
   });
 
-  sendSuccess(res, 200, "Groups retrieved successfully", { groups });
+  sendSuccess(res, 200, "Groups retrieved successfully", { groups, totalCount });
 });
 
 export const getGroup = asyncHandler(async (req: Request, res: Response) => {

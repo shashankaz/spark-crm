@@ -2,6 +2,7 @@ import type { Group } from "@/types/domain";
 
 export type GroupsData = {
   groups: Group[];
+  totalCount: number;
 };
 
 export type GroupData = {
@@ -42,6 +43,7 @@ export type SendCampaignRequest = {
 export type GetGroupsResponse = {
   message: string;
   groups: Group[];
+  totalCount: number;
 };
 
 export type GetGroupResponse = {

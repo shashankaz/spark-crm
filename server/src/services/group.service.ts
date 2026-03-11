@@ -1,4 +1,5 @@
 import { Types } from "mongoose";
+import { formatDate } from "date-fns/format";
 import { Group } from "../models/group.model";
 import { AppError } from "../shared/app-error";
 import { sendEmailForLeadService } from "./lead-email.service";
@@ -21,7 +22,7 @@ export const createGroupService = async ({
 }: CreateGroupInput) => {
   const group = await Group.create({
     name,
-    description,
+    description: description || undefined,
     tenantId,
     userId,
     leads: leads ? leads.map((l) => new Types.ObjectId(l)) : [],
@@ -36,12 +37,20 @@ export const fetchGroupsService = async ({
 }: FetchGroupsInput) => {
   const query: any = { tenantId, userId };
 
-  const groups = await Group.find(query)
-    .populate("leads", "firstName lastName email status")
-    .sort({ createdAt: -1 })
-    .exec();
+  const [totalCount, groups] = await Promise.all([
+    Group.countDocuments(query).exec(),
+    Group.find(query).sort({ _id: -1 }).exec(),
+  ]);
 
-  return groups;
+  const formattedGroups = groups.map((group) => ({
+    _id: group._id,
+    name: group.name,
+    description: group.description ?? undefined,
+    leadCount: group.leads.length,
+    updatedAt: formatDate(group.updatedAt, "dd/MM/yyyy"),
+  }));
+
+  return { groups: formattedGroups, totalCount };
 };
 
 export const getGroupByIdService = async ({
