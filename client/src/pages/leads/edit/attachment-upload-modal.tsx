@@ -265,7 +265,6 @@ export const AttachmentUploadModal = ({
                   {(s.status === "idle" || s.status === "error") && (
                     <button
                       type="button"
-                      aria-label={`Remove ${s.file.name}`}
                       onClick={(e) => {
                         e.stopPropagation();
                         removeStaged(idx);

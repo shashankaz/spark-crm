@@ -46,7 +46,6 @@ export const NotificationPanel = () => {
         size="icon"
         className="relative"
         onClick={() => setOpen((v) => !v)}
-        aria-label="Notifications"
       >
         <Bell size={18} />
         {unreadCount > 0 && (
