@@ -36,7 +36,6 @@ export interface SendCampaignToGroupInput {
   groupId: Types.ObjectId;
   userId: Types.ObjectId;
   userName: string;
-  from: string;
   subject: string;
   bodyHtml: string;
   bodyText?: string;

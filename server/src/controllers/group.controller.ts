@@ -117,7 +117,7 @@ export const sendCampaign = asyncHandler(
       throw new AppError("Group id is required", 400);
     }
 
-    const { subject, bodyHtml, bodyText, from } = req.body;
+    const { subject, bodyHtml, bodyText } = req.body;
 
     if (!subject) {
       throw new AppError("Subject is required", 400);
@@ -126,14 +126,11 @@ export const sendCampaign = asyncHandler(
       throw new AppError("Email body is required", 400);
     }
 
-    const senderEmail = from || req.user.email || "hello@spark.com";
-
     const result = await sendCampaignToGroupService({
       tenantId,
       groupId: id,
       userId,
       userName,
-      from: senderEmail,
       subject,
       bodyHtml,
       bodyText: bodyText || bodyHtml.replace(/<[^>]+>/g, ""),
