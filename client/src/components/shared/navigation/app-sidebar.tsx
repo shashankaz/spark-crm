@@ -10,6 +10,7 @@ import {
   Workflow,
   Contact,
   ListTodo,
+  UserCircle2,
 } from "lucide-react";
 
 import {
@@ -18,6 +19,7 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -36,36 +38,80 @@ interface NavLink {
   icon: LucideIcon;
 }
 
-const allLinks: {
-  base: NavLink[];
-  roles: Record<string, NavLink[]>;
-} = {
-  base: [],
-  roles: {
-    super_admin: [
-      { to: "", label: "Dashboard", icon: LayoutDashboard },
-      { to: "/tenants", label: "Tenants", icon: Building },
-    ],
-    admin: [
-      { to: "", label: "Dashboard", icon: LayoutDashboard },
-      { to: "/organizations", label: "Organizations", icon: Building2 },
-      { to: "/leads", label: "Leads", icon: UserPlus },
-      { to: "/deals", label: "Deals", icon: Handshake },
-      { to: "/tasks", label: "Tasks", icon: ListTodo },
-      { to: "/workflows", label: "Workflows", icon: Workflow },
-      { to: "/users", label: "Users", icon: Users },
-      { to: "/groups", label: "Groups", icon: Contact },
-    ],
-    user: [
-      { to: "", label: "Dashboard", icon: LayoutDashboard },
-      { to: "/organizations", label: "Organizations", icon: Building2 },
-      { to: "/leads", label: "Leads", icon: UserPlus },
-      { to: "/deals", label: "Deals", icon: Handshake },
-      { to: "/tasks", label: "Tasks", icon: ListTodo },
-      { to: "/workflows", label: "Workflows", icon: Workflow },
-      { to: "/groups", label: "Groups", icon: Contact },
-    ],
-  },
+interface NavGroup {
+  label: string;
+  links: NavLink[];
+}
+
+const roleNavGroups: Record<string, NavGroup[]> = {
+  super_admin: [
+    {
+      label: "",
+      links: [
+        { to: "", label: "Dashboard", icon: LayoutDashboard },
+        { to: "/tenants", label: "Tenants", icon: Building },
+      ],
+    },
+  ],
+  admin: [
+    {
+      label: "",
+      links: [{ to: "", label: "Dashboard", icon: LayoutDashboard }],
+    },
+    {
+      label: "Accounts",
+      links: [
+        { to: "/organizations", label: "Organizations", icon: Building2 },
+        { to: "/contacts", label: "Contacts", icon: UserCircle2 },
+        { to: "/leads", label: "Leads", icon: UserPlus },
+      ],
+    },
+    {
+      label: "Sales",
+      links: [{ to: "/deals", label: "Deals", icon: Handshake }],
+    },
+    {
+      label: "Activity",
+      links: [{ to: "/tasks", label: "Tasks", icon: ListTodo }],
+    },
+    {
+      label: "Management",
+      links: [
+        { to: "/workflows", label: "Workflows", icon: Workflow },
+        { to: "/users", label: "Users", icon: Users },
+        { to: "/groups", label: "Groups", icon: Contact },
+      ],
+    },
+  ],
+  user: [
+    {
+      label: "",
+      links: [{ to: "", label: "Dashboard", icon: LayoutDashboard }],
+    },
+    {
+      label: "Accounts",
+      links: [
+        { to: "/organizations", label: "Organizations", icon: Building2 },
+        { to: "/contacts", label: "Contacts", icon: UserCircle2 },
+        { to: "/leads", label: "Leads", icon: UserPlus },
+      ],
+    },
+    {
+      label: "Sales",
+      links: [{ to: "/deals", label: "Deals", icon: Handshake }],
+    },
+    {
+      label: "Activity",
+      links: [{ to: "/tasks", label: "Tasks", icon: ListTodo }],
+    },
+    {
+      label: "Management",
+      links: [
+        { to: "/workflows", label: "Workflows", icon: Workflow },
+        { to: "/groups", label: "Groups", icon: Contact },
+      ],
+    },
+  ],
 };
 
 export const AppSidebar = ({
@@ -90,16 +136,12 @@ export const AppSidebar = ({
     if (!path || path === "/") {
       return base;
     }
-
     return `${base}${path.startsWith("/") ? path : `/${path}`}`;
   };
 
   const isActive = (href: string) => location.pathname === href;
 
-  const getLinks = (): NavLink[] => {
-    const roleLinks = allLinks.roles[user.role] || [];
-    return [...allLinks.base, ...roleLinks];
-  };
+  const groups = roleNavGroups[user.role] ?? [];
 
   const handleNavClick = () => {
     if (isMobile) {
@@ -158,13 +200,22 @@ export const AppSidebar = ({
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
+
       <SidebarContent style={{ scrollbarWidth: "none" }}>
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>{renderLinks(getLinks())}</SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {groups.map((group, i) => (
+          <SidebarGroup key={i}>
+            {group.label && !collapsed && (
+              <SidebarGroupLabel className="text-[10px] uppercase tracking-wider text-muted-foreground/60 px-3 pb-1">
+                {group.label}
+              </SidebarGroupLabel>
+            )}
+            <SidebarGroupContent>
+              <SidebarMenu>{renderLinks(group.links)}</SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
       </SidebarContent>
+
       <SidebarFooter>
         <NavUser user={user} />
       </SidebarFooter>
