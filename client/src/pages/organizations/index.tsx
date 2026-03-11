@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import debounce from "lodash/debounce";
 import { Helmet } from "react-helmet-async";
-import { Download, Plus } from "lucide-react";
+import { Download, Plus, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,10 +18,9 @@ import { Description } from "@/components/shared/typography/description";
 
 import { columns } from "./columns";
 import { OrganizationCreateForm } from "./organization-create-form";
+import { OrganizationExportModal } from "./organization-export-modal";
 
 import { useOrganizations } from "@/hooks";
-
-import { exportOrganizationsToExcel } from "@/utils/export/organization-excel";
 
 import type { Organization } from "@/types/domain";
 
@@ -30,6 +29,7 @@ const OrganizationsPage = () => {
   const [selectedOrganizations, setSelectedOrganizations] = useState<
     Organization[]
   >([]);
+  const [exportDialogOpen, setExportDialogOpen] = useState(false);
 
   const [searchInput, setSearchInput] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -61,14 +61,6 @@ const OrganizationsPage = () => {
             <Description description="Manage your CRM organizations and their details" />
           </div>
           <div className="space-x-2">
-            <Button
-              type="button"
-              onClick={() => exportOrganizationsToExcel(selectedOrganizations)}
-              disabled={selectedOrganizations.length === 0}
-            >
-              <Download />
-              Export
-            </Button>
             <Button type="button" onClick={() => setOpen(true)}>
               <Plus />
               Create
@@ -102,6 +94,41 @@ const OrganizationsPage = () => {
           </DialogContent>
         </Dialog>
       </div>
+
+      <OrganizationExportModal
+        open={exportDialogOpen}
+        onOpenChange={setExportDialogOpen}
+        selectedOrganizations={selectedOrganizations}
+      />
+
+      {selectedOrganizations.length > 0 && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-background border shadow-xl rounded-xl px-5 py-3 animate-in fade-in slide-in-from-bottom-4 duration-200">
+          <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">
+            {selectedOrganizations.length} organization
+            {selectedOrganizations.length !== 1 ? "s" : ""} selected
+          </span>
+          <div className="h-4 w-px bg-border" />
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setExportDialogOpen(true)}
+          >
+            <Download className="h-4 w-4 mr-2" />
+            Export
+          </Button>
+          <div className="h-4 w-px bg-border" />
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => {
+              setSelectedOrganizations([]);
+            }}
+            className="h-7 w-7 p-0"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
     </>
   );
 };

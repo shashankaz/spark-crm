@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import debounce from "lodash/debounce";
 import { Helmet } from "react-helmet-async";
-import { Download, Plus } from "lucide-react";
+import { Download, Plus, X } from "lucide-react";
 
 import {
   Dialog,
@@ -18,16 +18,16 @@ import { DataTable } from "@/components/shared/dashboard/data-table";
 
 import { columns } from "./columns";
 import { TenantCreateForm } from "./tenant-create-form";
+import { TenantExportModal } from "./tenant-export-modal";
 
 import { useTenants } from "@/hooks";
-
-import { exportTenantsToExcel } from "@/utils/export/tenant-excel";
 
 import type { Tenant } from "@/types/domain";
 
 const TenantsPage = () => {
   const [open, setOpen] = useState(false);
   const [selectedTenants, setSelectedTenants] = useState<Tenant[]>([]);
+  const [exportDialogOpen, setExportDialogOpen] = useState(false);
 
   const [searchInput, setSearchInput] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -59,14 +59,6 @@ const TenantsPage = () => {
             <Description description="Manage your CRM tenants and their subscriptions" />
           </div>
           <div className="space-x-2">
-            <Button
-              type="button"
-              onClick={() => exportTenantsToExcel(selectedTenants)}
-              disabled={selectedTenants.length === 0}
-            >
-              <Download />
-              Export
-            </Button>
             <Button type="button" onClick={() => setOpen(true)}>
               <Plus />
               Create
@@ -96,6 +88,41 @@ const TenantsPage = () => {
           </DialogContent>
         </Dialog>
       </div>
+
+      <TenantExportModal
+        open={exportDialogOpen}
+        onOpenChange={setExportDialogOpen}
+        selectedTenants={selectedTenants}
+      />
+
+      {selectedTenants.length > 0 && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-background border shadow-xl rounded-xl px-5 py-3 animate-in fade-in slide-in-from-bottom-4 duration-200">
+          <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">
+            {selectedTenants.length} tenant
+            {selectedTenants.length !== 1 ? "s" : ""} selected
+          </span>
+          <div className="h-4 w-px bg-border" />
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setExportDialogOpen(true)}
+          >
+            <Download className="h-4 w-4 mr-2" />
+            Export
+          </Button>
+          <div className="h-4 w-px bg-border" />
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => {
+              setSelectedTenants([]);
+            }}
+            className="h-7 w-7 p-0"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
     </>
   );
 };
