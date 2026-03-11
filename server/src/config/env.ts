@@ -19,10 +19,11 @@ const envSchema = z.object({
   ),
   AWS_SQS_EMAIL_QUEUE_URL: z.url("AWS_SQS_EMAIL_QUEUE_URL must be a valid URL"),
 
-  MAILTRAP_HOST: z.string().min(1, "MAILTRAP_HOST is required"),
-  MAILTRAP_PORT: z.coerce.number().int().positive().default(2525),
-  MAILTRAP_USER: z.string().min(1, "MAILTRAP_USER is required"),
-  MAILTRAP_PASS: z.string().min(1, "MAILTRAP_PASS is required"),
+  SMTP_HOST: z.string().min(1, "SMTP_HOST is required"),
+  SMTP_PORT: z.coerce.number().int().positive().default(2525),
+  SMTP_USER: z.string().min(1, "SMTP_USER is required"),
+  SMTP_NAME: z.string().min(1, "SMTP_NAME is required"),
+  SMTP_PASS: z.string().min(1, "SMTP_PASS is required"),
 
   REDIS_HOST: z.string().default("127.0.0.1"),
   REDIS_PORT: z.coerce.number().int().positive().default(6379),
