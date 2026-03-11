@@ -3,7 +3,6 @@ export type Email = {
 
   leadId: string;
 
-  from: string;
   to: string;
   subject: string;
   bodyHtml: string;
