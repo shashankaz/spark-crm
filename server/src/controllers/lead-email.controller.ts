@@ -40,12 +40,7 @@ export const sendEmailForLead = asyncHandler(
       throw new AppError("Lead ID is required", 400);
     }
 
-    const {
-      tenantId,
-      _id: userId,
-      firstName: userName,
-      email: userEmail,
-    } = req.user;
+    const { tenantId, _id: userId, firstName: userName } = req.user;
     if (!tenantId) {
       throw new AppError("Tenant ID is missing in user data", 400);
     }
@@ -56,13 +51,10 @@ export const sendEmailForLead = asyncHandler(
     if (!subject) throw new AppError("Subject is required", 400);
     if (!bodyHtml) throw new AppError("Email body is required", 400);
 
-    const senderEmail = userEmail || "hello@spark.com";
-
     const email = await sendEmailForLeadService({
       leadId,
       userId,
       userName,
-      from: senderEmail,
       to,
       subject,
       bodyHtml,
