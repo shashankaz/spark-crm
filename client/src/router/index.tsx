@@ -8,6 +8,7 @@ import { CommandBox } from "@/components/shared/command-box";
 
 const LandingPage = lazy(() => import("@/pages/landing-page"));
 const Login = lazy(() => import("@/pages/auth/login"));
+const OTPPage = lazy(() => import("@/pages/auth/login/otp"));
 const Register = lazy(() => import("@/pages/auth/register"));
 const About = lazy(() => import("@/pages/about"));
 const Contact = lazy(() => import("@/pages/contact"));
@@ -23,12 +24,18 @@ const Deals = lazy(() => import("@/pages/deals"));
 const DealsEditPage = lazy(() => import("@/pages/deals/edit"));
 const Users = lazy(() => import("@/pages/users"));
 const UsersEditPage = lazy(() => import("@/pages/users/edit"));
+const Workflows = lazy(() => import("@/pages/workflow"));
+const WorkflowsEditPage = lazy(() => import("@/pages/workflow/edit"));
+const Groups = lazy(() => import("@/pages/groups"));
+const Tasks = lazy(() => import("@/pages/tasks"));
 
 const AdminDashboard = lazy(() => import("@/pages/admin-dashboard"));
 const Tenants = lazy(() => import("@/pages/tenants"));
 const TenantsEditPage = lazy(() => import("@/pages/tenants/edit"));
 
 const Profile = lazy(() => import("@/pages/profile"));
+
+const Shortcuts = lazy(() => import("@/pages/shortcuts"));
 
 const NotFound = lazy(() => import("@/pages/not-found"));
 
@@ -39,6 +46,7 @@ export const ReactRouter = () => {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/login/otp" element={<OTPPage />} />
           <Route path="/register" element={<Register />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
@@ -60,7 +68,15 @@ export const ReactRouter = () => {
               <Route path="deals/:dealId/edit" element={<DealsEditPage />} />
               <Route path="users" element={<Users />} />
               <Route path="users/:userId/edit" element={<UsersEditPage />} />
+              <Route path="workflows" element={<Workflows />} />
+              <Route
+                path="workflows/:workflowId/edit"
+                element={<WorkflowsEditPage />}
+              />
+              <Route path="groups" element={<Groups />} />
+              <Route path="tasks" element={<Tasks />} />
               <Route path="profile" element={<Profile />} />
+              <Route path="shortcuts" element={<Shortcuts />} />
             </Route>
           </Route>
 
@@ -76,6 +92,7 @@ export const ReactRouter = () => {
                 element={<TenantsEditPage />}
               />
               <Route path="profile" element={<Profile />} />
+              <Route path="shortcuts" element={<Shortcuts />} />
             </Route>
           </Route>
 

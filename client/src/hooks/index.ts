@@ -14,3 +14,4 @@ export * from "./use-attachment";
 export * from "./use-workflow";
 export * from "./use-group";
 export * from "./use-task";
+export * from "./use-email-template";

@@ -12,3 +12,4 @@ export * from "./tenant.service";
 export * from "./user.service";
 export * from "./workflow.service";
 export * from "./task.service";
+export * from "./email-template.service";

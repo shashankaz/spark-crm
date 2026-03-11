@@ -70,9 +70,6 @@ export const EmailCard = ({ email }: { email: Email }) => {
         <div className="px-4 pb-4 border-t bg-muted/10">
           <div className="flex flex-wrap gap-4 text-xs text-muted-foreground py-2 border-b mb-3">
             <span>
-              <strong>From:</strong> {email.from}
-            </span>
-            <span>
               <strong>To:</strong> {email.to}
             </span>
             {email.createdAt && (

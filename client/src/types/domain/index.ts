@@ -12,3 +12,5 @@ export * from "./tenant";
 export * from "./user";
 export * from "./workflow";
 export * from "./task";
+export * from "./email-template";
+export * from "./notification";

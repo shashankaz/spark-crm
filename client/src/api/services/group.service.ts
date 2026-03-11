@@ -25,6 +25,7 @@ export const getGroups = async (): Promise<GetGroupsResponse> =>
     return {
       message,
       groups: data.groups,
+      totalCount: data.totalCount,
     };
   });
 
