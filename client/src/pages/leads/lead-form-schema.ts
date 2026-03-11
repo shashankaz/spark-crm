@@ -19,7 +19,8 @@ export const leadFormSchema = z.object({
   gender: z.enum(["male", "female", "other"], "Please select a valid gender"),
   organization: z
     .string()
-    .regex(/^[a-fA-F0-9]{24}$/, "Please select a valid organization"),
+    .regex(/^[a-fA-F0-9]{24}$/, "Please select a valid organization")
+    .optional(),
   source: z.enum(
     [
       "website",

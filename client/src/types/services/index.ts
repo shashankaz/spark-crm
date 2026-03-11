@@ -12,3 +12,4 @@ export * from "./tenant.service.types";
 export * from "./user.service.types";
 export * from "./workflow.service.types";
 export * from "./task.service.types";
+export * from "./email-template.service.types";

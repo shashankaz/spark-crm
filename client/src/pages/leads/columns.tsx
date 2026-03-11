@@ -62,7 +62,7 @@ export const columns: ColumnDef<Lead>[] = [
 
       if (!lastName) return <span className="text-muted-foreground">—</span>;
 
-      return <span>{lastName}</span>;
+      return <>{lastName}</>;
     },
   },
   {
@@ -77,6 +77,13 @@ export const columns: ColumnDef<Lead>[] = [
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
+    },
+    cell: ({ row }) => {
+      const lastName = row.original.orgName;
+
+      if (!lastName) return <span className="text-muted-foreground">—</span>;
+
+      return <>{lastName}</>;
     },
   },
   {

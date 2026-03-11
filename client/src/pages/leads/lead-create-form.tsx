@@ -219,7 +219,7 @@ export const LeadCreateForm: React.FC<LeadCreateFormProps> = ({ setOpen }) => {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
               <FieldLabel htmlFor="organization">
-                Organization <span className="text-error">*</span>
+                Organization
               </FieldLabel>
               <Select onValueChange={field.onChange} value={field.value ?? ""}>
                 <SelectTrigger
