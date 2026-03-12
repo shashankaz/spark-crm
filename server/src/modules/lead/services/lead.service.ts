@@ -10,18 +10,18 @@ import { createLeadActionHistoryService } from "../../../services/lead-action-hi
 import { LeadActionHistory } from "../../../models/lead-action-history.model";
 import { deleteLeadWithCascade } from "../../../services/cascade-delete.service";
 import {
-  FetchLeadsInput,
-  FetchLeadByIdInput,
-  CreateLeadInput,
-  UpdateLeadByIdInput,
-  DeleteLeadByIdInput,
-  BulkWriteLeadsInput,
-  ConvertLeadToDealInput,
-  FetchOrganizationsForLeadInput,
-  FetchLeadActivityByLeadIdInput,
-  AssignLeadInput,
+  IFetchLeadsInput,
+  IFetchLeadByIdInput,
+  ICreateLeadInput,
+  IUpdateLeadByIdInput,
+  IDeleteLeadByIdInput,
+  IBulkWriteLeadsInput,
+  IConvertLeadToDealInput,
+  IFetchOrganizationsForLeadInput,
+  IFetchLeadActivityByLeadIdInput,
+  IAssignLeadInput,
 } from "./lead.service.types";
-import { LeadBase, LeadGender, LeadStatus } from "../models/lead.model.types";
+import { ILeadBase, LeadGender, LeadStatus } from "../models/lead.model.types";
 
 export const fetchLeadsService = async ({
   tenantId,
@@ -31,7 +31,7 @@ export const fetchLeadsService = async ({
   orgId,
   userId,
   role,
-}: FetchLeadsInput) => {
+}: IFetchLeadsInput) => {
   if (search) {
     const pipeline: any[] = [
       {
@@ -148,7 +148,7 @@ export const fetchLeadByIdService = async ({
   tenantId,
   userId,
   role,
-}: FetchLeadByIdInput) => {
+}: IFetchLeadByIdInput) => {
   const lead = await Lead.findOne({ _id: id, tenantId }).exec();
   if (!lead) {
     throw new AppError("Lead not found", 404);
@@ -174,7 +174,7 @@ export const createLeadService = async ({
   mobile,
   gender,
   source,
-}: CreateLeadInput) => {
+}: ICreateLeadInput) => {
   const lead = new Lead({
     idempotentId,
     tenantId,
@@ -217,7 +217,7 @@ export const updateLeadByIdService = async ({
   gender,
   source,
   status,
-}: UpdateLeadByIdInput) => {
+}: IUpdateLeadByIdInput) => {
   const lead = await Lead.findOne({ _id: id, tenantId }).exec();
   if (!lead) {
     throw new AppError("Lead not found", 404);
@@ -257,7 +257,7 @@ export const updateLeadByIdService = async ({
 export const deleteLeadByIdService = async ({
   id,
   tenantId,
-}: DeleteLeadByIdInput) => {
+}: IDeleteLeadByIdInput) => {
   const lead = await Lead.findOne({ _id: id, tenantId }).exec();
   if (!lead) {
     throw new AppError("Lead not found", 404);
@@ -276,14 +276,14 @@ export const deleteLeadByIdService = async ({
 export const bulkWriteLeadsService = async ({
   tenantId,
   leads,
-}: BulkWriteLeadsInput) => {
+}: IBulkWriteLeadsInput) => {
   const operations = leads
-    .map((lead: LeadBase) => {
+    .map((lead: ILeadBase) => {
       if (!lead.firstName || !lead.email || !lead.mobile) {
         return null;
       }
 
-      const document: LeadBase = {
+      const document: ILeadBase = {
         idempotentId: lead.idempotentId,
         tenantId,
         orgId: lead.orgId || undefined,
@@ -297,7 +297,7 @@ export const bulkWriteLeadsService = async ({
         gender: lead.gender || undefined,
         source: lead.source || undefined,
         score: 0,
-        status: "new" as LeadBase["status"],
+        status: "new" as ILeadBase["status"],
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -306,7 +306,7 @@ export const bulkWriteLeadsService = async ({
 
       return { insertOne: { document } };
     })
-    .filter((op): op is { insertOne: { document: LeadBase } } => op !== null);
+    .filter((op): op is { insertOne: { document: ILeadBase } } => op !== null);
   return await Lead.bulkWrite(operations, { ordered: false });
 };
 
@@ -319,7 +319,7 @@ export const convertLeadToDealService = async ({
   dealName,
   value,
   probability,
-}: ConvertLeadToDealInput) => {
+}: IConvertLeadToDealInput) => {
   const session = await mongoose.startSession();
   session.startTransaction();
 
@@ -378,7 +378,7 @@ export const fetchOrganizationsService = async ({
   search,
   userId,
   role,
-}: FetchOrganizationsForLeadInput) => {
+}: IFetchOrganizationsForLeadInput) => {
   const whereQuery: any = { tenantId };
   if (role !== "admin") whereQuery.userId = userId;
   if (search) {
@@ -395,7 +395,7 @@ export const fetchOrganizationsService = async ({
 
 export const fetchLeadActivityByLeadIdService = async ({
   leadId,
-}: FetchLeadActivityByLeadIdInput) => {
+}: IFetchLeadActivityByLeadIdInput) => {
   return await LeadActionHistory.find({ leadId }).sort({ _id: -1 }).exec();
 };
 
@@ -405,7 +405,7 @@ export const assignLeadService = async ({
   assignedUserId,
   adminUserId,
   adminUserName,
-}: AssignLeadInput) => {
+}: IAssignLeadInput) => {
   const lead = await Lead.findOne({ _id: leadId, tenantId }).exec();
   if (!lead) {
     throw new AppError("Lead not found", 404);

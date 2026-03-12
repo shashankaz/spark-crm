@@ -5,16 +5,16 @@ import { AppError } from "../../../shared/app-error";
 import { createLeadService } from "../../lead/services/lead.service";
 import { generateToken, hashToken } from "../../../utils/crypto-token";
 import {
-  GenerateWebhookTokenInput,
-  RevokeWebhookTokenInput,
-  CreateWebhookLeadInput,
+  IGenerateWebhookTokenInput,
+  IRevokeWebhookTokenInput,
+  ICreateWebhookLeadInput,
 } from "./webhook.service.types";
 
 export const generateWebhookTokenService = async ({
   tenantId,
   name,
   createdBy,
-}: GenerateWebhookTokenInput) => {
+}: IGenerateWebhookTokenInput) => {
   const rawToken = generateToken();
   const tokenHash = hashToken(rawToken);
 
@@ -54,7 +54,7 @@ export const listWebhookTokensService = async (tenantId: Types.ObjectId) => {
 export const revokeWebhookTokenService = async ({
   id,
   tenantId,
-}: RevokeWebhookTokenInput) => {
+}: IRevokeWebhookTokenInput) => {
   const token = await WebhookToken.findOne({ _id: id, tenantId }).exec();
   if (!token) {
     throw new AppError("Webhook token not found", 404);
@@ -67,7 +67,7 @@ export const revokeWebhookTokenService = async ({
 export const deleteWebhookTokenService = async ({
   id,
   tenantId,
-}: RevokeWebhookTokenInput) => {
+}: IRevokeWebhookTokenInput) => {
   const token = await WebhookToken.findOneAndDelete({
     _id: id,
     tenantId,
@@ -87,7 +87,7 @@ export const createWebhookLeadService = async ({
   mobile,
   gender,
   source,
-}: CreateWebhookLeadInput) => {
+}: ICreateWebhookLeadInput) => {
   const assignedUser = await User.findOne({ tenantId }).exec();
 
   if (!assignedUser) {

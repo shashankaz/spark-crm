@@ -1,6 +1,6 @@
 import { Types, Document } from "mongoose";
 
-export interface EmailBase {
+export interface IEmailBase {
   leadId: Types.ObjectId;
 
   to: string;
@@ -14,6 +14,6 @@ export interface EmailBase {
   updatedAt: Date;
 }
 
-export interface EmailDocument extends EmailBase, Document {
+export interface IEmailDocument extends IEmailBase, Document {
   _id: Types.ObjectId;
 }

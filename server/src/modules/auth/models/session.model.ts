@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import { SessionDocument } from "./session.model.types";
+import { ISessionDocument } from "./session.model.types";
 
-const sessionSchema = new Schema<SessionDocument>(
+const sessionSchema = new Schema<ISessionDocument>(
   {
     userId: {
       type: Schema.Types.ObjectId,
@@ -22,4 +22,4 @@ const sessionSchema = new Schema<SessionDocument>(
 
 sessionSchema.index({ userId: 1 });
 
-export const Session = model<SessionDocument>("Session", sessionSchema);
+export const Session = model<ISessionDocument>("Session", sessionSchema);

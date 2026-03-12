@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 
-export interface GenerateUploadUrlInput {
+export interface IGenerateUploadUrlInput {
   type: string;
   fileName: string;
   fileType: string;

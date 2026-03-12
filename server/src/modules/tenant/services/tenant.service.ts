@@ -11,16 +11,16 @@ import {
   sendUserWelcomeMail,
 } from "../../../utils/mail/email.helper";
 import {
-  FetchTenantsInput,
-  FetchTenantByIdInput,
-  FetchUsersByTenantIdInput,
-  CreateTenantInput,
-  UpdateTenantByIdInput,
-  DeleteTenantByIdInput,
-  CreateUserForTenantInput,
-  CheckSlugAvailabilityInput,
+  IFetchTenantsInput,
+  IFetchTenantByIdInput,
+  IFetchUsersByTenantIdInput,
+  ICreateTenantInput,
+  IUpdateTenantByIdInput,
+  IDeleteTenantByIdInput,
+  ICreateUserForTenantInput,
+  ICheckSlugAvailabilityInput,
 } from "./tenant.service.types";
-import { TenantDocument, TenantPlan } from "../models/tenant.model.types";
+import { ITenantDocument, TenantPlan } from "../models/tenant.model.types";
 
 const tempPasswordGlobal = "Asdf@1234";
 
@@ -129,7 +129,7 @@ export const fetchTenantDashboardStatsService = async () => {
     },
   };
 
-  const recentTenants = tenantAgg[0].recent.map((t: TenantDocument) => ({
+  const recentTenants = tenantAgg[0].recent.map((t: ITenantDocument) => ({
     _id: t._id,
     name: t.name,
     email: t.email,
@@ -153,7 +153,7 @@ export const fetchTenantsService = async ({
   cursor,
   limit,
   search,
-}: FetchTenantsInput) => {
+}: IFetchTenantsInput) => {
   const countQuery: any = { isDeleted: false };
   if (search) {
     countQuery.name = { $regex: search, $options: "i" };
@@ -184,7 +184,7 @@ export const fetchTenantsService = async ({
   return { tenants: formattedTenants, totalCount };
 };
 
-export const fetchTenantByIdService = async ({ id }: FetchTenantByIdInput) => {
+export const fetchTenantByIdService = async ({ id }: IFetchTenantByIdInput) => {
   const [tenant, usersCount] = await Promise.all([
     Tenant.findOne({ _id: id, isDeleted: false }).exec(),
     User.countDocuments({ tenantId: id }).exec(),
@@ -203,7 +203,7 @@ export const fetchTenantByIdService = async ({ id }: FetchTenantByIdInput) => {
 export const fetchUsersByTenantIdService = async ({
   tenantId,
   search,
-}: FetchUsersByTenantIdInput) => {
+}: IFetchUsersByTenantIdInput) => {
   const whereQuery: any = { tenantId };
   if (search) {
     whereQuery.$or = [
@@ -232,7 +232,7 @@ export const fetchUsersByTenantIdService = async ({
 
 export const checkSlugAvailabilityService = async ({
   slug,
-}: CheckSlugAvailabilityInput) => {
+}: ICheckSlugAvailabilityInput) => {
   const existingTenant = await Tenant.findOne({ slug }).exec();
 
   return !existingTenant;
@@ -247,7 +247,7 @@ export const createTenantService = async ({
   mobile,
   address,
   plan,
-}: CreateTenantInput) => {
+}: ICreateTenantInput) => {
   const session = await mongoose.startSession();
   session.startTransaction();
 
@@ -318,7 +318,7 @@ export const updateTenantByIdService = async ({
   mobile,
   address,
   plan,
-}: UpdateTenantByIdInput) => {
+}: IUpdateTenantByIdInput) => {
   const tenant = await Tenant.findOne({ _id: id, isDeleted: false }).exec();
   if (!tenant) {
     throw new AppError("Tenant not found", 404);
@@ -338,7 +338,7 @@ export const updateTenantByIdService = async ({
 
 export const deleteTenantByIdService = async ({
   id,
-}: DeleteTenantByIdInput) => {
+}: IDeleteTenantByIdInput) => {
   const tenant = await Tenant.findOne({ _id: id, isDeleted: false }).exec();
   if (!tenant) {
     throw new AppError("Tenant not found", 404);
@@ -357,7 +357,7 @@ export const createUserForTenantService = async ({
   mobile,
   password,
   role,
-}: CreateUserForTenantInput) => {
+}: ICreateUserForTenantInput) => {
   const tenant = await Tenant.findOne({
     _id: tenantId,
     isDeleted: false,

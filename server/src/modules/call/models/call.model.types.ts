@@ -4,7 +4,7 @@ export type CallType = "inbound" | "outbound";
 
 export type CallStatus = "completed" | "missed" | "cancelled";
 
-export interface CallBase {
+export interface ICallBase {
   leadId: Types.ObjectId;
   type: CallType;
   to: string;
@@ -14,6 +14,6 @@ export interface CallBase {
   createdAt: Date;
 }
 
-export interface CallDocument extends CallBase, Document {
+export interface ICallDocument extends ICallBase, Document {
   _id: Types.ObjectId;
 }

@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import { AttachmentDocument } from "./attachment.model.types";
+import { IAttachmentDocument } from "./attachment.model.types";
 
-const attachmentSchema = new Schema<AttachmentDocument>(
+const attachmentSchema = new Schema<IAttachmentDocument>(
   {
     leadId: {
       type: Schema.Types.ObjectId,
@@ -30,7 +30,7 @@ const attachmentSchema = new Schema<AttachmentDocument>(
 
 attachmentSchema.index({ leadId: 1 });
 
-export const Attachment = model<AttachmentDocument>(
+export const Attachment = model<IAttachmentDocument>(
   "Attachment",
   attachmentSchema,
 );

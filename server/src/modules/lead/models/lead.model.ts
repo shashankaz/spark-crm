@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import { LeadDocument } from "./lead.model.types";
+import { ILeadDocument } from "./lead.model.types";
 
-const leadSchema = new Schema<LeadDocument>(
+const leadSchema = new Schema<ILeadDocument>(
   {
     idempotentId: {
       type: Schema.Types.UUID,
@@ -81,4 +81,4 @@ leadSchema.pre("save", async function () {
   if (this.email) this.email = this.email.toLowerCase();
 });
 
-export const Lead = model<LeadDocument>("Lead", leadSchema);
+export const Lead = model<ILeadDocument>("Lead", leadSchema);

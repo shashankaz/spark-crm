@@ -5,16 +5,16 @@ import { Organization } from "../../organization/models/organization.model";
 import { User } from "../../user/models/user.model";
 import { Call } from "../../call/models/call.model";
 import { calcChange, getDealStatus } from "../../../utils/stats-helper";
-import { FetchDashboardStatsInput } from "./dashboard.service.types";
-import { LeadDocument } from "../../lead/models/lead.model.types";
-import { DealDocument } from "../../deal/models/deal.model.types";
+import { IFetchDashboardStatsInput } from "./dashboard.service.types";
+import { ILeadDocument } from "../../lead/models/lead.model.types";
+import { IDealDocument } from "../../deal/models/deal.model.types";
 import { MONTHS } from "../../../utils/constants/months.constant";
 
 export const fetchDashboardStatsService = async ({
   tenantId,
   userId,
   role,
-}: FetchDashboardStatsInput) => {
+}: IFetchDashboardStatsInput) => {
   const now = new Date();
   const startOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
@@ -135,7 +135,7 @@ export const fetchDashboardStatsService = async ({
     },
   };
 
-  const recentLeads = leadAgg[0].recent.map((lead: LeadDocument) => ({
+  const recentLeads = leadAgg[0].recent.map((lead: ILeadDocument) => ({
     _id: lead._id,
     name: `${lead.firstName} ${lead.lastName || ""}`.trim(),
     email: lead.email,
@@ -144,7 +144,7 @@ export const fetchDashboardStatsService = async ({
     updatedAt: format(new Date(lead.updatedAt), "yyyy-MM-dd"),
   }));
 
-  const recentDeals = dealAgg[0].recent.map((deal: DealDocument) => ({
+  const recentDeals = dealAgg[0].recent.map((deal: IDealDocument) => ({
     _id: deal._id,
     title: deal.name,
     value: deal.value || 0,
@@ -159,7 +159,7 @@ export const fetchCallActivityService = async ({
   tenantId,
   userId,
   role,
-}: FetchDashboardStatsInput) => {
+}: IFetchDashboardStatsInput) => {
   const now = new Date();
   const since = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
 
@@ -206,7 +206,7 @@ export const fetchConversionFunnelService = async ({
   tenantId,
   userId,
   role,
-}: FetchDashboardStatsInput) => {
+}: IFetchDashboardStatsInput) => {
   const now = new Date();
   const since = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
 
@@ -249,7 +249,7 @@ export const fetchDealPipelineService = async ({
   tenantId,
   userId,
   role,
-}: FetchDashboardStatsInput) => {
+}: IFetchDashboardStatsInput) => {
   const now = new Date();
   const since = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
 
@@ -292,7 +292,7 @@ export const fetchDealWinRateService = async ({
   tenantId,
   userId,
   role,
-}: FetchDashboardStatsInput) => {
+}: IFetchDashboardStatsInput) => {
   const now = new Date();
   const since = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
 
@@ -329,7 +329,7 @@ export const fetchLeadScoreService = async ({
   tenantId,
   userId,
   role,
-}: FetchDashboardStatsInput) => {
+}: IFetchDashboardStatsInput) => {
   const now = new Date();
   const since = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
 
@@ -372,7 +372,7 @@ export const fetchLeadSourcesService = async ({
   tenantId,
   userId,
   role,
-}: FetchDashboardStatsInput) => {
+}: IFetchDashboardStatsInput) => {
   const now = new Date();
   const since = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
 
@@ -402,7 +402,7 @@ export const fetchLeadStatusService = async ({
   tenantId,
   userId,
   role,
-}: FetchDashboardStatsInput) => {
+}: IFetchDashboardStatsInput) => {
   const now = new Date();
   const since = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
 
@@ -430,7 +430,7 @@ export const fetchMonthlyRevenueService = async ({
   tenantId,
   userId,
   role,
-}: FetchDashboardStatsInput) => {
+}: IFetchDashboardStatsInput) => {
   const now = new Date();
   const since = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
 
@@ -468,7 +468,7 @@ export const fetchOrgIndustryService = async ({
   tenantId,
   userId,
   role,
-}: FetchDashboardStatsInput) => {
+}: IFetchDashboardStatsInput) => {
   const now = new Date();
   const since = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
 
@@ -498,7 +498,7 @@ export const fetchRevenueTargetService = async ({
   tenantId,
   userId,
   role,
-}: FetchDashboardStatsInput) => {
+}: IFetchDashboardStatsInput) => {
   const now = new Date();
   const since = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
 

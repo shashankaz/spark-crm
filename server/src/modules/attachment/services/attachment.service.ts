@@ -3,8 +3,8 @@ import { Lead } from "../../lead/models/lead.model";
 import { AppError } from "../../../shared/app-error";
 import { createLeadActionHistoryService } from "../../../services/lead-action-history.service";
 import {
-  FetchAttachmentsByLeadInput,
-  CreateAttachmentForLeadInput,
+  IFetchAttachmentsByLeadInput,
+  ICreateAttachmentForLeadInput,
 } from "./attachment.service.types";
 
 export const fetchAttachmentsByLeadService = async ({
@@ -12,7 +12,7 @@ export const fetchAttachmentsByLeadService = async ({
   cursor,
   limit = 10,
   search,
-}: FetchAttachmentsByLeadInput) => {
+}: IFetchAttachmentsByLeadInput) => {
   const countQuery: any = { leadId };
   if (search) {
     countQuery.fileName = { $regex: search, $options: "i" };
@@ -38,7 +38,7 @@ export const createAttachmentForLeadService = async ({
   fileName,
   fileUrl,
   fileType,
-}: CreateAttachmentForLeadInput) => {
+}: ICreateAttachmentForLeadInput) => {
   const lead = await Lead.findById(leadId).exec();
   if (!lead) {
     throw new AppError("Lead not found", 404);

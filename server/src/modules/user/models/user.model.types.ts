@@ -2,7 +2,7 @@ import { Types, Document } from "mongoose";
 
 export type UserRole = "user" | "admin" | "super_admin";
 
-export interface UserBase {
+export interface IUserBase {
   firstName: string;
   lastName?: string;
   email: string;
@@ -14,6 +14,6 @@ export interface UserBase {
   updatedAt: Date;
 }
 
-export interface UserDocument extends UserBase, Document {
+export interface IUserDocument extends IUserBase, Document {
   _id: Types.ObjectId;
 }

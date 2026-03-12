@@ -1,18 +1,18 @@
 import { Types } from "mongoose";
 
-export interface FetchEmailTemplatesInput {
+export interface IFetchEmailTemplatesInput {
   tenantId: Types.ObjectId;
   userId: Types.ObjectId;
   search?: string;
   tag?: string;
 }
 
-export interface GetEmailTemplateByIdInput {
+export interface IGetEmailTemplateByIdInput {
   id: Types.ObjectId;
   tenantId: Types.ObjectId;
 }
 
-export interface CreateEmailTemplateInput {
+export interface ICreateEmailTemplateInput {
   name: string;
   subject: string;
   bodyHtml: string;
@@ -21,7 +21,7 @@ export interface CreateEmailTemplateInput {
   userId: Types.ObjectId;
 }
 
-export interface UpdateEmailTemplateInput {
+export interface IUpdateEmailTemplateInput {
   id: Types.ObjectId;
   tenantId: Types.ObjectId;
   userId: Types.ObjectId;
@@ -31,7 +31,7 @@ export interface UpdateEmailTemplateInput {
   tags?: string[];
 }
 
-export interface DeleteEmailTemplateInput {
+export interface IDeleteEmailTemplateInput {
   id: Types.ObjectId;
   tenantId: Types.ObjectId;
   userId: Types.ObjectId;

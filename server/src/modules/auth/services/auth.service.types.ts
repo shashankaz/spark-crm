@@ -1,40 +1,40 @@
 import { Types } from "mongoose";
 
-export interface LoginInput {
+export interface ILoginInput {
   email: string;
   password: string;
 }
 
-export interface RefreshTokenInput {
+export interface IRefreshTokenInput {
   refreshToken: string;
 }
 
-export interface LogoutInput {
+export interface ILogoutInput {
   userId: Types.ObjectId;
 }
 
-export interface GetUserProfileInput {
+export interface IGetUserProfileInput {
   id: Types.ObjectId;
 }
 
-export interface GetUserSessionsInput {
+export interface IGetUserSessionsInput {
   id: Types.ObjectId;
 }
 
-export interface EditProfileInput {
+export interface IEditProfileInput {
   id: Types.ObjectId;
   firstName?: string;
   lastName?: string;
   mobile?: string;
 }
 
-export interface ChangePasswordInput {
+export interface IChangePasswordInput {
   id: Types.ObjectId;
   currentPassword: string;
   newPassword: string;
 }
 
-export interface UserResponse {
+export interface IUserResponse {
   _id: Types.ObjectId;
   firstName: string;
   lastName?: string;
@@ -45,11 +45,11 @@ export interface UserResponse {
   updatedAt: string;
 }
 
-export interface LoginResponse {
+export interface ILoginResponse {
   userId: Types.ObjectId;
 }
 
-export interface RefreshTokenResponse {
+export interface IRefreshTokenResponse {
   accessToken: string;
   refreshToken: string;
 }

@@ -3,8 +3,8 @@ import { Lead } from "../../lead/models/lead.model";
 import { AppError } from "../../../shared/app-error";
 import { createLeadActionHistoryService } from "../../../services/lead-action-history.service";
 import {
-  FetchCommentsByLeadInput,
-  CreateCommentForLeadInput,
+  IFetchCommentsByLeadInput,
+  ICreateCommentForLeadInput,
 } from "./comment.service.types";
 
 export const fetchCommentsByLeadService = async ({
@@ -12,7 +12,7 @@ export const fetchCommentsByLeadService = async ({
   cursor,
   limit,
   search,
-}: FetchCommentsByLeadInput) => {
+}: IFetchCommentsByLeadInput) => {
   const countQuery: any = { leadId };
   if (search) {
     countQuery.comment = { $regex: search, $options: "i" };
@@ -36,7 +36,7 @@ export const createCommentForLeadService = async ({
   userId,
   userName,
   comment,
-}: CreateCommentForLeadInput) => {
+}: ICreateCommentForLeadInput) => {
   const lead = await Lead.findById(leadId).exec();
   if (!lead) {
     throw new AppError("Lead not found", 404);

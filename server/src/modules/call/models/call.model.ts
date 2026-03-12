@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import { CallDocument } from "./call.model.types";
+import { ICallDocument } from "./call.model.types";
 
-const callSchema = new Schema<CallDocument>(
+const callSchema = new Schema<ICallDocument>(
   {
     leadId: {
       type: Schema.Types.ObjectId,
@@ -44,4 +44,4 @@ const callSchema = new Schema<CallDocument>(
 
 callSchema.index({ leadId: 1 });
 
-export const Call = model<CallDocument>("Call", callSchema);
+export const Call = model<ICallDocument>("Call", callSchema);

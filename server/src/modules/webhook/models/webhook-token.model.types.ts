@@ -1,6 +1,6 @@
 import { Types, Document } from "mongoose";
 
-export interface WebhookTokenBase {
+export interface IWebhookTokenBase {
   tenantId: Types.ObjectId;
   name: string;
   tokenHash: string;
@@ -11,6 +11,6 @@ export interface WebhookTokenBase {
   updatedAt: Date;
 }
 
-export interface WebhookTokenDocument extends WebhookTokenBase, Document {
+export interface IWebhookTokenDocument extends IWebhookTokenBase, Document {
   _id: Types.ObjectId;
 }

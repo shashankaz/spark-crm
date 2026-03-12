@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
-import { LeadBase } from "../models/lead.model.types";
+import { ILeadBase } from "../models/lead.model.types";
 
-export interface FetchLeadsInput {
+export interface IFetchLeadsInput {
   tenantId: Types.ObjectId;
   cursor?: Types.ObjectId;
   limit: number;
@@ -11,14 +11,14 @@ export interface FetchLeadsInput {
   role?: string;
 }
 
-export interface FetchLeadByIdInput {
+export interface IFetchLeadByIdInput {
   id: Types.ObjectId;
   tenantId: Types.ObjectId;
   userId?: Types.ObjectId;
   role?: string;
 }
 
-export interface CreateLeadInput {
+export interface ICreateLeadInput {
   idempotentId?: Types.UUID;
   tenantId: Types.ObjectId;
   orgId?: Types.ObjectId;
@@ -33,7 +33,7 @@ export interface CreateLeadInput {
   source?: string;
 }
 
-export interface UpdateLeadByIdInput {
+export interface IUpdateLeadByIdInput {
   id: Types.ObjectId;
   tenantId: Types.ObjectId;
   orgId?: Types.ObjectId;
@@ -49,17 +49,17 @@ export interface UpdateLeadByIdInput {
   status?: string;
 }
 
-export interface DeleteLeadByIdInput {
+export interface IDeleteLeadByIdInput {
   id: Types.ObjectId;
   tenantId: Types.ObjectId;
 }
 
-export interface BulkWriteLeadsInput {
+export interface IBulkWriteLeadsInput {
   tenantId: Types.ObjectId;
-  leads: LeadBase[];
+  leads: ILeadBase[];
 }
 
-export interface ConvertLeadToDealInput {
+export interface IConvertLeadToDealInput {
   id: Types.ObjectId;
   tenantId: Types.ObjectId;
   userId: Types.ObjectId;
@@ -70,7 +70,7 @@ export interface ConvertLeadToDealInput {
   probability?: number;
 }
 
-export interface FetchOrganizationsForLeadInput {
+export interface IFetchOrganizationsForLeadInput {
   tenantId: Types.ObjectId;
   limit: number;
   search?: string;
@@ -78,11 +78,11 @@ export interface FetchOrganizationsForLeadInput {
   role?: string;
 }
 
-export interface FetchLeadActivityByLeadIdInput {
+export interface IFetchLeadActivityByLeadIdInput {
   leadId: Types.ObjectId;
 }
 
-export interface AssignLeadInput {
+export interface IAssignLeadInput {
   leadId: Types.ObjectId;
   tenantId: Types.ObjectId;
   assignedUserId: Types.ObjectId;

@@ -2,11 +2,11 @@ import { Types } from "mongoose";
 import { Task } from "../models/task.model";
 import { AppError } from "../../../shared/app-error";
 import {
-  FetchTasksInput,
-  FetchTaskByIdInput,
-  CreateTaskInput,
-  UpdateTaskInput,
-  DeleteTaskInput,
+  IFetchTasksInput,
+  IFetchTaskByIdInput,
+  ICreateTaskInput,
+  IUpdateTaskInput,
+  IDeleteTaskInput,
 } from "./task.service.types";
 import { TaskStatus, TaskPriority } from "../models/task.model.types";
 import { sendTaskReminderMail } from "../../../utils/mail/email.helper";
@@ -17,7 +17,7 @@ export const fetchTasksService = async ({
   search,
   status,
   priority,
-}: FetchTasksInput) => {
+}: IFetchTasksInput) => {
   const query: any = { tenantId, userId };
 
   if (status) query.status = status;
@@ -38,7 +38,7 @@ export const fetchTaskByIdService = async ({
   id,
   tenantId,
   userId,
-}: FetchTaskByIdInput) => {
+}: IFetchTaskByIdInput) => {
   const task = await Task.findOne({ _id: id, tenantId, userId }).exec();
   if (!task) {
     throw new AppError("Task not found", 404);
@@ -56,7 +56,7 @@ export const createTaskService = async ({
   dueDate,
   reminderAt,
   labels,
-}: CreateTaskInput) => {
+}: ICreateTaskInput) => {
   const task = new Task({
     tenantId,
     userId,
@@ -83,7 +83,7 @@ export const updateTaskService = async ({
   dueDate,
   reminderAt,
   labels,
-}: UpdateTaskInput) => {
+}: IUpdateTaskInput) => {
   const task = await Task.findOne({ _id: id, tenantId, userId }).exec();
   if (!task) {
     throw new AppError("Task not found", 404);
@@ -108,7 +108,7 @@ export const deleteTaskService = async ({
   id,
   tenantId,
   userId,
-}: DeleteTaskInput) => {
+}: IDeleteTaskInput) => {
   const task = await Task.findOneAndDelete({
     _id: id,
     tenantId,

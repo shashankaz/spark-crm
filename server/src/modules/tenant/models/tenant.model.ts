@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import { TenantDocument } from "./tenant.model.types";
+import { ITenantDocument } from "./tenant.model.types";
 
-const tenantSchema = new Schema<TenantDocument>(
+const tenantSchema = new Schema<ITenantDocument>(
   {
     name: {
       type: String,
@@ -89,4 +89,4 @@ tenantSchema.pre("save", async function () {
   if (this.email) this.email = this.email.toLowerCase();
 });
 
-export const Tenant = model<TenantDocument>("Tenant", tenantSchema);
+export const Tenant = model<ITenantDocument>("Tenant", tenantSchema);

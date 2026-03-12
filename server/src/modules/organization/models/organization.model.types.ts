@@ -11,7 +11,7 @@ export type OrganizationIndustry =
   | "other";
 export type OrganizationSize = "smb" | "mid-market" | "enterprise";
 
-export interface OrganizationBase {
+export interface IOrganizationBase {
   idempotentId: Types.UUID;
 
   tenantId: Types.ObjectId;
@@ -32,6 +32,6 @@ export interface OrganizationBase {
   updatedAt: Date;
 }
 
-export interface OrganizationDocument extends OrganizationBase, Document {
+export interface IOrganizationDocument extends IOrganizationBase, Document {
   _id: Types.ObjectId;
 }

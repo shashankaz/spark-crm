@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import { EmailDocument } from "./email.model.types";
+import { IEmailDocument } from "./email.model.types";
 
-const emailSchema = new Schema<EmailDocument>(
+const emailSchema = new Schema<IEmailDocument>(
   {
     leadId: {
       type: Schema.Types.ObjectId,
@@ -44,4 +44,4 @@ const emailSchema = new Schema<EmailDocument>(
 
 emailSchema.index({ leadId: 1 });
 
-export const Email = model<EmailDocument>("Email", emailSchema);
+export const Email = model<IEmailDocument>("Email", emailSchema);

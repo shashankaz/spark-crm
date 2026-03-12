@@ -1,6 +1,6 @@
 import { Types, Document } from "mongoose";
 
-export interface DealBase {
+export interface IDealBase {
   idempotentId: Types.UUID;
   tenantId: Types.ObjectId;
   leadId?: Types.ObjectId;
@@ -12,6 +12,6 @@ export interface DealBase {
   updatedAt: Date;
 }
 
-export interface DealDocument extends DealBase, Document {
+export interface IDealDocument extends IDealBase, Document {
   _id: Types.ObjectId;
 }

@@ -1,11 +1,11 @@
 import { Types } from "mongoose";
 import {
-  WorkflowAction,
+  IWorkflowAction,
   WorkflowEntity,
   WorkflowEvent,
 } from "../models/workflow.model.types";
 
-export interface FetchWorkflowsInput {
+export interface IFetchWorkflowsInput {
   tenantId: Types.ObjectId;
   userId: Types.ObjectId;
   cursor?: Types.ObjectId;
@@ -13,13 +13,13 @@ export interface FetchWorkflowsInput {
   search?: string;
 }
 
-export interface FetchWorkflowByIdInput {
+export interface IFetchWorkflowByIdInput {
   id: Types.ObjectId;
   tenantId: Types.ObjectId;
   userId: Types.ObjectId;
 }
 
-export interface CreateWorkflowInput {
+export interface ICreateWorkflowInput {
   tenantId: Types.ObjectId;
   userId: Types.ObjectId;
   name: string;
@@ -27,10 +27,10 @@ export interface CreateWorkflowInput {
   active?: boolean;
   entity: WorkflowEntity;
   event: WorkflowEvent;
-  actions: WorkflowAction[];
+  actions: IWorkflowAction[];
 }
 
-export interface UpdateWorkflowByIdInput {
+export interface IUpdateWorkflowByIdInput {
   id: Types.ObjectId;
   tenantId: Types.ObjectId;
   userId: Types.ObjectId;
@@ -39,16 +39,16 @@ export interface UpdateWorkflowByIdInput {
   active?: boolean;
   entity?: WorkflowEntity;
   event?: WorkflowEvent;
-  actions?: WorkflowAction[];
+  actions?: IWorkflowAction[];
 }
 
-export interface DeleteWorkflowByIdInput {
+export interface IDeleteWorkflowByIdInput {
   id: Types.ObjectId;
   tenantId: Types.ObjectId;
   userId: Types.ObjectId;
 }
 
-export interface ToggleWorkflowInput {
+export interface IToggleWorkflowInput {
   id: Types.ObjectId;
   tenantId: Types.ObjectId;
   userId: Types.ObjectId;

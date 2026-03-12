@@ -1,12 +1,12 @@
 import { Types, Document } from "mongoose";
 
-export interface CommentBase {
+export interface ICommentBase {
   leadId: Types.ObjectId;
   comment: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export interface CommentDocument extends CommentBase, Document {
+export interface ICommentDocument extends ICommentBase, Document {
   _id: Types.ObjectId;
 }

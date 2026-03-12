@@ -1,10 +1,10 @@
 import { formatDate } from "date-fns";
 import { Deal } from "../models/deal.model";
 import {
-  FetchDealsInput,
-  DeleteDealInput,
-  GetDealInput,
-  UpdateDealInput,
+  IFetchDealsInput,
+  IDeleteDealInput,
+  IGetDealInput,
+  IUpdateDealInput,
 } from "./deal.service.types";
 
 export const fetchDealsService = async ({
@@ -12,7 +12,7 @@ export const fetchDealsService = async ({
   cursor,
   limit,
   search,
-}: FetchDealsInput) => {
+}: IFetchDealsInput) => {
   const countQuery: any = { tenantId };
   if (search) {
     countQuery.$or = [{ name: { $regex: search, $options: "i" } }];
@@ -42,11 +42,11 @@ export const fetchDealsService = async ({
 export const deleteDealByIdService = async ({
   id,
   tenantId,
-}: DeleteDealInput) => {
+}: IDeleteDealInput) => {
   return await Deal.deleteOne({ _id: id, tenantId }).exec();
 };
 
-export const getDealByIdService = async ({ id, tenantId }: GetDealInput) => {
+export const getDealByIdService = async ({ id, tenantId }: IGetDealInput) => {
   return await Deal.findOne({ _id: id, tenantId }).exec();
 };
 
@@ -56,7 +56,7 @@ export const updateDealByIdService = async ({
   name,
   value,
   probability,
-}: UpdateDealInput) => {
+}: IUpdateDealInput) => {
   const updateData: any = {};
 
   if (name !== undefined) updateData.name = name;

@@ -1,6 +1,6 @@
 import { Types, Document } from "mongoose";
 
-export interface GeoInfo {
+export interface IGeoInfo {
   ipAddress?: string;
   userAgent?: string;
   city?: string;
@@ -11,26 +11,26 @@ export interface GeoInfo {
   region?: string;
 }
 
-export interface OpenEntry extends GeoInfo {
+export interface IOpenEntry extends IGeoInfo {
   createdAt: Date;
 }
 
-export interface ClickEntry extends GeoInfo {
+export interface IClickEntry extends IGeoInfo {
   url: string;
   createdAt: Date;
 }
 
-export interface TrackingBase {
+export interface ITrackingBase {
   emailId: Types.ObjectId;
 
   openedAt: Date | null;
   openCount: number;
   clickCount: number;
 
-  opens: OpenEntry[];
-  clicks: ClickEntry[];
+  opens: IOpenEntry[];
+  clicks: IClickEntry[];
 }
 
-export interface TrackingDocument extends TrackingBase, Document {
+export interface ITrackingDocument extends ITrackingBase, Document {
   _id: Types.ObjectId;
 }

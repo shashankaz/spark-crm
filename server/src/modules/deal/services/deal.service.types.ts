@@ -1,13 +1,13 @@
 import { Types } from "mongoose";
 
-export interface FetchDealsInput {
+export interface IFetchDealsInput {
   tenantId: Types.ObjectId;
   cursor?: Types.ObjectId;
   limit: number;
   search?: string;
 }
 
-export interface DealResponse {
+export interface IDealResponse {
   _id: Types.ObjectId;
   name: string;
   value: number;
@@ -15,22 +15,22 @@ export interface DealResponse {
   updatedAt: string;
 }
 
-export interface FetchDealsResponse {
-  deals: DealResponse[];
+export interface IFetchDealsResponse {
+  deals: IDealResponse[];
   totalCount: number;
 }
 
-export interface DeleteDealInput {
+export interface IDeleteDealInput {
   id: Types.ObjectId;
   tenantId: Types.ObjectId;
 }
 
-export interface GetDealInput {
+export interface IGetDealInput {
   id: Types.ObjectId;
   tenantId: Types.ObjectId;
 }
 
-export interface UpdateDealInput {
+export interface IUpdateDealInput {
   id: Types.ObjectId;
   tenantId: Types.ObjectId;
   name?: string;

@@ -4,11 +4,11 @@ import { hashPassword } from "../../../utils/auth/bcrypt";
 import { AppError } from "../../../shared/app-error";
 import { deleteUserWithCascade } from "../../../services/cascade-delete.service";
 import {
-  FetchUsersInput,
-  FetchUserByIdInput,
-  CreateUserInput,
-  UpdateUserInput,
-  RemoveUserInput,
+  IFetchUsersInput,
+  IFetchUserByIdInput,
+  ICreateUserInput,
+  IUpdateUserInput,
+  IRemoveUserInput,
 } from "./user.service.types";
 import { UserRole } from "../models/user.model.types";
 
@@ -17,7 +17,7 @@ export const fetchUsersService = async ({
   cursor,
   limit,
   search,
-}: FetchUsersInput) => {
+}: IFetchUsersInput) => {
   const countQuery: any = { tenantId };
   if (search) {
     countQuery.$or = [
@@ -52,7 +52,7 @@ export const fetchUsersService = async ({
 export const fetchUserByIdService = async ({
   tenantId,
   id,
-}: FetchUserByIdInput) => {
+}: IFetchUserByIdInput) => {
   return await User.findOne({ _id: id, tenantId }).exec();
 };
 
@@ -64,7 +64,7 @@ export const createUserService = async ({
   mobile,
   password,
   role,
-}: CreateUserInput) => {
+}: ICreateUserInput) => {
   const hashedPassword = password ? await hashPassword(password) : undefined;
 
   const newUser = new User({
@@ -89,7 +89,7 @@ export const updateUserService = async ({
   mobile,
   password,
   role,
-}: UpdateUserInput) => {
+}: IUpdateUserInput) => {
   const user = await User.findOne({ _id: id, tenantId }).exec();
   if (!user) {
     throw new AppError("User not found", 404);
@@ -105,7 +105,7 @@ export const updateUserService = async ({
   return await user.save();
 };
 
-export const removeUserService = async ({ tenantId, id }: RemoveUserInput) => {
+export const removeUserService = async ({ tenantId, id }: IRemoveUserInput) => {
   const user = await User.findOne({ _id: id, tenantId }).exec();
   if (!user) {
     throw new AppError("User not found", 404);

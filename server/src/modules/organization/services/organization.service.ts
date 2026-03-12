@@ -3,11 +3,11 @@ import { Types } from "mongoose";
 import { Organization } from "../models/organization.model";
 import { AppError } from "../../../shared/app-error";
 import {
-  FetchOrganizationsInput,
-  FetchOrganizationByIdInput,
-  CreateOrganizationInput,
-  UpdateOrganizationByIdInput,
-  DeleteOrganizationByIdInput,
+  IFetchOrganizationsInput,
+  IFetchOrganizationByIdInput,
+  ICreateOrganizationInput,
+  IUpdateOrganizationByIdInput,
+  IDeleteOrganizationByIdInput,
 } from "./organization.service.types";
 import {
   OrganizationIndustry,
@@ -19,7 +19,7 @@ export const fetchOrganizationsService = async ({
   cursor,
   limit,
   search,
-}: FetchOrganizationsInput) => {
+}: IFetchOrganizationsInput) => {
   const countQuery: any = { tenantId };
   if (search) {
     countQuery.$or = [
@@ -55,7 +55,7 @@ export const fetchOrganizationsService = async ({
 export const fetchOrganizationByIdService = async ({
   id,
   tenantId,
-}: FetchOrganizationByIdInput) => {
+}: IFetchOrganizationByIdInput) => {
   return await Organization.findOne({ _id: id, tenantId }).exec();
 };
 
@@ -73,7 +73,7 @@ export const createOrganizationService = async ({
   contactName,
   contactEmail,
   contactMobile,
-}: CreateOrganizationInput) => {
+}: ICreateOrganizationInput) => {
   return await Organization.create({
     idempotentId,
     tenantId,
@@ -105,7 +105,7 @@ export const updateOrganizationByIdService = async ({
   contactName,
   contactEmail,
   contactMobile,
-}: UpdateOrganizationByIdInput) => {
+}: IUpdateOrganizationByIdInput) => {
   const organization = await Organization.findOne({ _id: id, tenantId }).exec();
   if (!organization) {
     throw new AppError("Organization not found", 404);
@@ -130,7 +130,7 @@ export const updateOrganizationByIdService = async ({
 export const deleteOrganizationByIdService = async ({
   id,
   tenantId,
-}: DeleteOrganizationByIdInput) => {
+}: IDeleteOrganizationByIdInput) => {
   const organization = await Organization.findOne({ _id: id, tenantId }).exec();
   if (!organization) {
     throw new AppError("Organization not found", 404);

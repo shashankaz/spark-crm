@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import { TaskDocument } from "./task.model.types";
+import { ITaskDocument } from "./task.model.types";
 
-const taskSchema = new Schema<TaskDocument>(
+const taskSchema = new Schema<ITaskDocument>(
   {
     tenantId: {
       type: Schema.Types.ObjectId,
@@ -57,4 +57,4 @@ const taskSchema = new Schema<TaskDocument>(
 taskSchema.index({ tenantId: 1, userId: 1 });
 taskSchema.index({ reminderAt: 1, reminderSent: 1 });
 
-export const Task = model<TaskDocument>("Task", taskSchema);
+export const Task = model<ITaskDocument>("Task", taskSchema);

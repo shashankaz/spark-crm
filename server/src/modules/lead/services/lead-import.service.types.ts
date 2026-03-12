@@ -1,12 +1,12 @@
 import { Types } from "mongoose";
 
-export interface ImportLeadsInput {
+export interface IImportLeadsInput {
   filePath: string;
   tenantId: Types.ObjectId;
   userId: Types.ObjectId;
 }
 
-export interface ImportLeadsResult {
+export interface IImportLeadsResult {
   inserted: number;
   failed: number;
   failedLeadIds: string[];

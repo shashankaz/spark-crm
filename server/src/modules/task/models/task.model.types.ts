@@ -4,7 +4,7 @@ export type TaskStatus = "todo" | "in_progress" | "completed" | "cancelled";
 
 export type TaskPriority = "low" | "medium" | "high";
 
-export interface TaskBase {
+export interface ITaskBase {
   tenantId: Types.ObjectId;
   userId: Types.ObjectId;
 
@@ -21,6 +21,6 @@ export interface TaskBase {
   updatedAt: Date;
 }
 
-export interface TaskDocument extends TaskBase, Document {
+export interface ITaskDocument extends ITaskBase, Document {
   _id: Types.ObjectId;
 }

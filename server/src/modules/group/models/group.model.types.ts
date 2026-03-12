@@ -1,6 +1,6 @@
 import { Types, Document } from "mongoose";
 
-export interface GroupBase {
+export interface IGroupBase {
   name: string;
   description?: string;
 
@@ -12,6 +12,6 @@ export interface GroupBase {
   updatedAt: Date;
 }
 
-export interface GroupDocument extends GroupBase, Document {
+export interface IGroupDocument extends IGroupBase, Document {
   _id: Types.ObjectId;
 }

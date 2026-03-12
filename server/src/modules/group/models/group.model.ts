@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import { GroupDocument } from "./group.model.types";
+import { IGroupDocument } from "./group.model.types";
 
-const groupSchema = new Schema<GroupDocument>(
+const groupSchema = new Schema<IGroupDocument>(
   {
     name: {
       type: String,
@@ -39,4 +39,4 @@ const groupSchema = new Schema<GroupDocument>(
 groupSchema.index({ tenantId: 1 });
 groupSchema.index({ tenantId: 1, userId: 1 });
 
-export const Group = model<GroupDocument>("Group", groupSchema);
+export const Group = model<IGroupDocument>("Group", groupSchema);

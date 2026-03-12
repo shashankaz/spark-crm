@@ -7,8 +7,8 @@ import { sqs } from "../../../utils/aws/sqs";
 import { env } from "../../../config/env";
 import { createLeadActionHistoryService } from "../../../services/lead-action-history.service";
 import {
-  FetchEmailsByLeadInput,
-  SendEmailForLeadInput,
+  IFetchEmailsByLeadInput,
+  ISendEmailForLeadInput,
 } from "./email.service.types";
 import { FROM_EMAIL } from "../../../utils/constants/email.constant";
 
@@ -17,7 +17,7 @@ export const fetchEmailsByLeadService = async ({
   cursor,
   limit,
   search,
-}: FetchEmailsByLeadInput) => {
+}: IFetchEmailsByLeadInput) => {
   const countQuery: any = { leadId };
 
   if (search) {
@@ -49,7 +49,7 @@ export const sendEmailForLeadService = async ({
   subject,
   bodyHtml,
   bodyText,
-}: SendEmailForLeadInput) => {
+}: ISendEmailForLeadInput) => {
   const lead = await Lead.findById(leadId).exec();
   if (!lead) {
     throw new AppError("Lead not found", 404);

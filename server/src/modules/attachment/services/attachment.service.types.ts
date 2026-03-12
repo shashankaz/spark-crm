@@ -1,13 +1,13 @@
 import { Types } from "mongoose";
 
-export interface FetchAttachmentsByLeadInput {
+export interface IFetchAttachmentsByLeadInput {
   leadId: Types.ObjectId;
   cursor?: Types.ObjectId;
   limit?: number;
   search?: string;
 }
 
-export interface CreateAttachmentForLeadInput {
+export interface ICreateAttachmentForLeadInput {
   leadId: Types.ObjectId;
   userId: Types.ObjectId;
   userName: string;

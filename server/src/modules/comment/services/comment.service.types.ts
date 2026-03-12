@@ -1,13 +1,13 @@
 import { Types } from "mongoose";
 
-export interface FetchCommentsByLeadInput {
+export interface IFetchCommentsByLeadInput {
   leadId: Types.ObjectId;
   cursor?: Types.ObjectId;
   limit: number;
   search?: string;
 }
 
-export interface CreateCommentForLeadInput {
+export interface ICreateCommentForLeadInput {
   tenantId: Types.ObjectId;
   leadId: Types.ObjectId;
   userId: Types.ObjectId;

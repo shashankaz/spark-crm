@@ -22,22 +22,22 @@ import {
   sendOtpMail,
 } from "../../../utils/mail/email.helper";
 import {
-  LoginInput,
-  LoginResponse,
-  RefreshTokenInput,
-  RefreshTokenResponse,
-  LogoutInput,
-  GetUserProfileInput,
-  GetUserSessionsInput,
-  EditProfileInput,
-  ChangePasswordInput,
-  UserResponse,
+  ILoginInput,
+  ILoginResponse,
+  IRefreshTokenInput,
+  IRefreshTokenResponse,
+  ILogoutInput,
+  IGetUserProfileInput,
+  IGetUserSessionsInput,
+  IEditProfileInput,
+  IChangePasswordInput,
+  IUserResponse,
 } from "./auth.service.types";
 
 export const loginService = async ({
   email,
   password,
-}: LoginInput): Promise<LoginResponse> => {
+}: ILoginInput): Promise<ILoginResponse> => {
   const user = await User.findOne({ email: email.toLowerCase() }).select(
     "+password",
   );
@@ -85,7 +85,7 @@ export const loginService = async ({
 
 export const refreshAuthTokenService = async ({
   refreshToken,
-}: RefreshTokenInput): Promise<RefreshTokenResponse> => {
+}: IRefreshTokenInput): Promise<IRefreshTokenResponse> => {
   const payload = verifyRefreshToken(refreshToken);
 
   if (!payload || !payload._id) {
@@ -128,7 +128,7 @@ export const refreshAuthTokenService = async ({
 
 export const logoutService = async ({
   userId,
-}: LogoutInput): Promise<DeleteResult> => {
+}: ILogoutInput): Promise<DeleteResult> => {
   return await Session.deleteMany({
     userId: new Types.ObjectId(userId),
   });
@@ -206,7 +206,7 @@ export const resendOtpService = async ({
 
 export const getUserProfileService = async ({
   id,
-}: GetUserProfileInput): Promise<UserResponse> => {
+}: IGetUserProfileInput): Promise<IUserResponse> => {
   const user = await User.findById(id).select("-password");
 
   if (!user) {
@@ -225,7 +225,7 @@ export const getUserProfileService = async ({
   };
 };
 
-export const getUserSessionsService = async ({ id }: GetUserSessionsInput) => {
+export const getUserSessionsService = async ({ id }: IGetUserSessionsInput) => {
   return await Session.find({
     userId: new Types.ObjectId(id),
   })
@@ -238,7 +238,7 @@ export const editProfileService = async ({
   firstName,
   lastName,
   mobile,
-}: EditProfileInput): Promise<UserResponse> => {
+}: IEditProfileInput): Promise<IUserResponse> => {
   const user = await User.findById(id);
 
   if (!user) {
@@ -266,7 +266,7 @@ export const changePasswordService = async ({
   id,
   currentPassword,
   newPassword,
-}: ChangePasswordInput): Promise<void> => {
+}: IChangePasswordInput): Promise<void> => {
   const user = await User.findById(id).select("+password");
 
   if (!user || !user.password) {

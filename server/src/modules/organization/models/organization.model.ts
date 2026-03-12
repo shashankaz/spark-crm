@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import { OrganizationDocument } from "./organization.model.types";
+import { IOrganizationDocument } from "./organization.model.types";
 
-const organizationSchema = new Schema<OrganizationDocument>(
+const organizationSchema = new Schema<IOrganizationDocument>(
   {
     idempotentId: {
       type: Schema.Types.UUID,
@@ -81,7 +81,7 @@ organizationSchema.pre("save", async function () {
   if (this.contactEmail) this.contactEmail = this.contactEmail.toLowerCase();
 });
 
-export const Organization = model<OrganizationDocument>(
+export const Organization = model<IOrganizationDocument>(
   "Organization",
   organizationSchema,
 );

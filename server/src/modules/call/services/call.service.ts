@@ -4,10 +4,10 @@ import { Lead } from "../../lead/models/lead.model";
 import { AppError } from "../../../shared/app-error";
 import { createLeadActionHistoryService } from "../../../services/lead-action-history.service";
 import {
-  FetchCallsByLeadInput,
-  FetchCallsByLeadResponse,
-  CreateCallForLeadInput,
-  CallResponse,
+  IFetchCallsByLeadInput,
+  IFetchCallsByLeadResponse,
+  ICreateCallForLeadInput,
+  ICallResponse,
 } from "./call.service.types";
 
 export const fetchCallsByLeadService = async ({
@@ -15,7 +15,7 @@ export const fetchCallsByLeadService = async ({
   cursor,
   limit,
   search,
-}: FetchCallsByLeadInput): Promise<FetchCallsByLeadResponse> => {
+}: IFetchCallsByLeadInput): Promise<IFetchCallsByLeadResponse> => {
   const countQuery: any = {
     leadId: new Types.ObjectId(leadId),
   };
@@ -35,7 +35,7 @@ export const fetchCallsByLeadService = async ({
     Call.find(whereQuery).sort({ _id: -1 }).limit(limit).exec(),
   ]);
 
-  const formattedCalls: CallResponse[] = calls.map((call) => ({
+  const formattedCalls: ICallResponse[] = calls.map((call) => ({
     _id: call._id,
     leadId: call.leadId,
     type: call.type,
@@ -60,7 +60,7 @@ export const createCallForLeadService = async ({
   from,
   status,
   duration,
-}: CreateCallForLeadInput): Promise<CallResponse> => {
+}: ICreateCallForLeadInput): Promise<ICallResponse> => {
   const lead = await Lead.findById(leadId).exec();
 
   if (!lead) {

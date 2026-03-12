@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import { DealDocument } from "./deal.model.types";
+import { IDealDocument } from "./deal.model.types";
 
-const dealSchema = new Schema<DealDocument>(
+const dealSchema = new Schema<IDealDocument>(
   {
     idempotentId: {
       type: Schema.Types.UUID,
@@ -47,4 +47,4 @@ const dealSchema = new Schema<DealDocument>(
 
 dealSchema.index({ tenantId: 1, leadId: 1 });
 
-export const Deal = model<DealDocument>("Deal", dealSchema);
+export const Deal = model<IDealDocument>("Deal", dealSchema);

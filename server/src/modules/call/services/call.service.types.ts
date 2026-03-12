@@ -1,13 +1,13 @@
 import { Types } from "mongoose";
 
-export interface FetchCallsByLeadInput {
+export interface IFetchCallsByLeadInput {
   leadId: Types.ObjectId;
   cursor?: Types.ObjectId;
   limit: number;
   search?: string;
 }
 
-export interface CreateCallForLeadInput {
+export interface ICreateCallForLeadInput {
   leadId: Types.ObjectId;
   userId: Types.ObjectId;
   userName: string;
@@ -17,7 +17,7 @@ export interface CreateCallForLeadInput {
   duration?: number;
 }
 
-export interface CallResponse {
+export interface ICallResponse {
   _id: Types.ObjectId;
   leadId: Types.ObjectId;
   type: string;
@@ -28,7 +28,7 @@ export interface CallResponse {
   createdAt: Date;
 }
 
-export interface FetchCallsByLeadResponse {
-  calls: CallResponse[];
+export interface IFetchCallsByLeadResponse {
+  calls: ICallResponse[];
   totalCount: number;
 }

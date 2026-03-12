@@ -1,18 +1,18 @@
 import { Types } from "mongoose";
 
-export interface FetchOrganizationsInput {
+export interface IFetchOrganizationsInput {
   tenantId: Types.ObjectId;
   cursor?: Types.ObjectId;
   limit: number;
   search?: string;
 }
 
-export interface FetchOrganizationByIdInput {
+export interface IFetchOrganizationByIdInput {
   id: Types.ObjectId;
   tenantId: Types.ObjectId;
 }
 
-export interface CreateOrganizationInput {
+export interface ICreateOrganizationInput {
   idempotentId?: Types.UUID;
   tenantId: Types.ObjectId;
   userId?: Types.ObjectId;
@@ -28,7 +28,7 @@ export interface CreateOrganizationInput {
   contactMobile?: string;
 }
 
-export interface UpdateOrganizationByIdInput {
+export interface IUpdateOrganizationByIdInput {
   id: Types.ObjectId;
   tenantId: Types.ObjectId;
   userId?: Types.ObjectId;
@@ -44,7 +44,7 @@ export interface UpdateOrganizationByIdInput {
   contactMobile?: string;
 }
 
-export interface DeleteOrganizationByIdInput {
+export interface IDeleteOrganizationByIdInput {
   id: Types.ObjectId;
   tenantId: Types.ObjectId;
 }

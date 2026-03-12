@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 import { TaskPriority, TaskStatus } from "../models/task.model.types";
 
-export interface FetchTasksInput {
+export interface IFetchTasksInput {
   tenantId: Types.ObjectId;
   userId: Types.ObjectId;
   search?: string;
@@ -9,13 +9,13 @@ export interface FetchTasksInput {
   priority?: TaskPriority;
 }
 
-export interface FetchTaskByIdInput {
+export interface IFetchTaskByIdInput {
   id: Types.ObjectId;
   tenantId: Types.ObjectId;
   userId: Types.ObjectId;
 }
 
-export interface CreateTaskInput {
+export interface ICreateTaskInput {
   tenantId: Types.ObjectId;
   userId: Types.ObjectId;
   title: string;
@@ -26,7 +26,7 @@ export interface CreateTaskInput {
   labels?: string[];
 }
 
-export interface UpdateTaskInput {
+export interface IUpdateTaskInput {
   id: Types.ObjectId;
   tenantId: Types.ObjectId;
   userId: Types.ObjectId;
@@ -39,7 +39,7 @@ export interface UpdateTaskInput {
   labels?: string[];
 }
 
-export interface DeleteTaskInput {
+export interface IDeleteTaskInput {
   id: Types.ObjectId;
   tenantId: Types.ObjectId;
   userId: Types.ObjectId;

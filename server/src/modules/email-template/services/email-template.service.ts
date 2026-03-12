@@ -1,11 +1,11 @@
 import { EmailTemplate } from "../models/email-template.model";
 import { AppError } from "../../../shared/app-error";
 import {
-  CreateEmailTemplateInput,
-  DeleteEmailTemplateInput,
-  FetchEmailTemplatesInput,
-  GetEmailTemplateByIdInput,
-  UpdateEmailTemplateInput,
+  ICreateEmailTemplateInput,
+  IDeleteEmailTemplateInput,
+  IFetchEmailTemplatesInput,
+  IGetEmailTemplateByIdInput,
+  IUpdateEmailTemplateInput,
 } from "./email-template.service.types";
 
 export const fetchEmailTemplatesService = async ({
@@ -13,7 +13,7 @@ export const fetchEmailTemplatesService = async ({
   userId,
   search,
   tag,
-}: FetchEmailTemplatesInput) => {
+}: IFetchEmailTemplatesInput) => {
   const query: any = { tenantId, userId };
 
   if (tag) {
@@ -38,7 +38,7 @@ export const fetchEmailTemplatesService = async ({
 export const getEmailTemplateByIdService = async ({
   id,
   tenantId,
-}: GetEmailTemplateByIdInput) => {
+}: IGetEmailTemplateByIdInput) => {
   const template = await EmailTemplate.findOne({ _id: id, tenantId }).exec();
 
   if (!template) {
@@ -55,7 +55,7 @@ export const createEmailTemplateService = async ({
   tags,
   tenantId,
   userId,
-}: CreateEmailTemplateInput) => {
+}: ICreateEmailTemplateInput) => {
   const template = new EmailTemplate({
     name,
     subject,
@@ -76,7 +76,7 @@ export const updateEmailTemplateService = async ({
   subject,
   bodyHtml,
   tags,
-}: UpdateEmailTemplateInput) => {
+}: IUpdateEmailTemplateInput) => {
   const template = await EmailTemplate.findOne({
     _id: id,
     tenantId,
@@ -99,7 +99,7 @@ export const deleteEmailTemplateService = async ({
   id,
   tenantId,
   userId,
-}: DeleteEmailTemplateInput) => {
+}: IDeleteEmailTemplateInput) => {
   const template = await EmailTemplate.findOneAndDelete({
     _id: id,
     tenantId,

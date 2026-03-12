@@ -2,7 +2,7 @@ import { Types, Document } from "mongoose";
 
 export type TenantPlan = "free" | "basic" | "pro" | "enterprise";
 
-export interface TenantAddress {
+export interface ITenantAddress {
   line1?: string;
   line2?: string;
   city?: string;
@@ -11,14 +11,14 @@ export interface TenantAddress {
   postalCode?: string;
 }
 
-export interface TenantBase {
+export interface ITenantBase {
   name: string;
   gstNumber?: string;
   panNumber?: string;
   email: string;
   slug: string;
   mobile: string;
-  address?: TenantAddress;
+  address?: ITenantAddress;
   logoUrl?: string;
   plan: TenantPlan;
   isDeleted: boolean;
@@ -27,6 +27,6 @@ export interface TenantBase {
   updatedAt: Date;
 }
 
-export interface TenantDocument extends TenantBase, Document {
+export interface ITenantDocument extends ITenantBase, Document {
   _id: Types.ObjectId;
 }

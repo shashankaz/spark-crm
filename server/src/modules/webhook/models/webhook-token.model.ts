@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import { WebhookTokenDocument } from "./webhook-token.model.types";
+import { IWebhookTokenDocument } from "./webhook-token.model.types";
 
-const webhookTokenSchema = new Schema<WebhookTokenDocument>(
+const webhookTokenSchema = new Schema<IWebhookTokenDocument>(
   {
     tenantId: {
       type: Schema.Types.ObjectId,
@@ -41,7 +41,7 @@ const webhookTokenSchema = new Schema<WebhookTokenDocument>(
 
 webhookTokenSchema.index({ tenantId: 1 });
 
-export const WebhookToken = model<WebhookTokenDocument>(
+export const WebhookToken = model<IWebhookTokenDocument>(
   "WebhookToken",
   webhookTokenSchema,
 );

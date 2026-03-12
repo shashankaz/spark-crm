@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import { UserDocument } from "./user.model.types";
+import { IUserDocument } from "./user.model.types";
 
-const userSchema = new Schema<UserDocument>(
+const userSchema = new Schema<IUserDocument>(
   {
     firstName: {
       type: String,
@@ -54,4 +54,4 @@ userSchema.pre("save", async function () {
   if (this.email) this.email = this.email.toLowerCase();
 });
 
-export const User = model<UserDocument>("User", userSchema);
+export const User = model<IUserDocument>("User", userSchema);

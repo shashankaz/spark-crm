@@ -1,12 +1,12 @@
 import { Types, Document } from "mongoose";
 
-export interface SessionBase {
+export interface ISessionBase {
   userId: Types.ObjectId;
   token?: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export interface SessionDocument extends SessionBase, Document {
+export interface ISessionDocument extends ISessionBase, Document {
   _id: Types.ObjectId;
 }

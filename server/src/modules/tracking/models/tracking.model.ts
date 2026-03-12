@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { TrackingDocument } from "./tracking.model.types";
+import { ITrackingDocument } from "./tracking.model.types";
 
 const geoFields = {
   ipAddress: { type: String, trim: true },
@@ -23,7 +23,7 @@ const clickSchema = new Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-const trackingSchema = new Schema<TrackingDocument>(
+const trackingSchema = new Schema<ITrackingDocument>(
   {
     emailId: {
       type: Schema.Types.ObjectId,
@@ -52,4 +52,4 @@ const trackingSchema = new Schema<TrackingDocument>(
   },
 );
 
-export const Tracking = model<TrackingDocument>("Tracking", trackingSchema);
+export const Tracking = model<ITrackingDocument>("Tracking", trackingSchema);

@@ -8,7 +8,7 @@ export type LeadStatus =
   | "converted"
   | "lost";
 
-export interface LeadBase {
+export interface ILeadBase {
   idempotentId: Types.UUID;
 
   tenantId: Types.ObjectId;
@@ -32,6 +32,6 @@ export interface LeadBase {
   updatedAt: Date;
 }
 
-export interface LeadDocument extends LeadBase, Document {
+export interface ILeadDocument extends ILeadBase, Document {
   _id: Types.ObjectId;
 }

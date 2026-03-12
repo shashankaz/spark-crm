@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import { CommentDocument } from "./comment.model.types";
+import { ICommentDocument } from "./comment.model.types";
 
-const commentSchema = new Schema<CommentDocument>(
+const commentSchema = new Schema<ICommentDocument>(
   {
     leadId: {
       type: Schema.Types.ObjectId,
@@ -22,4 +22,4 @@ const commentSchema = new Schema<CommentDocument>(
 commentSchema.index({ leadId: 1 });
 commentSchema.index({ comment: "text" });
 
-export const Comment = model<CommentDocument>("Comment", commentSchema);
+export const Comment = model<ICommentDocument>("Comment", commentSchema);

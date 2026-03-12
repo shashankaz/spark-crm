@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { WorkflowDocument } from "./workflow.model.types";
+import { IWorkflowDocument } from "./workflow.model.types";
 
 const actionConfigSchema = new Schema({}, { strict: false, _id: false });
 
@@ -18,7 +18,7 @@ const actionSchema = new Schema(
   { _id: false },
 );
 
-const workflowSchema = new Schema<WorkflowDocument>(
+const workflowSchema = new Schema<IWorkflowDocument>(
   {
     tenantId: {
       type: Schema.Types.ObjectId,
@@ -74,4 +74,4 @@ const workflowSchema = new Schema<WorkflowDocument>(
 
 workflowSchema.index({ tenantId: 1, userId: 1 });
 
-export const Workflow = model<WorkflowDocument>("Workflow", workflowSchema);
+export const Workflow = model<IWorkflowDocument>("Workflow", workflowSchema);

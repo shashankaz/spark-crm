@@ -3,18 +3,18 @@ import csv from "csv-parser";
 import { Types } from "mongoose";
 import { v7 as uuidv7 } from "uuid";
 import { Lead } from "../models/lead.model";
-import { LeadBase } from "../models/lead.model.types";
+import { ILeadBase } from "../models/lead.model.types";
 import { calculateLeadScore } from "../../../utils/calculate-score";
 import {
-  ImportLeadsInput,
-  ImportLeadsResult,
+  IImportLeadsInput,
+  IImportLeadsResult,
 } from "./lead-import.service.types";
 
 export const importLeadsService = async ({
   filePath,
   tenantId,
   userId,
-}: ImportLeadsInput): Promise<ImportLeadsResult> => {
+}: IImportLeadsInput): Promise<IImportLeadsResult> => {
   return new Promise((resolve, reject) => {
     const failedLeadIds: string[] = [];
     let inserted = 0;
@@ -33,7 +33,7 @@ export const importLeadsService = async ({
             return null;
           }
 
-          const document: LeadBase = {
+          const document: ILeadBase = {
             idempotentId: new Types.UUID(uuidv7()),
             tenantId,
             userId,
@@ -56,7 +56,7 @@ export const importLeadsService = async ({
               "lost",
             ].includes(row.status?.toLowerCase())
               ? row.status.toLowerCase()
-              : "new") as LeadBase["status"],
+              : "new") as ILeadBase["status"],
             createdAt: new Date(),
             updatedAt: new Date(),
           };
@@ -66,7 +66,7 @@ export const importLeadsService = async ({
           return { insertOne: { document } };
         })
         .filter(
-          (op): op is { insertOne: { document: LeadBase } } => op !== null,
+          (op): op is { insertOne: { document: ILeadBase } } => op !== null,
         );
 
       if (operations.length > 0) {

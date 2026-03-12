@@ -15,34 +15,34 @@ export type WorkflowEvent =
 
 export type WorkflowActionType = "send_email" | "notify_user" | "send_webhook";
 
-export interface SendEmailActionConfig {
+export interface ISendEmailActionConfig {
   to: string;
   subject: string;
   message: string;
 }
 
-export interface NotifyUserActionConfig {
+export interface INotifyUserActionConfig {
   message: string;
   userIds?: string[];
 }
 
-export interface SendWebhookActionConfig {
+export interface ISendWebhookActionConfig {
   url: string;
   method?: "GET" | "POST" | "PUT" | "PATCH";
   headers?: Record<string, string>;
 }
 
 export type WorkflowActionConfig =
-  | SendEmailActionConfig
-  | NotifyUserActionConfig
-  | SendWebhookActionConfig;
+  | ISendEmailActionConfig
+  | INotifyUserActionConfig
+  | ISendWebhookActionConfig;
 
-export interface WorkflowAction {
+export interface IWorkflowAction {
   type: WorkflowActionType;
   config: WorkflowActionConfig;
 }
 
-export interface WorkflowBase {
+export interface IWorkflowBase {
   tenantId: Types.ObjectId;
   userId: Types.ObjectId;
   name: string;
@@ -50,13 +50,13 @@ export interface WorkflowBase {
   active: boolean;
   entity: WorkflowEntity;
   event: WorkflowEvent;
-  actions: WorkflowAction[];
+  actions: IWorkflowAction[];
   executionCount: number;
   lastExecutedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export interface WorkflowDocument extends WorkflowBase, Document {
+export interface IWorkflowDocument extends IWorkflowBase, Document {
   _id: Types.ObjectId;
 }

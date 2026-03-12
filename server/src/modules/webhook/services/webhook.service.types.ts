@@ -1,17 +1,17 @@
 import { Types } from "mongoose";
 
-export interface GenerateWebhookTokenInput {
+export interface IGenerateWebhookTokenInput {
   tenantId: Types.ObjectId;
   name: string;
   createdBy: Types.ObjectId;
 }
 
-export interface RevokeWebhookTokenInput {
+export interface IRevokeWebhookTokenInput {
   id: Types.ObjectId;
   tenantId: Types.ObjectId;
 }
 
-export interface CreateWebhookLeadInput {
+export interface ICreateWebhookLeadInput {
   tenantId: Types.ObjectId;
   firstName: string;
   lastName?: string;

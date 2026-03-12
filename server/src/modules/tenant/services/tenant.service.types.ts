@@ -1,25 +1,25 @@
 import { Types } from "mongoose";
 
-export interface FetchTenantsInput {
+export interface IFetchTenantsInput {
   cursor?: Types.ObjectId;
   limit: number;
   search?: string;
 }
 
-export interface FetchTenantByIdInput {
+export interface IFetchTenantByIdInput {
   id: Types.ObjectId;
 }
 
-export interface FetchUsersByTenantIdInput {
+export interface IFetchUsersByTenantIdInput {
   tenantId: Types.ObjectId;
   search?: string;
 }
 
-export interface CheckSlugAvailabilityInput {
+export interface ICheckSlugAvailabilityInput {
   slug: string;
 }
 
-export interface CreateTenantInput {
+export interface ICreateTenantInput {
   name: string;
   slug: string;
   gstNumber?: string;
@@ -37,15 +37,15 @@ export interface CreateTenantInput {
   plan: string;
 }
 
-export interface UpdateTenantByIdInput extends Partial<CreateTenantInput> {
+export interface IUpdateTenantByIdInput extends Partial<ICreateTenantInput> {
   id: Types.ObjectId;
 }
 
-export interface DeleteTenantByIdInput {
+export interface IDeleteTenantByIdInput {
   id: Types.ObjectId;
 }
 
-export interface CreateUserForTenantInput {
+export interface ICreateUserForTenantInput {
   tenantId: Types.ObjectId;
   name: string;
   email: string;

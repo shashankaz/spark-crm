@@ -2,15 +2,15 @@ import { Tracking } from "../models/tracking.model";
 import { getIPDetails } from "../../../utils/auth/get-ip-details";
 import { parseAndValidateUrl } from "../../../utils/parse-and-validate-url";
 import {
-  RecordEmailOpenInput,
-  RecordEmailClickInput,
+  IRecordEmailOpenInput,
+  IRecordEmailClickInput,
 } from "./tracking.service.types";
 
 export const recordEmailOpenService = async ({
   trackingId,
   ipAddress: rawIpAddress,
   userAgent,
-}: RecordEmailOpenInput): Promise<void> => {
+}: IRecordEmailOpenInput): Promise<void> => {
   const now = new Date();
   const ipAddress = Array.isArray(rawIpAddress)
     ? rawIpAddress[0]
@@ -44,7 +44,7 @@ export const recordEmailClickService = async ({
   url,
   ipAddress: rawIpAddress,
   userAgent,
-}: RecordEmailClickInput): Promise<URL> => {
+}: IRecordEmailClickInput): Promise<URL> => {
   const parsedUrl = parseAndValidateUrl({ url });
   const ipAddress = Array.isArray(rawIpAddress)
     ? rawIpAddress[0]

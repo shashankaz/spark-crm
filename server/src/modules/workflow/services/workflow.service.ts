@@ -2,12 +2,12 @@ import { Types } from "mongoose";
 import { Workflow } from "../models/workflow.model";
 import { AppError } from "../../../shared/app-error";
 import {
-  FetchWorkflowsInput,
-  FetchWorkflowByIdInput,
-  CreateWorkflowInput,
-  UpdateWorkflowByIdInput,
-  DeleteWorkflowByIdInput,
-  ToggleWorkflowInput,
+  IFetchWorkflowsInput,
+  IFetchWorkflowByIdInput,
+  ICreateWorkflowInput,
+  IUpdateWorkflowByIdInput,
+  IDeleteWorkflowByIdInput,
+  IToggleWorkflowInput,
 } from "./workflow.service.types";
 
 export const fetchWorkflowsService = async ({
@@ -16,7 +16,7 @@ export const fetchWorkflowsService = async ({
   cursor,
   limit,
   search,
-}: FetchWorkflowsInput) => {
+}: IFetchWorkflowsInput) => {
   const countQuery: any = { tenantId, userId };
 
   if (search) {
@@ -43,7 +43,7 @@ export const fetchWorkflowByIdService = async ({
   id,
   tenantId,
   userId,
-}: FetchWorkflowByIdInput) => {
+}: IFetchWorkflowByIdInput) => {
   const workflow = await Workflow.findOne({ _id: id, tenantId, userId }).exec();
   if (!workflow) {
     throw new AppError("Workflow not found", 404);
@@ -61,7 +61,7 @@ export const createWorkflowService = async ({
   entity,
   event,
   actions,
-}: CreateWorkflowInput) => {
+}: ICreateWorkflowInput) => {
   const workflow = new Workflow({
     tenantId,
     userId,
@@ -86,7 +86,7 @@ export const updateWorkflowByIdService = async ({
   entity,
   event,
   actions,
-}: UpdateWorkflowByIdInput) => {
+}: IUpdateWorkflowByIdInput) => {
   const workflow = await Workflow.findOne({ _id: id, tenantId, userId }).exec();
   if (!workflow) {
     throw new AppError("Workflow not found", 404);
@@ -106,7 +106,7 @@ export const deleteWorkflowByIdService = async ({
   id,
   tenantId,
   userId,
-}: DeleteWorkflowByIdInput) => {
+}: IDeleteWorkflowByIdInput) => {
   const workflow = await Workflow.findOne({ _id: id, tenantId, userId }).exec();
   if (!workflow) {
     throw new AppError("Workflow not found", 404);
@@ -119,7 +119,7 @@ export const toggleWorkflowService = async ({
   id,
   tenantId,
   userId,
-}: ToggleWorkflowInput) => {
+}: IToggleWorkflowInput) => {
   const workflow = await Workflow.findOne({ _id: id, tenantId, userId }).exec();
   if (!workflow) {
     throw new AppError("Workflow not found", 404);

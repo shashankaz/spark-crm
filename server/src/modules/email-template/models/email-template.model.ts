@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import { EmailTemplateDocument } from "./email-template.model.types";
+import { IEmailTemplateDocument } from "./email-template.model.types";
 
-const emailTemplateSchema = new Schema<EmailTemplateDocument>(
+const emailTemplateSchema = new Schema<IEmailTemplateDocument>(
   {
     name: {
       type: String,
@@ -42,7 +42,7 @@ const emailTemplateSchema = new Schema<EmailTemplateDocument>(
 emailTemplateSchema.index({ tenantId: 1 });
 emailTemplateSchema.index({ tenantId: 1, userId: 1 });
 
-export const EmailTemplate = model<EmailTemplateDocument>(
+export const EmailTemplate = model<IEmailTemplateDocument>(
   "EmailTemplate",
   emailTemplateSchema,
 );

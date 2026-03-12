@@ -4,14 +4,14 @@ import { Group } from "../models/group.model";
 import { AppError } from "../../../shared/app-error";
 import { sendEmailForLeadService } from "../../lead-email/services/email.service";
 import {
-  CreateGroupInput,
-  DeleteGroupInput,
-  FetchGroupsInput,
-  GetGroupByIdInput,
-  SendCampaignToGroupInput,
-  UpdateGroupInput,
+  ICreateGroupInput,
+  IDeleteGroupInput,
+  IFetchGroupsInput,
+  IGetGroupByIdInput,
+  ISendCampaignToGroupInput,
+  IUpdateGroupInput,
 } from "./group.service.types";
-import { LeadDocument } from "../../lead/models/lead.model.types";
+import { ILeadDocument } from "../../lead/models/lead.model.types";
 
 export const createGroupService = async ({
   name,
@@ -19,7 +19,7 @@ export const createGroupService = async ({
   tenantId,
   userId,
   leads,
-}: CreateGroupInput) => {
+}: ICreateGroupInput) => {
   const group = await Group.create({
     name,
     description: description || undefined,
@@ -34,7 +34,7 @@ export const createGroupService = async ({
 export const fetchGroupsService = async ({
   tenantId,
   userId,
-}: FetchGroupsInput) => {
+}: IFetchGroupsInput) => {
   const query: any = { tenantId, userId };
 
   const [totalCount, groups] = await Promise.all([
@@ -56,7 +56,7 @@ export const fetchGroupsService = async ({
 export const getGroupByIdService = async ({
   id,
   tenantId,
-}: GetGroupByIdInput) => {
+}: IGetGroupByIdInput) => {
   const group = await Group.findOne({ _id: id, tenantId })
     .populate("leads")
     .exec();
@@ -74,7 +74,7 @@ export const updateGroupService = async ({
   name,
   description,
   leads,
-}: UpdateGroupInput) => {
+}: IUpdateGroupInput) => {
   const group = await Group.findOne({ _id: id, tenantId });
   if (!group) {
     throw new AppError("Group not found", 404);
@@ -90,7 +90,7 @@ export const updateGroupService = async ({
 export const deleteGroupService = async ({
   id,
   tenantId,
-}: DeleteGroupInput) => {
+}: IDeleteGroupInput) => {
   const group = await Group.findOneAndDelete({ _id: id, tenantId });
   if (!group) {
     throw new AppError("Group not found", 404);
@@ -107,9 +107,9 @@ export const sendCampaignToGroupService = async ({
   subject,
   bodyHtml,
   bodyText,
-}: SendCampaignToGroupInput) => {
+}: ISendCampaignToGroupInput) => {
   const group = await getGroupByIdService({ id: groupId, tenantId });
-  const leads = group.leads as unknown as LeadDocument[];
+  const leads = group.leads as unknown as ILeadDocument[];
 
   if (!leads || leads.length === 0) {
     throw new AppError("No leads in this group to send emails to.", 400);
