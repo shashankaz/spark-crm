@@ -7,6 +7,7 @@ import {
 import { AppError } from "../../shared/app-error";
 import { sendSuccess } from "../../shared/api-response";
 import { asyncHandler } from "../../shared/async-handler";
+import { validateEmailWithArcjet } from "../../utils/arcjet/validate-email";
 
 export const getAllEmailsByLeadId = asyncHandler(
   async (req: Request, res: Response) => {
@@ -47,9 +48,20 @@ export const sendEmailForLead = asyncHandler(
 
     const { to, subject, bodyHtml, bodyText } = req.body;
 
-    if (!to) throw new AppError("Recipient email (to) is required", 400);
-    if (!subject) throw new AppError("Subject is required", 400);
-    if (!bodyHtml) throw new AppError("Email body is required", 400);
+    if (!to) {
+      throw new AppError("Recipient email (to) is required", 400);
+    }
+    const isDenied = await validateEmailWithArcjet({ req, email: to });
+    if (isDenied) {
+      throw new AppError("Invalid email address", 400);
+    }
+
+    if (!subject) {
+      throw new AppError("Subject is required", 400);
+    }
+    if (!bodyHtml) {
+      throw new AppError("Email body is required", 400);
+    }
 
     const email = await sendEmailForLeadService({
       leadId,

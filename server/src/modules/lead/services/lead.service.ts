@@ -178,16 +178,16 @@ export const createLeadService = async ({
   const lead = new Lead({
     idempotentId,
     tenantId,
-    orgId: orgId ?? undefined,
-    orgName: orgName ?? undefined,
+    orgId: orgId || undefined,
+    orgName: orgName || undefined,
     dealId: undefined,
     userId,
-    firstName: firstName ?? undefined,
-    lastName: lastName ?? undefined,
-    email: email ?? undefined,
-    mobile: mobile ?? undefined,
-    gender: gender ?? undefined,
-    source: source ?? undefined,
+    firstName: firstName || undefined,
+    lastName: lastName || undefined,
+    email: email || undefined,
+    mobile: mobile || undefined,
+    gender: gender || undefined,
+    source: source || undefined,
   });
 
   lead.score = calculateLeadScore(lead);

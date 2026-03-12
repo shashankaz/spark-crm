@@ -11,6 +11,7 @@ import { enqueueOrganizationExportService } from "../../utils/export/export.help
 import { AppError } from "../../shared/app-error";
 import { sendSuccess } from "../../shared/api-response";
 import { asyncHandler } from "../../shared/async-handler";
+import { validateEmailWithArcjet } from "../../utils/arcjet/validate-email";
 
 export const getAllOrganizations = asyncHandler(
   async (req: Request, res: Response) => {
@@ -88,6 +89,13 @@ export const createOrganization = asyncHandler(
       );
     }
 
+    if (email) {
+      const isDenied = await validateEmailWithArcjet({ req, email });
+      if (isDenied) {
+        throw new AppError("Invalid email address", 400);
+      }
+    }
+
     const organization = await createOrganizationService({
       idempotentId,
       tenantId,
@@ -137,6 +145,13 @@ export const updateOrganizationById = asyncHandler(
       contactEmail,
       contactMobile,
     } = req.body;
+
+    if (email) {
+      const isDenied = await validateEmailWithArcjet({ req, email });
+      if (isDenied) {
+        throw new AppError("Invalid email address", 400);
+      }
+    }
 
     const updatedOrganization = await updateOrganizationByIdService({
       id,
@@ -199,6 +214,14 @@ export const exportOrganizations = asyncHandler(
 
     if (!recipientEmail) {
       throw new AppError("Email is required", 400);
+    }
+
+    const isDenied = await validateEmailWithArcjet({
+      req,
+      email: recipientEmail,
+    });
+    if (isDenied) {
+      throw new AppError("Invalid email address", 400);
     }
 
     const { messageId } = await enqueueOrganizationExportService({

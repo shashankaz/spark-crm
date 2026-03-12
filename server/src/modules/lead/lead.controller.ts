@@ -17,6 +17,7 @@ import { AppError } from "../../shared/app-error";
 import { sendSuccess } from "../../shared/api-response";
 import { asyncHandler } from "../../shared/async-handler";
 import { importLeadsService } from "./services/lead-import.service";
+import { validateEmailWithArcjet } from "../../utils/arcjet/validate-email";
 
 export const getAllLeads = asyncHandler(async (req: Request, res: Response) => {
   const { tenantId, _id: userId, role } = req.user;
@@ -90,6 +91,11 @@ export const createLead = asyncHandler(async (req: Request, res: Response) => {
     throw new AppError("Idempotent ID and Tenant ID are required", 400);
   }
 
+  const isDenied = await validateEmailWithArcjet({ req, email });
+  if (isDenied) {
+    throw new AppError("Invalid email address", 400);
+  }
+
   const lead = await createLeadService({
     idempotentId,
     tenantId,
@@ -134,6 +140,11 @@ export const updateLeadById = asyncHandler(
       source,
       status,
     } = req.body;
+
+    const isDenied = await validateEmailWithArcjet({ req, email });
+    if (isDenied) {
+      throw new AppError("Invalid email address", 400);
+    }
 
     const updatedLead = await updateLeadByIdService({
       id,
@@ -338,6 +349,14 @@ export const exportLeads = asyncHandler(async (req: Request, res: Response) => {
 
   if (!Array.isArray(leadIds) || leadIds.length === 0) {
     throw new AppError("Lead Ids must be a non-empty array", 400);
+  }
+
+  const isDenied = await validateEmailWithArcjet({
+    req,
+    email: recipientEmail,
+  });
+  if (isDenied) {
+    throw new AppError("Invalid email address", 400);
   }
 
   if (!recipientEmail) {
