@@ -27,8 +27,8 @@ export const getAllUsers = async (
   params: GetAllUsersRequest,
 ): Promise<GetAllUsersResponse> =>
   withApiHandler(async () => {
-    const { cursor, limit = 10, search } = params;
-    const query = buildQueryParams({ cursor, limit, search });
+    const { cursor, limit = 10, search, role } = params;
+    const query = buildQueryParams({ cursor, limit, search, role });
     const response = await api.get<ApiResponse<UsersData>>(
       `/user${query ? `?${query}` : ""}`,
     );

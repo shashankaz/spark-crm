@@ -33,7 +33,6 @@ export type GetAllLeadsRequest = {
   cursor?: string;
   limit?: number;
   search?: string;
-  orgId?: string;
 };
 
 export type GetLeadByIdRequest = {

@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { buildQueryParams } from "@/api/query-params";
 import {
   getAllOrganizations,
   getOrganizationById,
@@ -12,14 +13,30 @@ export const useOrganizations = ({
   cursor,
   limit = 10,
   search,
+  industry,
+  size,
+  country,
 }: {
   cursor?: string;
   limit?: number;
   search?: string;
+  industry?: string;
+  size?: string;
+  country?: string;
 }) => {
+  const query = buildQueryParams({
+    cursor,
+    limit,
+    search,
+    industry,
+    size,
+    country,
+  });
+
   return useQuery({
-    queryKey: ["organizations", { cursor, limit, search }],
-    queryFn: () => getAllOrganizations({ cursor, limit, search }),
+    queryKey: ["organizations", query],
+    queryFn: () =>
+      getAllOrganizations({ cursor, limit, search, industry, size, country }),
   });
 };
 

@@ -43,8 +43,8 @@ export const getAllLeads = async (
   params: GetAllLeadsRequest,
 ): Promise<GetAllLeadsResponse> =>
   withApiHandler(async () => {
-    const { cursor, limit = 10, search, orgId } = params;
-    const query = buildQueryParams({ cursor, limit, search, orgId });
+    const { cursor, limit = 10, search } = params;
+    const query = buildQueryParams({ cursor, limit, search });
     const response = await api.get<ApiResponse<LeadsData>>(
       `/lead${query ? `?${query}` : ""}`,
     );

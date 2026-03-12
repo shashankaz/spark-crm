@@ -26,8 +26,15 @@ export const getAllOrganizations = async (
   params: GetAllOrganizationsRequest,
 ): Promise<GetAllOrganizationsResponse> =>
   withApiHandler(async () => {
-    const { cursor, limit = 10, search } = params;
-    const query = buildQueryParams({ cursor, limit, search });
+    const { cursor, limit = 10, search, industry, size, country } = params;
+    const query = buildQueryParams({
+      cursor,
+      limit,
+      search,
+      industry,
+      size,
+      country,
+    });
     const response = await api.get<ApiResponse<OrganizationsData>>(
       `/organization${query ? `?${query}` : ""}`,
     );

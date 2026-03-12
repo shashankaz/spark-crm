@@ -24,8 +24,15 @@ export const getAllWorkflows = async (
   params: GetAllWorkflowsRequest,
 ): Promise<GetAllWorkflowsResponse> =>
   withApiHandler(async () => {
-    const { cursor, limit = 20, search } = params;
-    const query = buildQueryParams({ cursor, limit, search });
+    const { cursor, limit = 20, search, entity, event, active } = params;
+    const query = buildQueryParams({
+      cursor,
+      limit,
+      search,
+      entity,
+      event,
+      ...(active !== undefined ? { active: String(active) } : {}),
+    });
     const response = await api.get<ApiResponse<WorkflowsData>>(
       `/workflow${query ? `?${query}` : ""}`,
     );

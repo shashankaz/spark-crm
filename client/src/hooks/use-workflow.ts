@@ -13,16 +13,30 @@ export const useWorkflows = ({
   cursor,
   limit = 20,
   search,
+  entity,
+  event,
+  active,
 }: {
   cursor?: string;
   limit?: number;
   search?: string;
+  entity?: string;
+  event?: string;
+  active?: boolean;
 }) => {
-  const query = buildQueryParams({ cursor, limit, search });
+  const query = buildQueryParams({
+    cursor,
+    limit,
+    search,
+    entity,
+    event,
+    active,
+  });
 
   return useQuery({
     queryKey: ["workflows", query],
-    queryFn: () => getAllWorkflows({ cursor, limit, search }),
+    queryFn: () =>
+      getAllWorkflows({ cursor, limit, search, entity, event, active }),
   });
 };
 

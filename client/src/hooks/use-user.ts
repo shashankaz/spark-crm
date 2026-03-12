@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { UserContext } from "@/context/user-context";
+import { buildQueryParams } from "@/api/query-params";
 import {
   getAllUsers,
   getUserById,
@@ -23,14 +24,18 @@ export const useUsers = ({
   cursor,
   limit = 10,
   search,
+  role,
 }: {
   cursor?: string;
   limit?: number;
   search?: string;
+  role?: string;
 }) => {
+  const query = buildQueryParams({ cursor, limit, search, role });
+
   return useQuery({
-    queryKey: ["users", { cursor, limit, search }],
-    queryFn: () => getAllUsers({ cursor, limit, search }),
+    queryKey: ["users", query],
+    queryFn: () => getAllUsers({ cursor, limit, search, role }),
   });
 };
 

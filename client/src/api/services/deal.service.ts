@@ -22,8 +22,14 @@ export const getAllDeals = async (
   params: GetAllDealsRequest,
 ): Promise<GetAllDealsResponse> =>
   withApiHandler(async () => {
-    const { cursor, limit = 10, search } = params;
-    const query = buildQueryParams({ cursor, limit, search });
+    const { cursor, limit = 10, search, valueRange, probability } = params;
+    const query = buildQueryParams({
+      cursor,
+      limit,
+      search,
+      valueRange,
+      probability,
+    });
     const response = await api.get<ApiResponse<DealsData>>(
       `/deal${query ? `?${query}` : ""}`,
     );

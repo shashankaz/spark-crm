@@ -2,7 +2,23 @@ type QueryKey = {
   cursor?: number;
   limit?: number;
   search?: string;
-  orgId?: string;
+
+  // Deal
+  valueRange?: string;
+  probability?: string;
+  industry?: string;
+
+  // Organization
+  size?: string;
+  country?: string;
+
+  // User
+  role?: string;
+  entity?: string;
+
+  // Workflow
+  event?: string;
+  active?: boolean;
 };
 type QueryValue = string | number | boolean | null | undefined;
 type QueryParams = Partial<Record<keyof QueryKey, QueryValue>>;

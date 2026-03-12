@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { buildQueryParams } from "@/api/query-params";
 import {
   getAllDeals,
   getDeal,
@@ -11,14 +12,27 @@ export const useDeals = ({
   cursor,
   limit = 10,
   search,
+  valueRange,
+  probability,
 }: {
   cursor?: string;
   limit?: number;
   search?: string;
+  valueRange?: string;
+  probability?: string;
 }) => {
+  const query = buildQueryParams({
+    cursor,
+    limit,
+    search,
+    valueRange,
+    probability,
+  });
+
   return useQuery({
-    queryKey: ["deals", { cursor, limit, search }],
-    queryFn: () => getAllDeals({ cursor, limit, search }),
+    queryKey: ["deals", query],
+    queryFn: () =>
+      getAllDeals({ cursor, limit, search, valueRange, probability }),
   });
 };
 
