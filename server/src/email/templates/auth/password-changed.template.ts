@@ -1,5 +1,5 @@
-import { PasswordChangedMail } from "../../../types/email";
-import { FROM_NAME, FROM_EMAIL } from "../../constants";
+import { PasswordChangedMail } from "../../../utils/mail/email.types";
+import { FROM_NAME, FROM_EMAIL } from "../../../utils/constants/email.constant";
 
 export const passwordChangedMailTemplate = ({
   userEmail,
@@ -9,49 +9,255 @@ export const passwordChangedMailTemplate = ({
   to: userEmail,
   subject: "Security Alert: Your Password Was Changed",
   html: `
-    <div style="margin:0;padding:0;background-color:#f4f6fb;font-family:Arial,Helvetica,sans-serif;">
-      <table width="100%" cellpadding="0" cellspacing="0" style="padding:40px 0;">
-        <tr>
-          <td align="center">
-            <table width="600" cellpadding="0" cellspacing="0"
-              style="background:#ffffff;border-radius:12px;overflow:hidden;
-                     box-shadow:0 8px 30px rgba(0,0,0,0.08);">
-              <tr>
-                <td style="background:linear-gradient(135deg,#DC2626,#EF4444);
-                           padding:30px;text-align:center;color:#ffffff;">
-                  <h1 style="margin:0;font-size:24px;font-weight:700;letter-spacing:-0.5px;">⚡ Spark CRM</h1>
-                  <p style="margin:8px 0 0;font-size:14px;opacity:0.9;">Security Alert</p>
-                </td>
-              </tr>
-              <tr>
-                <td style="padding:40px 30px;">
-                  <h2 style="margin-top:0;color:#111827;font-size:20px;">Password Changed, ${userName}</h2>
-                  <p style="color:#4b5563;font-size:14px;line-height:1.6;">
-                    Your account password was successfully changed on
-                    <strong>${new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata", dateStyle: "medium", timeStyle: "short" })}</strong>.
-                  </p>
-                  <div style="margin:20px 0;padding:16px 20px;background:#fef2f2;border-left:4px solid #EF4444;border-radius:6px;">
-                    <p style="margin:0;font-size:14px;color:#b91c1c;">
-                      <strong>Not you?</strong> If you did not make this change, your account may be compromised.
-                      Please contact support immediately and reset your password.
-                    </p>
-                  </div>
-                  <p style="color:#6b7280;font-size:13px;">
-                    For your security, all existing sessions have been kept active. We recommend reviewing your active sessions.
-                  </p>
-                </td>
-              </tr>
-              <tr>
-                <td style="background:#f9fafb;padding:20px;text-align:center;border-top:1px solid #f3f4f6;">
-                  <p style="margin:0;font-size:12px;color:#9ca3af;">
-                    &copy; ${new Date().getFullYear()} Spark CRM. All rights reserved.
-                  </p>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-      </table>
-    </div>
-  `,
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="supported-color-schemes" content="light dark" />
+    <title>Password Changed - Spark CRM</title>
+    <style>
+      @media only screen and (max-width: 600px) {
+        .email-card {
+          width: 100% !important;
+          border-radius: 0 !important;
+          border-left: none !important;
+          border-right: none !important;
+        }
+        .email-cell {
+          padding: 28px 20px !important;
+        }
+        .email-header-cell {
+          padding: 22px 20px !important;
+        }
+        .email-footer-cell {
+          padding: 16px 20px !important;
+        }
+      }
+      @media (prefers-color-scheme: dark) {
+        body {
+          background-color: #1c1a17 !important;
+        }
+        .email-outer {
+          background-color: #1c1a17 !important;
+        }
+        .email-card {
+          background-color: #27251f !important;
+          border-color: #3a3830 !important;
+        }
+        .email-header-cell {
+          background-color: #27251f !important;
+          border-color: #3a3830 !important;
+        }
+        .email-logo {
+          color: #e8956a !important;
+        }
+        .email-tag {
+          color: #8b8680 !important;
+        }
+        .email-greeting {
+          color: #f0ede8 !important;
+        }
+        .email-body-text {
+          color: #a09d97 !important;
+        }
+        .email-body-text-strong {
+          color: #d4d1cb !important;
+        }
+        .email-alert-box {
+          background-color: #200e0e !important;
+          border-color: #7f1d1d !important;
+        }
+        .email-alert-text {
+          color: #fca5a5 !important;
+        }
+        .email-meta-text {
+          color: #6b6760 !important;
+        }
+        .email-footer-cell {
+          background-color: #1c1a17 !important;
+          border-color: #3a3830 !important;
+        }
+        .email-footer-text {
+          color: #6b6760 !important;
+        }
+      }
+    </style>
+  </head>
+  <body style="margin: 0; padding: 0; background-color: #f5f3ee">
+    <table
+      role="presentation"
+      width="100%"
+      cellpadding="0"
+      cellspacing="0"
+      style="background-color: #f5f3ee; padding: 40px 16px"
+      class="email-outer"
+    >
+      <tr>
+        <td align="center">
+          <table
+            role="presentation"
+            cellpadding="0"
+            cellspacing="0"
+            style="
+              width: 100%;
+              max-width: 560px;
+              background-color: #ffffff;
+              border-radius: 16px;
+              border: 1px solid #e5e2dc;
+            "
+            class="email-card"
+          >
+            <tr>
+              <td
+                style="
+                  padding: 26px 32px;
+                  border-bottom: 1px solid #e5e2dc;
+                  background-color: #ffffff;
+                  border-radius: 16px 16px 0 0;
+                "
+                class="email-header-cell"
+              >
+                <p
+                  style="
+                    margin: 0 0 4px;
+                    font-size: 10px;
+                    letter-spacing: 0.18em;
+                    text-transform: uppercase;
+                    color: #8b8680;
+                    font-family: Helvetica, Arial, sans-serif;
+                  "
+                  class="email-tag"
+                >
+                  Security Alert
+                </p>
+                <p
+                  style="
+                    margin: 0;
+                    font-size: 20px;
+                    font-weight: 600;
+                    color: #6b3d0f;
+                    font-family: Georgia, &quot;Times New Roman&quot;, serif;
+                    letter-spacing: -0.3px;
+                  "
+                  class="email-logo"
+                >
+                  Spark CRM
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 36px 32px" class="email-cell">
+                <h1
+                  style="
+                    margin: 0 0 10px;
+                    font-size: 26px;
+                    font-weight: 600;
+                    color: #1c1a17;
+                    font-family: Georgia, &quot;Times New Roman&quot;, serif;
+                    letter-spacing: -0.5px;
+                  "
+                  class="email-greeting"
+                >
+                  Password Changed, ${userName}
+                </h1>
+                <p
+                  style="
+                    margin: 0 0 28px;
+                    font-size: 14px;
+                    line-height: 1.75;
+                    color: #6b6760;
+                    font-family: Helvetica, Arial, sans-serif;
+                  "
+                  class="email-body-text"
+                >
+                  Your account password was successfully changed on
+                  <strong style="color: #3d3a35" class="email-body-text-strong"
+                    >${new Date().toLocaleString("en-IN", { timeZone:
+                    "Asia/Kolkata", dateStyle: "medium", timeStyle: "short"
+                    })}</strong
+                  >.
+                </p>
+                <table
+                  role="presentation"
+                  cellpadding="0"
+                  cellspacing="0"
+                  width="100%"
+                  style="margin-bottom: 24px"
+                >
+                  <tr>
+                    <td
+                      style="
+                        padding: 14px 16px;
+                        background-color: #fef2f2;
+                        border-left: 3px solid #dc2626;
+                        border-radius: 4px;
+                      "
+                      class="email-alert-box"
+                    >
+                      <p
+                        style="
+                          margin: 0;
+                          font-size: 13px;
+                          line-height: 1.65;
+                          color: #b91c1c;
+                          font-family: Helvetica, Arial, sans-serif;
+                        "
+                        class="email-alert-text"
+                      >
+                        <strong>Not you?</strong> If you did not make this
+                        change, your account may be compromised. Please contact
+                        support immediately and reset your password.
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+                <p
+                  style="
+                    margin: 0;
+                    font-size: 12px;
+                    line-height: 1.65;
+                    color: #8b8680;
+                    font-family: Helvetica, Arial, sans-serif;
+                  "
+                  class="email-meta-text"
+                >
+                  For your security, all existing sessions have been kept
+                  active. We recommend reviewing your active sessions.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td
+                style="
+                  padding: 18px 32px;
+                  background-color: #faf9f6;
+                  border-top: 1px solid #e5e2dc;
+                  border-radius: 0 0 16px 16px;
+                "
+                class="email-footer-cell"
+              >
+                <p
+                  style="
+                    margin: 0;
+                    font-size: 11px;
+                    color: #a09d97;
+                    font-family: Helvetica, Arial, sans-serif;
+                    text-align: center;
+                  "
+                  class="email-footer-text"
+                >
+                  &copy; ${new Date().getFullYear()} Spark CRM
+                  &nbsp;&middot;&nbsp; All rights reserved.
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
+`,
 });
