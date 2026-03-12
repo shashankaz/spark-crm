@@ -28,7 +28,6 @@ export const fetchLeadsService = async ({
   cursor,
   limit,
   search,
-  orgId,
   userId,
   role,
 }: IFetchLeadsInput) => {
@@ -72,15 +71,6 @@ export const fetchLeadsService = async ({
       });
     }
 
-    if (orgId) {
-      pipeline[0].$search.compound.filter.push({
-        equals: {
-          path: "orgId",
-          value: orgId,
-        },
-      });
-    }
-
     pipeline.push(
       { $limit: limit },
       {
@@ -115,10 +105,6 @@ export const fetchLeadsService = async ({
   const countQuery: any = { tenantId };
 
   if (role !== "admin") countQuery.userId = userId;
-
-  if (orgId) {
-    countQuery.orgId = orgId;
-  }
 
   const whereQuery: any = { ...countQuery };
   if (cursor) {

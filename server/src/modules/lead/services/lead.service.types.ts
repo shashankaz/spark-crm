@@ -6,7 +6,6 @@ export interface IFetchLeadsInput {
   cursor?: Types.ObjectId;
   limit: number;
   search?: string;
-  orgId?: Types.ObjectId;
   userId?: Types.ObjectId;
   role?: string;
 }

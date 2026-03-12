@@ -28,14 +28,12 @@ export const getAllLeads = asyncHandler(async (req: Request, res: Response) => {
   const cursor = req.query.cursor as Types.ObjectId | undefined;
   const limit = Number(req.query.limit) || 10;
   const search = req.query.search as string | undefined;
-  const orgId = req.query.orgId as Types.ObjectId | undefined;
 
   const { leads, totalCount } = await fetchLeadsService({
     tenantId,
     cursor,
     limit,
     search,
-    orgId,
     userId,
     role,
   });
