@@ -32,12 +32,12 @@ import {
   useDeleteEmailTemplate,
 } from "@/hooks";
 
-import type { EmailTemplate } from "@/types/domain";
+import type { IEmailTemplate } from "@/types/domain";
 import type { CreateEmailTemplateRequest } from "@/types/services";
 
 export const EmailTemplatesTab: React.FC = () => {
   const [createOpen, setCreateOpen] = useState(false);
-  const [editTemplate, setEditTemplate] = useState<EmailTemplate | null>(null);
+  const [editTemplate, setEditTemplate] = useState<IEmailTemplate | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [activeTag, setActiveTag] = useState<string | null>(null);

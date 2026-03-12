@@ -6,10 +6,10 @@ import { Button } from "@/components/ui/button";
 
 import { getTagColor } from "./get-tag-color";
 
-import type { EmailTemplate } from "@/types/domain";
+import type { IEmailTemplate } from "@/types/domain";
 
 interface TemplateCardProps {
-  template: EmailTemplate;
+  template: IEmailTemplate;
   onEdit: () => void;
   onDelete: () => void;
 }

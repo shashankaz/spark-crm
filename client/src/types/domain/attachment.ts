@@ -1,4 +1,4 @@
-export interface Attachment {
+export interface IAttachment {
   _id: string;
 
   leadId: string;

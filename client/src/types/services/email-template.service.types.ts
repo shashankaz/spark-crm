@@ -1,11 +1,11 @@
-import type { EmailTemplate } from "@/types/domain";
+import type { IEmailTemplate } from "@/types/domain";
 
 export type EmailTemplatesData = {
-  templates: EmailTemplate[];
+  templates: IEmailTemplate[];
 };
 
 export type EmailTemplateData = {
-  template: EmailTemplate;
+  template: IEmailTemplate;
 };
 
 export type GetAllEmailTemplatesRequest = {
@@ -34,22 +34,22 @@ export type DeleteEmailTemplateRequest = { id: string };
 
 export type GetAllEmailTemplatesResponse = {
   message: string;
-  templates: EmailTemplate[];
+  templates: IEmailTemplate[];
 };
 
 export type GetEmailTemplateResponse = {
   message: string;
-  template: EmailTemplate;
+  template: IEmailTemplate;
 };
 
 export type CreateEmailTemplateResponse = {
   message: string;
-  template: EmailTemplate;
+  template: IEmailTemplate;
 };
 
 export type UpdateEmailTemplateResponse = {
   message: string;
-  template: EmailTemplate;
+  template: IEmailTemplate;
 };
 
 export type DeleteEmailTemplateResponse = { message: string };

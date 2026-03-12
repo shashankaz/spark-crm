@@ -1,12 +1,12 @@
-import type { Group } from "@/types/domain";
+import type { IGroup } from "@/types/domain";
 
 export type GroupsData = {
-  groups: Group[];
+  groups: IGroup[];
   totalCount: number;
 };
 
 export type GroupData = {
-  group: Group;
+  group: IGroup;
 };
 
 export type CampaignResult = {
@@ -42,13 +42,13 @@ export type SendCampaignRequest = {
 
 export type GetGroupsResponse = {
   message: string;
-  groups: Group[];
+  groups: IGroup[];
   totalCount: number;
 };
 
 export type GetGroupResponse = {
   message: string;
-  group: Group;
+  group: IGroup;
 };
 
 export type DeleteGroupRequest = {

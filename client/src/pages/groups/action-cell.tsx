@@ -23,9 +23,9 @@ import { SendCampaignForm } from "./send-campaign-form";
 
 import { useDeleteGroup } from "@/hooks";
 
-import type { Group } from "@/types/domain";
+import type { IGroup } from "@/types/domain";
 
-export const ActionCell = ({ group }: { group: Group }) => {
+export const ActionCell = ({ group }: { group: IGroup }) => {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [campaignOpen, setCampaignOpen] = useState(false);
 

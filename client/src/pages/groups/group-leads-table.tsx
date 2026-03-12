@@ -5,10 +5,10 @@ import { DataTable } from "@/components/shared/dashboard/data-table";
 
 import { columns } from "./columns";
 
-import type { Group } from "@/types/domain";
+import type { IGroup } from "@/types/domain";
 
 interface GroupLeadsTableProps {
-  groups: Group[];
+  groups: IGroup[];
 }
 
 export const GroupLeadsTable: React.FC<GroupLeadsTableProps> = ({ groups }) => {

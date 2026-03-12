@@ -11,11 +11,11 @@ import { RichEditor } from "@/components/shared/rich-editor";
 
 import { getTagColor } from "./get-tag-color";
 
-import type { EmailTemplate } from "@/types/domain";
+import type { IEmailTemplate } from "@/types/domain";
 import type { CreateEmailTemplateRequest } from "@/types/services";
 
 interface TemplateFormProps {
-  initial?: Partial<EmailTemplate>;
+  initial?: Partial<IEmailTemplate>;
   onSave: (data: CreateEmailTemplateRequest) => void;
   onCancel: () => void;
   isSaving?: boolean;

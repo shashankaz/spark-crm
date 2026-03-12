@@ -6,7 +6,7 @@ export type WorkflowActionType =
   | "update_status"
   | "send_webhook";
 
-export interface WorkflowAction {
+export interface IWorkflowAction {
   type: WorkflowActionType;
   config: Record<string, unknown>;
 }
@@ -19,7 +19,7 @@ export type Workflow = {
   active: boolean;
   entity: "lead" | "deal" | "organization";
   event: string;
-  actions: WorkflowAction[];
+  actions: IWorkflowAction[];
   executionCount: number;
   lastExecutedAt?: string;
 

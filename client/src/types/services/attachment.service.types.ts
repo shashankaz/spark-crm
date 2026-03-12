@@ -1,12 +1,12 @@
-import type { Attachment } from "@/types/domain";
+import type { IAttachment } from "@/types/domain";
 
 export type AttachmentsData = {
-  attachments: Attachment[];
+  attachments: IAttachment[];
   totalCount: number;
 };
 
 export type AttachmentData = {
-  attachment: Attachment;
+  attachment: IAttachment;
 };
 
 export type UploadUrlData = {
@@ -37,13 +37,13 @@ export type GenerateUploadUrlRequest = {
 
 export type GetAttachmentsResponse = {
   message: string;
-  attachments: Attachment[];
+  attachments: IAttachment[];
   totalCount: number;
 };
 
 export type CreateAttachmentResponse = {
   message: string;
-  attachment: Attachment;
+  attachment: IAttachment;
 };
 
 export type GenerateUploadUrlResponse = {

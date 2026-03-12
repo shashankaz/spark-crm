@@ -3,7 +3,7 @@ import { withApiHandler } from "@/api/api-handler";
 import type { ApiResponse } from "@/api/api-response";
 import { buildQueryParams } from "@/api/query-params";
 import type {
-  CreateWorkflowPayload,
+  ICreateWorkflowPayload,
   CreateWorkflowResponse,
   DeletedWorkflowData,
   DeleteWorkflowRequest,
@@ -14,7 +14,7 @@ import type {
   GetWorkflowByIdResponse,
   ToggleWorkflowRequest,
   ToggleWorkflowResponse,
-  UpdateWorkflowPayload,
+  IUpdateWorkflowPayload,
   UpdateWorkflowResponse,
   WorkflowData,
   WorkflowsData,
@@ -57,7 +57,7 @@ export const getWorkflowById = async (
   });
 
 export const createWorkflow = async (
-  payload: CreateWorkflowPayload,
+  payload: ICreateWorkflowPayload,
 ): Promise<CreateWorkflowResponse> =>
   withApiHandler(async () => {
     const response = await api.post<ApiResponse<WorkflowData>>(
@@ -74,7 +74,7 @@ export const createWorkflow = async (
   });
 
 export const updateWorkflow = async (
-  payload: UpdateWorkflowPayload,
+  payload: IUpdateWorkflowPayload,
 ): Promise<UpdateWorkflowResponse> =>
   withApiHandler(async () => {
     const { id, ...body } = payload;

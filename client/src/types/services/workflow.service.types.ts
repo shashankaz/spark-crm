@@ -31,21 +31,21 @@ export type ToggleWorkflowRequest = {
   id: string;
 };
 
-export interface WorkflowActionPayload {
+export interface IWorkflowActionPayload {
   type: string;
   config: Record<string, unknown>;
 }
 
-export interface CreateWorkflowPayload {
+export interface ICreateWorkflowPayload {
   name: string;
   description?: string;
   active?: boolean;
   entity: string;
   event: string;
-  actions?: WorkflowActionPayload[];
+  actions?: IWorkflowActionPayload[];
 }
 
-export interface UpdateWorkflowPayload extends Partial<CreateWorkflowPayload> {
+export interface IUpdateWorkflowPayload extends Partial<ICreateWorkflowPayload> {
   id: string;
 }
 

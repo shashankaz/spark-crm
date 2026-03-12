@@ -3,7 +3,7 @@ import { Download, FileText, Image, File } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-import type { Attachment } from "@/types/domain/attachment";
+import type { IAttachment } from "@/types/domain/attachment";
 
 export const getFileIcon = (fileType: string) => {
   if (fileType.startsWith("image/"))
@@ -32,7 +32,7 @@ export const formatBytes = (bytes: number): string => {
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
 };
 
-export const AttachmentCard = ({ attachment }: { attachment: Attachment }) => {
+export const AttachmentCard = ({ attachment }: { attachment: IAttachment }) => {
   const isImage = attachment.fileType.startsWith("image/");
 
   return (

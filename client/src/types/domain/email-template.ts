@@ -1,4 +1,4 @@
-export interface EmailTemplate {
+export interface IEmailTemplate {
   _id: string;
 
   name: string;
