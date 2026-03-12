@@ -4,7 +4,7 @@ import { Check, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-import type { Notification } from "@/types/domain";
+import type { INotification } from "@/types/domain";
 
 const categoryColor: Record<string, string> = {
   lead: "bg-blue-500",
@@ -26,7 +26,7 @@ const typeIcon: Record<string, string> = {
 };
 
 interface NotificationItemProps {
-  notification: Notification;
+  notification: INotification;
   onRead: (id: string) => void;
   onDelete: (id: string) => void;
 }

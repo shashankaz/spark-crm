@@ -10,10 +10,10 @@ import { NotificationItem } from "./notification-item";
 
 import { cn } from "@/lib/utils";
 
-import type { Notification } from "@/types/domain";
+import type { INotification } from "@/types/domain";
 
 // Mock data and functions for demonstration
-const notifications: Notification[] = [];
+const notifications: INotification[] = [];
 const unreadCount = 0;
 const connected = false;
 const markRead = () => {};
