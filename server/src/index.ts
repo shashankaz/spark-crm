@@ -2,6 +2,7 @@ import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import helmet from "helmet";
+import compression from "compression";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import dns from "dns";
@@ -9,7 +10,7 @@ import "dotenv/config";
 
 import { AppError } from "./shared/app-error";
 import { Database } from "./utils/db";
-import { router } from "./routes/index";
+import { router } from "./routes/v1";
 import { env } from "./config/env";
 import { globalErrorHandler } from "./middlewares/global-error.middleware";
 import { registerGracefulShutdown } from "./utils/graceful-shut-down";
@@ -46,6 +47,7 @@ app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 
 app.use(helmet());
+app.use(compression());
 app.use(cookieParser());
 
 morgan.token("localdate", function () {
