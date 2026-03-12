@@ -1,9 +1,9 @@
 import { formatDate } from "date-fns/format";
 import { stringify } from "csv-stringify/sync";
-import { Organization } from "../../models/organization.model";
+import { Organization } from "../../modules/organization/models/organization.model";
 import { uploadCsvToS3 } from "../../utils/upload-csv-to-s3";
-import { sendOrganizationExportMail } from "../../services/email.service";
-import { OrganizationExportJobPayload } from "../../types/services/export.service.types";
+import { sendOrganizationExportMail } from "../../utils/mail/email.helper";
+import { OrganizationExportJobPayload } from "../../utils/export/export.types";
 
 export const processOrganizationExport = async (
   payload: OrganizationExportJobPayload,

@@ -1,5 +1,5 @@
 import { LeadActionHistory } from "../models/lead-action-history.model";
-import { actionTypes } from "../utils/lead-action-type";
+import { actionTypes } from "../utils/constants/lead-action-type.constant";
 import { CreateLeadActionHistoryInput } from "../types/services/lead-action-history.service.types";
 
 export const createLeadActionHistoryService = async ({

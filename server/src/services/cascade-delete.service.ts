@@ -1,14 +1,14 @@
 import mongoose, { Types } from "mongoose";
-import { Lead } from "../models/lead.model";
-import { Call } from "../models/call.model";
-import { Comment } from "../models/comment.model";
-import { Attachment } from "../models/attachment.model";
-import { Email } from "../models/email.model";
+import { Lead } from "../modules/lead/models/lead.model";
+import { Call } from "../modules/call/models/call.model";
+import { Comment } from "../modules/comment/models/comment.model";
+import { Attachment } from "../modules/attachment/models/attachment.model";
+import { Email } from "../modules/lead-email/models/email.model";
 import { LeadActionHistory } from "../models/lead-action-history.model";
-import { Deal } from "../models/deal.model";
-import { Group } from "../models/group.model";
-import { User } from "../models/user.model";
-import { Session } from "../models/session.model";
+import { Deal } from "../modules/deal/models/deal.model";
+import { Group } from "../modules/group/models/group.model";
+import { User } from "../modules/user/models/user.model";
+import { Session } from "../modules/auth/models/session.model";
 
 export const deleteLeadWithCascade = async ({
   leadId,

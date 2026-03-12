@@ -1,9 +1,9 @@
 import { formatDate } from "date-fns/format";
 import { stringify } from "csv-stringify/sync";
-import { User } from "../../models/user.model";
+import { User } from "../../modules/user/models/user.model";
 import { uploadCsvToS3 } from "../../utils/upload-csv-to-s3";
-import { sendUserExportMail } from "../../services/email.service";
-import { UserExportJobPayload } from "../../types/services/export.service.types";
+import { sendUserExportMail } from "../../utils/mail/email.helper";
+import { UserExportJobPayload } from "../../utils/export/export.types";
 
 export const processUserExport = async (payload: UserExportJobPayload) => {
   const { tenantId, userIds, recipientEmail } = payload;
