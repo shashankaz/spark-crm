@@ -55,13 +55,11 @@ export const CallLogCreateForm: React.FC<CallLogCreateFormProps> = ({
       {
         onSuccess: ({ message }) => {
           toast.success(message);
+          form.reset();
+          setOpen(false);
         },
         onError: ({ message }) => {
           toast.error(message);
-        },
-        onSettled: () => {
-          form.reset();
-          setOpen(false);
         },
       },
     );

@@ -67,12 +67,10 @@ const ProfilePage = () => {
       {
         onSuccess: ({ message }) => {
           toast.success(message);
+          passwordForm.reset();
         },
         onError: ({ message }) => {
           toast.error(message);
-        },
-        onSettled: () => {
-          passwordForm.reset();
         },
       },
     );

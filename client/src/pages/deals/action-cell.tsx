@@ -31,12 +31,10 @@ export const ActionCell = ({ deal }: { deal: Deal }) => {
       {
         onSuccess: ({ message }) => {
           toast.success(message);
+          setDeleteOpen(false);
         },
         onError: ({ message }) => {
           toast.error(message);
-        },
-        onSettled: () => {
-          setDeleteOpen(false);
         },
       },
     );

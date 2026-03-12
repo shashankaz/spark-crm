@@ -71,13 +71,11 @@ export const LeadCreateForm: React.FC<LeadCreateFormProps> = ({ setOpen }) => {
       {
         onSuccess: ({ message }) => {
           toast.success(message);
+          form.reset();
+          setOpen(false);
         },
         onError: ({ message }) => {
           toast.error(message);
-        },
-        onSettled: () => {
-          form.reset();
-          setOpen(false);
         },
       },
     );
@@ -218,9 +216,7 @@ export const LeadCreateForm: React.FC<LeadCreateFormProps> = ({ setOpen }) => {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="organization">
-                Organization
-              </FieldLabel>
+              <FieldLabel htmlFor="organization">Organization</FieldLabel>
               <Select onValueChange={field.onChange} value={field.value ?? ""}>
                 <SelectTrigger
                   className="w-full"

@@ -42,12 +42,10 @@ export const LoginForm = () => {
           replace: true,
           state: { userId, email: data.email },
         });
+        form.reset();
       },
       onError: ({ message }) => {
         toast.error(message);
-      },
-      onSettled: () => {
-        form.reset();
       },
     });
   };

@@ -48,13 +48,13 @@ export const UserExportModal: React.FC<UserExportModalProps> = ({
         onSuccess: ({ message }) => {
           toast.success(message);
           setExportStatus("sent");
+          onOpenChange(false);
+          setExportEmail("");
         },
         onError: ({ message }) => {
           toast.error(message);
         },
         onSettled: () => {
-          onOpenChange(false);
-          setExportEmail("");
           setExportStatus("idle");
         },
       },

@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Search, Check, User, AtSign, Building2, X } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -86,10 +87,14 @@ export const GroupCreateForm: React.FC<GroupCreateFormProps> = ({
     mutate(
       { ...values, leads: selectedLeads.map((l) => l._id) },
       {
-        onSettled: () => {
+        onSuccess: ({ message }) => {
+          toast.success(message);
           form.reset();
           setSelectedLeads([]);
           setOpen(false);
+        },
+        onError: ({ message }) => {
+          toast.error(message);
         },
       },
     );

@@ -37,12 +37,10 @@ export const ActionCell = ({ lead }: { lead: Lead }) => {
       {
         onSuccess: ({ message }) => {
           toast.success(message);
+          setDeleteOpen(false);
         },
         onError: ({ message }) => {
           toast.error(message);
-        },
-        onSettled: () => {
-          setDeleteOpen(false);
         },
       },
     );

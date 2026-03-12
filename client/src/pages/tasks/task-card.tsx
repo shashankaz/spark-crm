@@ -128,12 +128,10 @@ export const TaskCard = ({ task }: TaskCardProps) => {
       {
         onSuccess: ({ message }) => {
           toast.success(message);
+          setDeleteOpen(false);
         },
         onError: ({ message }) => {
           toast.error(message);
-        },
-        onSettled: () => {
-          setDeleteOpen(false);
         },
       },
     );

@@ -35,12 +35,10 @@ export const CommentCreateForm = () => {
       {
         onSuccess: ({ message }) => {
           toast.success(message);
+          form.reset();
         },
         onError: ({ message }) => {
           toast.error(message);
-        },
-        onSettled: () => {
-          form.reset();
         },
       },
     );

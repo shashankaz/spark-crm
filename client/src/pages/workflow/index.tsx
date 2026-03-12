@@ -60,12 +60,10 @@ const WorkflowPage = () => {
       {
         onSuccess: ({ message }) => {
           toast.success(message);
+          setOpen(false);
         },
         onError: ({ message }) => {
           toast.error(message);
-        },
-        onSettled: () => {
-          setOpen(false);
         },
       },
     );

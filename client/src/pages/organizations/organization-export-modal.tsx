@@ -24,11 +24,9 @@ interface OrganizationExportModalProps {
   selectedOrganizations: Organization[];
 }
 
-export const OrganizationExportModal: React.FC<OrganizationExportModalProps> = ({
-  open,
-  onOpenChange,
-  selectedOrganizations,
-}) => {
+export const OrganizationExportModal: React.FC<
+  OrganizationExportModalProps
+> = ({ open, onOpenChange, selectedOrganizations }) => {
   const [exportEmail, setExportEmail] = useState("");
   const [exportStatus, setExportStatus] = useState<"idle" | "sending" | "sent">(
     "idle",
@@ -48,13 +46,13 @@ export const OrganizationExportModal: React.FC<OrganizationExportModalProps> = (
         onSuccess: ({ message }) => {
           toast.success(message);
           setExportStatus("sent");
+          onOpenChange(false);
+          setExportEmail("");
         },
         onError: ({ message }) => {
           toast.error(message);
         },
         onSettled: () => {
-          onOpenChange(false);
-          setExportEmail("");
           setExportStatus("idle");
         },
       },

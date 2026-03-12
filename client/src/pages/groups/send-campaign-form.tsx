@@ -85,13 +85,11 @@ export const SendCampaignForm: React.FC<SendCampaignFormProps> = ({
       {
         onSuccess: ({ message }) => {
           toast.success(message);
+          form.reset();
+          setOpen(false);
         },
         onError: ({ message }) => {
           toast.error(message);
-        },
-        onSettled: () => {
-          form.reset();
-          setOpen(false);
         },
       },
     );

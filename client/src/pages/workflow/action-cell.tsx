@@ -30,12 +30,10 @@ export const ActionCell = ({ workflow }: { workflow: Workflow }) => {
       {
         onSuccess: ({ message }) => {
           toast.success(message);
+          setDeleteOpen(false);
         },
         onError: ({ message }) => {
           toast.error(message);
-        },
-        onSettled: () => {
-          setDeleteOpen(false);
         },
       },
     );

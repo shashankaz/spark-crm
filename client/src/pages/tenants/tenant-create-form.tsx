@@ -112,14 +112,14 @@ export const TenantCreateForm: React.FC<TenantCreateFormProps> = ({
     mutate(data, {
       onSuccess: ({ message }) => {
         toast.success(message);
+        form.reset();
+        setOpen(false);
       },
       onError: ({ message }) => {
         toast.error(message);
       },
       onSettled: () => {
-        form.reset();
         setSlugStatus("idle");
-        setOpen(false);
       },
     });
   };
