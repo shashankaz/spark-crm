@@ -1,4 +1,4 @@
-import { LeadBase } from "../types/models/lead.model.types";
+import { LeadBase } from "../modules/lead/models/lead.model.types";
 
 const GENERIC_EMAIL_DOMAINS = Object.freeze([
   "gmail.com",

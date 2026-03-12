@@ -4,9 +4,9 @@ import {
 } from "@aws-sdk/client-sqs";
 import { SendMailOptions } from "nodemailer";
 
-import { sqs } from "../utils/sqs";
+import { sqs } from "../utils/aws/sqs";
 import { env } from "../config/env";
-import { transport } from "../utils/mail-transport";
+import { transport } from "../utils/mail/mail-transport";
 import {
   POLL_INTERVAL_MS,
   VISIBILITY_TIMEOUT,

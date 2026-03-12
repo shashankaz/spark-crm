@@ -1,9 +1,9 @@
 import { formatDate } from "date-fns/format";
 import { stringify } from "csv-stringify/sync";
-import { Tenant } from "../../models/tenant.model";
+import { Tenant } from "../../modules/tenant/models/tenant.model";
 import { uploadCsvToS3 } from "../../utils/upload-csv-to-s3";
-import { sendTenantExportMail } from "../../services/email.service";
-import { TenantExportJobPayload } from "../../types/services/export.service.types";
+import { sendTenantExportMail } from "../../utils/mail/email.helper";
+import { TenantExportJobPayload } from "../../utils/export/export.types";
 
 export const processTenantExport = async (payload: TenantExportJobPayload) => {
   const { tenantIds, recipientEmail } = payload;

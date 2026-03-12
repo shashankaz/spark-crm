@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { Tenant } from "../models/tenant.model";
-import { User } from "../models/user.model";
+import { Tenant } from "../modules/tenant/models/tenant.model";
+import { User } from "../modules/user/models/user.model";
 import { verifyAccessToken } from "../utils/auth/jwt";
 import { AppError } from "../shared/app-error";
 

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { validateWebhookTokenService } from "../services/webhook.service";
+import { validateWebhookTokenService } from "../modules/webhook/services/webhook.service";
 import { AppError } from "../shared/app-error";
 
 export const webhookAuth = async (

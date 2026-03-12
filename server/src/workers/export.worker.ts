@@ -2,9 +2,9 @@ import {
   ReceiveMessageCommand,
   DeleteMessageCommand,
 } from "@aws-sdk/client-sqs";
-import { sqs } from "../utils/sqs";
+import { sqs } from "../utils/aws/sqs";
 import { env } from "../config/env";
-import { ExportJobPayload } from "../types/services/export.service.types";
+import { ExportJobPayload } from "../utils/export/export.types";
 import {
   POLL_INTERVAL_MS,
   VISIBILITY_TIMEOUT,

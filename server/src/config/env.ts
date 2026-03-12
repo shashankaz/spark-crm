@@ -37,6 +37,9 @@ const envSchema = z.object({
   TAVILY_API_KEY: z.string().min(1, "TAVILY_API_KEY is required"),
 
   SERVER_BASE_URL: z.url().default("http://localhost:3000"),
+
+  ARCJET_ENV: z.enum(["development", "production"]).default("development"),
+  ARCJET_KEY: z.string().min(1, "ARCJET_KEY is required"),
 });
 
 const parsed = envSchema.safeParse(process.env);
