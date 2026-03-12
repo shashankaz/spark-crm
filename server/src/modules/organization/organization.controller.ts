@@ -23,12 +23,18 @@ export const getAllOrganizations = asyncHandler(
     const cursor = req.query.cursor as Types.ObjectId | undefined;
     const limit = Number(req.query.limit) || 10;
     const search = req.query.search as string | undefined;
+    const industry = req.query.industry as string | undefined;
+    const size = req.query.size as string | undefined;
+    const country = req.query.country as string | undefined;
 
     const { organizations, totalCount } = await fetchOrganizationsService({
       tenantId,
       cursor,
       limit,
       search,
+      industry,
+      size,
+      country,
     });
 
     sendSuccess(res, 200, "Organizations retrieved successfully", {

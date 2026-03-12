@@ -12,10 +12,29 @@ export const fetchDealsService = async ({
   cursor,
   limit,
   search,
+  valueRange,
+  probability,
 }: IFetchDealsInput) => {
   const countQuery: any = { tenantId };
+
   if (search) {
     countQuery.$or = [{ name: { $regex: search, $options: "i" } }];
+  }
+
+  if (valueRange === "low") {
+    countQuery.value = { $lt: 10000 };
+  } else if (valueRange === "medium") {
+    countQuery.value = { $gte: 10000, $lte: 100000 };
+  } else if (valueRange === "high") {
+    countQuery.value = { $gt: 100000 };
+  }
+
+  if (probability === "low") {
+    countQuery.probability = { $lte: 30 };
+  } else if (probability === "medium") {
+    countQuery.probability = { $gt: 30, $lte: 60 };
+  } else if (probability === "high") {
+    countQuery.probability = { $gt: 60 };
   }
 
   const whereQuery = { ...countQuery };

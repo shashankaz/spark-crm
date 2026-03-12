@@ -22,6 +22,11 @@ export const getAllWorkflows = asyncHandler(
     const cursor = req.query.cursor as Types.ObjectId | undefined;
     const limit = Number(req.query.limit) || 20;
     const search = req.query.search as string | undefined;
+    const entity = req.query.entity as string | undefined;
+    const event = req.query.event as string | undefined;
+    const activeParam = req.query.active as string | undefined;
+    const active =
+      activeParam !== undefined ? activeParam === "true" : undefined;
 
     const { workflows, totalCount } = await fetchWorkflowsService({
       tenantId,
@@ -29,6 +34,9 @@ export const getAllWorkflows = asyncHandler(
       cursor,
       limit,
       search,
+      entity,
+      event,
+      active,
     });
 
     sendSuccess(res, 200, "Workflows retrieved successfully", {

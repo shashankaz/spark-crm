@@ -11,6 +11,7 @@ import { enqueueUserExportService } from "../../utils/export/export.helper";
 import { AppError } from "../../shared/app-error";
 import { sendSuccess } from "../../shared/api-response";
 import { asyncHandler } from "../../shared/async-handler";
+import { UserRole } from "./models/user.model.types";
 
 export const getAllUsers = asyncHandler(async (req: Request, res: Response) => {
   const { tenantId } = req.user;
@@ -21,12 +22,14 @@ export const getAllUsers = asyncHandler(async (req: Request, res: Response) => {
   const cursor = req.query.cursor as Types.ObjectId | undefined;
   const limit = Number(req.query.limit) || 10;
   const search = req.query.search as string | undefined;
+  const role = req.query.role as UserRole | undefined;
 
   const { users, totalCount } = await fetchUsersService({
     tenantId,
     cursor,
     limit,
     search,
+    role,
   });
 
   sendSuccess(res, 200, "Users retrieved successfully", {

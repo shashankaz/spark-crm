@@ -16,6 +16,9 @@ export const fetchWorkflowsService = async ({
   cursor,
   limit,
   search,
+  entity,
+  event,
+  active,
 }: IFetchWorkflowsInput) => {
   const countQuery: any = { tenantId, userId };
 
@@ -24,6 +27,18 @@ export const fetchWorkflowsService = async ({
       { name: { $regex: search, $options: "i" } },
       { description: { $regex: search, $options: "i" } },
     ];
+  }
+
+  if (entity) {
+    countQuery.entity = entity;
+  }
+
+  if (event) {
+    countQuery.event = event;
+  }
+
+  if (active !== undefined) {
+    countQuery.active = active;
   }
 
   const whereQuery: any = { ...countQuery };
@@ -175,17 +190,14 @@ async function executeWorkflowAction(
 ): Promise<void> {
   switch (type) {
     case "send_email":
-      // Integration point: call email service with config.to / subject / message
       console.log("[Workflow] send_email action", { config, payload });
       break;
 
     case "notify_user":
-      // Integration point: push notification or in-app message
       console.log("[Workflow] notify_user action", { config, payload });
       break;
 
     case "send_webhook":
-      // Integration point: HTTP call to external URL
       console.log("[Workflow] send_webhook action", { config, payload });
       break;
 

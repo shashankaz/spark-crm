@@ -17,13 +17,19 @@ export const fetchUsersService = async ({
   cursor,
   limit,
   search,
+  role,
 }: IFetchUsersInput) => {
   const countQuery: any = { tenantId };
+
   if (search) {
     countQuery.$or = [
       { firstName: { $regex: search, $options: "i" } },
       { email: { $regex: search, $options: "i" } },
     ];
+  }
+
+  if (role) {
+    countQuery.role = role;
   }
 
   const whereQuery: any = { ...countQuery };

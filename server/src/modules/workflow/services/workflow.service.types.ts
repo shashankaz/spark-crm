@@ -11,6 +11,9 @@ export interface IFetchWorkflowsInput {
   cursor?: Types.ObjectId;
   limit: number;
   search?: string;
+  entity?: string;
+  event?: string;
+  active?: boolean;
 }
 
 export interface IFetchWorkflowByIdInput {

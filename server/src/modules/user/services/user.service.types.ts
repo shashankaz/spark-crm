@@ -1,10 +1,12 @@
 import { Types } from "mongoose";
+import { UserRole } from "../models/user.model.types";
 
 export interface IFetchUsersInput {
   tenantId: Types.ObjectId;
   cursor?: Types.ObjectId;
   limit: number;
   search?: string;
+  role?: UserRole;
 }
 
 export interface IFetchUserByIdInput {
@@ -19,7 +21,7 @@ export interface ICreateUserInput {
   email: string;
   mobile?: string;
   password?: string;
-  role?: string;
+  role?: UserRole;
 }
 
 export interface IUpdateUserInput {
@@ -30,7 +32,7 @@ export interface IUpdateUserInput {
   email?: string;
   mobile?: string;
   password?: string;
-  role?: string;
+  role?: UserRole;
 }
 
 export interface IRemoveUserInput {

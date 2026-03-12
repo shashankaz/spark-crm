@@ -5,6 +5,9 @@ export interface IFetchOrganizationsInput {
   cursor?: Types.ObjectId;
   limit: number;
   search?: string;
+  industry?: string;
+  size?: string;
+  country?: string;
 }
 
 export interface IFetchOrganizationByIdInput {

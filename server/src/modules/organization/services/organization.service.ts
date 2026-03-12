@@ -19,14 +19,30 @@ export const fetchOrganizationsService = async ({
   cursor,
   limit,
   search,
+  industry,
+  size,
+  country,
 }: IFetchOrganizationsInput) => {
   const countQuery: any = { tenantId };
+
   if (search) {
     countQuery.$or = [
       { name: { $regex: search, $options: "i" } },
       { email: { $regex: search, $options: "i" } },
       { contactName: { $regex: search, $options: "i" } },
     ];
+  }
+
+  if (industry) {
+    countQuery.industry = industry;
+  }
+
+  if (size) {
+    countQuery.size = size;
+  }
+
+  if (country) {
+    countQuery.country = { $regex: country, $options: "i" };
   }
 
   const whereQuery: any = { ...countQuery };

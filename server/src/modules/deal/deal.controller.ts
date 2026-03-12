@@ -20,12 +20,24 @@ export const getAllDeals = asyncHandler(async (req: Request, res: Response) => {
   const cursor = req.query.cursor as Types.ObjectId | undefined;
   const limit = Number(req.query.limit) || 10;
   const search = req.query.search as string | undefined;
+  const valueRange = req.query.valueRange as
+    | "low"
+    | "medium"
+    | "high"
+    | undefined;
+  const probability = req.query.probability as
+    | "low"
+    | "medium"
+    | "high"
+    | undefined;
 
   const { deals, totalCount } = await fetchDealsService({
     tenantId,
     cursor,
     limit,
     search,
+    valueRange,
+    probability,
   });
 
   sendSuccess(res, 200, "Deals retrieved successfully", {

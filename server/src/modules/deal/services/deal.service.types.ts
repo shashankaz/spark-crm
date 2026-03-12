@@ -5,6 +5,8 @@ export interface IFetchDealsInput {
   cursor?: Types.ObjectId;
   limit: number;
   search?: string;
+  valueRange?: "low" | "medium" | "high";
+  probability?: "low" | "medium" | "high";
 }
 
 export interface IDealResponse {
