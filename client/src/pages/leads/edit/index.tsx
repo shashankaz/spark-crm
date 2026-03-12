@@ -55,7 +55,7 @@ import {
   useUpdateLead,
 } from "@/hooks";
 
-import type { Lead, LeadStatus } from "@/types/domain/lead";
+import type { ILead, LeadStatus } from "@/types/domain/lead";
 
 const formatDuration = (seconds: number): string => {
   if (seconds === 0) return "—";
@@ -180,7 +180,7 @@ const LeadsEditPage = () => {
   const fullName = [lead.firstName, lead.lastName].filter(Boolean).join(" ");
 
   const leadEditData: Omit<
-    Lead,
+    ILead,
     | "userId"
     | "tenantId"
     | "idempotentId"
@@ -194,10 +194,10 @@ const LeadsEditPage = () => {
     lastName: lead.lastName,
     email: lead.email,
     mobile: lead.mobile,
-    gender: lead.gender as Lead["gender"],
+    gender: lead.gender as ILead["gender"],
     orgId: lead.orgId ?? "",
     orgName: lead.orgName ?? "",
-    source: (lead.source ?? "") as Lead["source"],
+    source: (lead.source ?? "") as ILead["source"],
   };
 
   const handleStatusChange = (value: string) => {

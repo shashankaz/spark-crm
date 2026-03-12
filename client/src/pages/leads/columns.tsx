@@ -4,11 +4,11 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 
-import type { Lead } from "@/types/domain";
+import type { ILead } from "@/types/domain";
 
 import { ActionCell } from "./action-cell";
 
-export const columns: ColumnDef<Lead>[] = [
+export const columns: ColumnDef<ILead>[] = [
   {
     id: "select",
     header: ({ table }) => (

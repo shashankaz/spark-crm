@@ -1,4 +1,4 @@
-export type Email = {
+export interface IEmail {
   _id: string;
 
   leadId: string;
@@ -11,4 +11,4 @@ export type Email = {
 
   createdAt: string;
   updatedAt: string;
-};
+}

@@ -1,4 +1,4 @@
-export type Deal = {
+export interface IDeal {
   _id: string;
 
   idempotentId: string;
@@ -14,4 +14,4 @@ export type Deal = {
 
   createdAt: string;
   updatedAt: string;
-};
+}

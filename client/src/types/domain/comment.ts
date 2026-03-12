@@ -1,4 +1,4 @@
-export type Comment = {
+export interface IComment {
   _id: string;
 
   tenantId: string;
@@ -8,4 +8,4 @@ export type Comment = {
 
   createdAt: string;
   updatedAt: string;
-};
+}

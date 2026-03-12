@@ -1,4 +1,4 @@
-export type Tenant = {
+export interface Tenant {
   _id: string;
 
   name: string;
@@ -27,4 +27,4 @@ export type Tenant = {
 
   createdAt: string;
   updatedAt: string;
-};
+}

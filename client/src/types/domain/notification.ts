@@ -11,10 +11,12 @@ export type NotificationCategory =
   | "system"
   | "user";
 
-export type Notification = {
+export interface INotification {
   _id: string;
+
   tenantId: string;
   userId?: string | null;
+
   title: string;
   message: string;
   type: NotificationType;
@@ -22,6 +24,7 @@ export type Notification = {
   isRead: boolean;
   link?: string;
   metadata?: Record<string, unknown>;
+
   createdAt: string;
   updatedAt: string;
-};
+}

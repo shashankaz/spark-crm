@@ -15,9 +15,9 @@ import { DeleteDialog } from "@/components/shared/dashboard/delete-dialog";
 
 import { useDeleteWorkflow } from "@/hooks";
 
-import type { Workflow } from "@/types/domain";
+import type { IWorkflow } from "@/types/domain";
 
-export const ActionCell = ({ workflow }: { workflow: Workflow }) => {
+export const ActionCell = ({ workflow }: { workflow: IWorkflow }) => {
   const [deleteOpen, setDeleteOpen] = useState(false);
 
   const navigate = useNavigate();

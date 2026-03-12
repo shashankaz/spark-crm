@@ -25,6 +25,7 @@ export type GetAllUsersRequest = {
   cursor?: string;
   limit?: number;
   search?: string;
+  role?: string;
 };
 
 export type GetUserByIdRequest = {

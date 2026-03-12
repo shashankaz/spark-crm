@@ -16,12 +16,12 @@ import { Button } from "@/components/ui/button";
 
 import { useExportDeals } from "@/hooks";
 
-import type { Deal } from "@/types/domain";
+import type { IDeal } from "@/types/domain";
 
 interface DealExportModalProps {
   open: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  selectedDeals: Deal[];
+  selectedDeals: IDeal[];
 }
 
 export const DealExportModal: React.FC<DealExportModalProps> = ({

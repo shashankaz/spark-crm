@@ -11,9 +11,9 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 
-import type { Email } from "@/types/domain";
+import type { IEmail } from "@/types/domain";
 
-export const StatusBadge = ({ status }: { status: Email["status"] }) => {
+export const StatusBadge = ({ status }: { status: IEmail["status"] }) => {
   if (status === "sent")
     return (
       <Badge variant="default" className="gap-1 text-xs">
@@ -33,7 +33,7 @@ export const StatusBadge = ({ status }: { status: Email["status"] }) => {
   );
 };
 
-export const EmailCard = ({ email }: { email: Email }) => {
+export const EmailCard = ({ email }: { email: IEmail }) => {
   const [expanded, setExpanded] = useState(false);
 
   return (

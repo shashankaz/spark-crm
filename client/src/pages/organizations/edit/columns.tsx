@@ -3,9 +3,9 @@ import type { ColumnDef } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
 
-import type { Lead } from "@/types/domain";
+import type { ILead } from "@/types/domain";
 
-export const columns: ColumnDef<Lead>[] = [
+export const columns: ColumnDef<ILead>[] = [
   {
     accessorKey: "firstName",
     header: ({ column }) => {

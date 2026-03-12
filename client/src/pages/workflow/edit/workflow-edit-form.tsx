@@ -34,12 +34,12 @@ import { availableActions, entityEvents } from "../helpers";
 
 import { useUpdateWorkflow } from "@/hooks";
 
-import type { Workflow } from "@/types/domain";
+import type { IWorkflow } from "@/types/domain";
 
 type ActionConfig = Record<string, string | undefined>;
 
 interface WorkflowEditFormProps {
-  workflow: Workflow;
+  workflow: IWorkflow;
 }
 
 export const WorkflowEditForm: React.FC<WorkflowEditFormProps> = ({

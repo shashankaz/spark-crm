@@ -1,12 +1,12 @@
-import type { Email } from "@/types/domain";
+import type { IEmail } from "@/types/domain";
 
 export type EmailsData = {
-  emails: Email[];
+  emails: IEmail[];
   totalCount: number;
 };
 
 export type EmailData = {
-  email: Email;
+  email: IEmail;
 };
 
 export type GetAllEmailsByLeadIdRequest = {
@@ -27,11 +27,11 @@ export type SendEmailForLeadRequest = {
 
 export type GetEmailsResponse = {
   message: string;
-  emails: Email[];
+  emails: IEmail[];
   totalCount: number;
 };
 
 export type SendEmailResponse = {
   message: string;
-  email: Email;
+  email: IEmail;
 };

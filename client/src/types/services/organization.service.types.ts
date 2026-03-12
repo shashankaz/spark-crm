@@ -21,6 +21,9 @@ export type GetAllOrganizationsRequest = {
   cursor?: string;
   limit?: number;
   search?: string;
+  industry?: string;
+  size?: string;
+  country?: string;
 };
 
 export type GetOrganizationByIdRequest = {

@@ -1,18 +1,20 @@
-import type { Deal } from "@/types/domain";
+import type { IDeal } from "@/types/domain";
 
 export type DealsData = {
-  deals: Deal[];
+  deals: IDeal[];
   totalCount: number;
 };
 
 export type DealData = {
-  deal: Deal;
+  deal: IDeal;
 };
 
 export type GetAllDealsRequest = {
   cursor?: string;
   limit?: number;
   search?: string;
+  valueRange?: string;
+  probability?: string;
 };
 
 export type GetDealRequest = { id: string };
@@ -28,13 +30,13 @@ export type DeleteDealRequest = { id: string };
 
 export type GetAllDealsResponse = {
   message: string;
-  deals: Deal[];
+  deals: IDeal[];
   totalCount: number;
 };
 
-export type GetDealResponse = { message: string; deal: Deal };
+export type GetDealResponse = { message: string; deal: IDeal };
 
-export type UpdateDealResponse = { message: string; deal: Deal };
+export type UpdateDealResponse = { message: string; deal: IDeal };
 
 export type DeleteDealResponse = { message: string };
 

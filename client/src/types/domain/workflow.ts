@@ -11,7 +11,7 @@ export interface IWorkflowAction {
   config: Record<string, unknown>;
 }
 
-export type Workflow = {
+export interface IWorkflow {
   _id: string;
 
   name: string;
@@ -25,4 +25,4 @@ export type Workflow = {
 
   createdAt: string;
   updatedAt: string;
-};
+}

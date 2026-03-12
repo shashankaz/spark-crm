@@ -16,10 +16,10 @@ import { dealFormSchema, type DealFormValues } from "./deal-form-schema";
 
 import { useUpdateDeal } from "@/hooks";
 
-import type { Deal } from "@/types/domain";
+import type { IDeal } from "@/types/domain";
 
 interface DealEditFormProps {
-  deal: Deal;
+  deal: IDeal;
 }
 
 export const DealEditForm: React.FC<DealEditFormProps> = ({ deal }) => {

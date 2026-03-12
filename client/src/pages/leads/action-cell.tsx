@@ -17,9 +17,9 @@ import { AssignLeadModal } from "./assign-lead-modal";
 
 import { useDeleteLead, useAssignLead, useUser } from "@/hooks";
 
-import type { Lead } from "@/types/domain";
+import type { ILead } from "@/types/domain";
 
-export const ActionCell = ({ lead }: { lead: Lead }) => {
+export const ActionCell = ({ lead }: { lead: ILead }) => {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [assignOpen, setAssignOpen] = useState(false);
 

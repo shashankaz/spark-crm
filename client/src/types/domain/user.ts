@@ -1,4 +1,4 @@
-export type User = {
+export interface User {
   _id: string;
 
   firstName: string;
@@ -15,4 +15,4 @@ export type User = {
 
   createdAt: string;
   updatedAt: string;
-};
+}

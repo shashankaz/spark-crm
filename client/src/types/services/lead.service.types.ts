@@ -1,16 +1,16 @@
-import type { Deal, Lead, LeadActionHistory } from "@/types/domain";
+import type { IDeal, ILead, ILeadActionHistory } from "@/types/domain";
 
 export type LeadsData = {
-  leads: Lead[];
+  leads: ILead[];
   totalCount: number;
 };
 
 export type LeadData = {
-  lead: Lead;
+  lead: ILead;
 };
 
 export type UpdatedLeadData = {
-  updatedLead: Lead;
+  updatedLead: ILead;
 };
 
 export type DeletedLeadData = {
@@ -22,11 +22,11 @@ export type LeadOrganizationsData = {
 };
 
 export type ActivitiesData = {
-  activities: LeadActionHistory[];
+  activities: ILeadActionHistory[];
 };
 
 export type LeadDealData = {
-  deal: Deal;
+  deal: IDeal;
 };
 
 export type GetAllLeadsRequest = {
@@ -93,23 +93,23 @@ export type AssignLeadRequest = {
 
 export type GetAllLeadsResponse = {
   message: string;
-  leads: Lead[];
+  leads: ILead[];
   totalCount: number;
 };
 
 export type GetLeadByIdResponse = {
   message: string;
-  lead: Lead;
+  lead: ILead;
 };
 
 export type CreateLeadResponse = {
   message: string;
-  lead: Lead;
+  lead: ILead;
 };
 
 export type UpdateLeadResponse = {
   message: string;
-  lead: Lead;
+  lead: ILead;
 };
 
 export type DeleteLeadResponse = {
@@ -124,17 +124,17 @@ export type GetLeadOrganizationsResponse = {
 
 export type GetLeadActivityByLeadIdResponse = {
   message: string;
-  activities: LeadActionHistory[];
+  activities: ILeadActionHistory[];
 };
 
 export type ConvertLeadToDealResponse = {
   message: string;
-  deal: Deal;
+  deal: IDeal;
 };
 
 export type AssignLeadResponse = {
   message: string;
-  lead: Lead;
+  lead: ILead;
 };
 
 export type ExportLeadsRequest = {

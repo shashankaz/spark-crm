@@ -1,12 +1,12 @@
-import type { Call } from "@/types/domain";
+import type { ICall } from "@/types/domain";
 
 export type CallsData = {
-  calls: Call[];
+  calls: ICall[];
   totalCount: number;
 };
 
 export type CallData = {
-  call: Call;
+  call: ICall;
 };
 
 export type GetAllCallsByLeadIdRequest = {
@@ -25,11 +25,11 @@ export type CreateCallForLeadRequest = {
 
 export type GetAllCallsByLeadIdResponse = {
   message: string;
-  calls: Call[];
+  calls: ICall[];
   totalCount: number;
 };
 
 export type CreateCallForLeadResponse = {
   message: string;
-  call: Call;
+  call: ICall;
 };

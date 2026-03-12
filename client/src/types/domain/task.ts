@@ -2,7 +2,7 @@ export type TaskStatus = "todo" | "in_progress" | "completed" | "cancelled";
 
 export type TaskPriority = "low" | "medium" | "high";
 
-export type Task = {
+export interface Task {
   _id: string;
 
   tenantId: string;
@@ -19,4 +19,4 @@ export type Task = {
 
   createdAt: string;
   updatedAt: string;
-};
+}

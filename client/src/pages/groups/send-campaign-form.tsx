@@ -26,7 +26,7 @@ import type { CampaignFormValues } from "./campaign-schema";
 
 import { useSendCampaignGroup, useEmailTemplates } from "@/hooks";
 
-import type { EmailTemplate } from "@/types/domain";
+import type { IEmailTemplate } from "@/types/domain";
 
 interface SendCampaignFormProps {
   groupId: string;
@@ -42,7 +42,7 @@ export const SendCampaignForm: React.FC<SendCampaignFormProps> = ({
   const editorRef = useRef<HTMLDivElement>(null);
   const [templatePickerOpen, setTemplatePickerOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] =
-    useState<EmailTemplate | null>(null);
+    useState<IEmailTemplate | null>(null);
   const [tagFilter, setTagFilter] = useState<string | null>(null);
   const [templateSearch, setTemplateSearch] = useState("");
 
@@ -58,7 +58,7 @@ export const SendCampaignForm: React.FC<SendCampaignFormProps> = ({
     },
   });
 
-  const applyTemplate = (template: EmailTemplate) => {
+  const applyTemplate = (template: IEmailTemplate) => {
     form.setValue("subject", template.subject, { shouldValidate: true });
     form.setValue("bodyHtml", template.bodyHtml, { shouldValidate: true });
     if (editorRef.current) {

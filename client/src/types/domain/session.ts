@@ -1,4 +1,4 @@
-export type Session = {
+export interface Session {
   _id: string;
 
   userId: string;
@@ -6,4 +6,4 @@ export type Session = {
 
   createdAt: string;
   updatedAt: string;
-};
+}

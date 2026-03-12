@@ -18,7 +18,7 @@ import type { GroupFormValues } from "./group-form-schema";
 
 import { useCreateGroup, useLeads } from "@/hooks";
 
-import type { Lead } from "@/types/domain";
+import type { ILead } from "@/types/domain";
 
 interface GroupCreateFormProps {
   setOpen: (open: boolean) => void;
@@ -27,7 +27,7 @@ interface GroupCreateFormProps {
 export const GroupCreateForm: React.FC<GroupCreateFormProps> = ({
   setOpen,
 }) => {
-  const [selectedLeads, setSelectedLeads] = useState<Lead[]>([]);
+  const [selectedLeads, setSelectedLeads] = useState<ILead[]>([]);
   const [search, setSearch] = useState("");
 
   const { data, isPending } = useLeads({});
@@ -54,10 +54,10 @@ export const GroupCreateForm: React.FC<GroupCreateFormProps> = ({
     );
   }, [leads, search]);
 
-  const isSelected = (lead: Lead) =>
+  const isSelected = (lead: ILead) =>
     selectedLeads.some((l) => l._id === lead._id);
 
-  const toggleLead = (lead: Lead) => {
+  const toggleLead = (lead: ILead) => {
     setSelectedLeads((prev) =>
       isSelected(lead)
         ? prev.filter((l) => l._id !== lead._id)

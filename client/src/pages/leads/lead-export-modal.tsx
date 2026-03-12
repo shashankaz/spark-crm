@@ -16,12 +16,12 @@ import { Button } from "@/components/ui/button";
 
 import { useExportLeads } from "@/hooks";
 
-import type { Lead } from "@/types/domain";
+import type { ILead } from "@/types/domain";
 
 interface LeadExportModalProps {
   open: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  selectedLeads: Lead[];
+  selectedLeads: ILead[];
 }
 
 export const LeadExportModal: React.FC<LeadExportModalProps> = ({

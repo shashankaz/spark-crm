@@ -1,4 +1,4 @@
-export type Call = {
+export interface ICall {
   _id: string;
 
   tenantId: string;
@@ -14,4 +14,4 @@ export type Call = {
   duration: number;
 
   createdAt: string;
-};
+}

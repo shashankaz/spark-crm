@@ -1,12 +1,12 @@
-import type { Workflow } from "@/types/domain";
+import type { IWorkflow } from "@/types/domain";
 
 export type WorkflowsData = {
-  workflows: Workflow[];
+  workflows: IWorkflow[];
   totalCount: number;
 };
 
 export type WorkflowData = {
-  workflow: Workflow;
+  workflow: IWorkflow;
 };
 
 export type DeletedWorkflowData = {
@@ -17,6 +17,9 @@ export type GetAllWorkflowsRequest = {
   cursor?: string;
   limit?: number;
   search?: string;
+  entity?: string;
+  event?: string;
+  active?: boolean;
 };
 
 export type GetWorkflowByIdRequest = {
@@ -51,23 +54,23 @@ export interface IUpdateWorkflowPayload extends Partial<ICreateWorkflowPayload> 
 
 export type GetAllWorkflowsResponse = {
   message: string;
-  workflows: Workflow[];
+  workflows: IWorkflow[];
   totalCount: number;
 };
 
 export type GetWorkflowByIdResponse = {
   message: string;
-  workflow: Workflow;
+  workflow: IWorkflow;
 };
 
 export type CreateWorkflowResponse = {
   message: string;
-  workflow: Workflow;
+  workflow: IWorkflow;
 };
 
 export type UpdateWorkflowResponse = {
   message: string;
-  workflow: Workflow;
+  workflow: IWorkflow;
 };
 
 export type DeleteWorkflowResponse = {
@@ -77,5 +80,5 @@ export type DeleteWorkflowResponse = {
 
 export type ToggleWorkflowResponse = {
   message: string;
-  workflow: Workflow;
+  workflow: IWorkflow;
 };

@@ -1,4 +1,4 @@
-export type Organization = {
+export interface Organization {
   _id: string;
 
   idempotentId: string;
@@ -22,4 +22,4 @@ export type Organization = {
 
   createdAt: string;
   updatedAt: string;
-};
+}

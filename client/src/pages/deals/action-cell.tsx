@@ -16,9 +16,9 @@ import { DeleteDialog } from "@/components/shared/dashboard/delete-dialog";
 
 import { useDeleteDeal } from "@/hooks";
 
-import type { Deal } from "@/types/domain";
+import type { IDeal } from "@/types/domain";
 
-export const ActionCell = ({ deal }: { deal: Deal }) => {
+export const ActionCell = ({ deal }: { deal: IDeal }) => {
   const [deleteOpen, setDeleteOpen] = useState(false);
 
   const navigate = useNavigate();

@@ -11,7 +11,7 @@ export type ActionType =
   | "lead_score_updated"
   | "lead_assigned";
 
-export type LeadActionHistory = {
+export interface ILeadActionHistory {
   _id: string;
 
   tenantId: string;
@@ -24,4 +24,4 @@ export type LeadActionHistory = {
   userName: string;
 
   createdAt: string;
-};
+}

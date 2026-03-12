@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 
-import type { Workflow } from "@/types/domain";
+import type { IWorkflow } from "@/types/domain";
 
 import { ActionCell } from "./action-cell";
 
-export const columns: ColumnDef<Workflow>[] = [
+export const columns: ColumnDef<IWorkflow>[] = [
   {
     id: "select",
     header: ({ table }) => (

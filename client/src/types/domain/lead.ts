@@ -5,7 +5,7 @@ export type LeadStatus =
   | "converted"
   | "lost";
 
-export type Lead = {
+export interface ILead {
   _id: string;
 
   idempotentId: string;
@@ -33,4 +33,4 @@ export type Lead = {
 
   createdAt: string;
   updatedAt: string;
-};
+}

@@ -1,12 +1,12 @@
-import type { Comment } from "@/types/domain";
+import type { IComment } from "@/types/domain";
 
 export type CommentsData = {
-  comments: Comment[];
+  comments: IComment[];
   totalCount: number;
 };
 
 export type CommentData = {
-  comment: Comment;
+  comment: IComment;
 };
 
 export type GetAllCommentsByLeadIdRequest = {
@@ -23,11 +23,11 @@ export type CreateCommentForLeadRequest = {
 
 export type GetAllCommentsByLeadIdResponse = {
   message: string;
-  comments: Comment[];
+  comments: IComment[];
   totalCount: number;
 };
 
 export type CreateCommentForLeadResponse = {
   message: string;
-  comment: Comment;
+  comment: IComment;
 };
