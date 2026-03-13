@@ -23,6 +23,16 @@ import {
 } from "./lead.service.types";
 import { ILeadBase, LeadGender, LeadStatus } from "../models/lead.model.types";
 
+const LEAD_SORT_FIELDS: Record<string, string> = {
+  firstName: "firstName",
+  lastName: "lastName",
+  email: "email",
+  orgName: "orgName",
+  score: "score",
+  updatedAt: "updatedAt",
+  _id: "_id",
+};
+
 export const fetchLeadsService = async ({
   tenantId,
   cursor,
@@ -30,7 +40,17 @@ export const fetchLeadsService = async ({
   search,
   userId,
   role,
+  assignment,
+  scoreRange,
+  sortBy = "_id",
+  sortOrder = "desc",
 }: IFetchLeadsInput) => {
+  const resolvedSortField = LEAD_SORT_FIELDS[sortBy] ?? "_id";
+  const resolvedSortDir = sortOrder === "asc" ? 1 : -1;
+  const sortStage: Record<string, 1 | -1> = {
+    [resolvedSortField]: resolvedSortDir,
+  };
+
   if (search) {
     const pipeline: any[] = [
       {
@@ -42,21 +62,11 @@ export const fetchLeadsService = async ({
                 text: {
                   query: search.trim(),
                   path: ["firstName", "email"],
-                  fuzzy: {
-                    maxEdits: 1,
-                    prefixLength: 2,
-                  },
+                  fuzzy: { maxEdits: 1, prefixLength: 2 },
                 },
               },
             ],
-            filter: [
-              {
-                equals: {
-                  path: "tenantId",
-                  value: tenantId,
-                },
-              },
-            ],
+            filter: [{ equals: { path: "tenantId", value: tenantId } }],
           },
         },
       },
@@ -64,10 +74,7 @@ export const fetchLeadsService = async ({
 
     if (role !== "admin") {
       pipeline[0].$search.compound.filter.push({
-        equals: {
-          path: "userId",
-          value: userId,
-        },
+        equals: { path: "userId", value: userId },
       });
     }
 
@@ -102,18 +109,33 @@ export const fetchLeadsService = async ({
     return { leads: formattedLeads, totalCount: leads.length };
   }
 
-  const countQuery: any = { tenantId };
+  const baseQuery: any = { tenantId };
+  if (role !== "admin") baseQuery.userId = userId;
 
-  if (role !== "admin") countQuery.userId = userId;
+  if (assignment === "assigned" && userId) {
+    baseQuery.userId = userId;
+  }
 
-  const whereQuery: any = { ...countQuery };
+  if (scoreRange && scoreRange !== "any") {
+    const scoreMap: Record<string, { $gte: number; $lte: number }> = {
+      low: { $gte: 0, $lte: 30 },
+      medium: { $gte: 31, $lte: 60 },
+      high: { $gte: 61, $lte: 100 },
+    };
+    if (scoreMap[scoreRange]) baseQuery.score = scoreMap[scoreRange];
+  }
+
+  const countQuery = { ...baseQuery };
+
+  const whereQuery: any = { ...baseQuery };
   if (cursor) {
-    whereQuery._id = { $gt: cursor };
+    const cursorVal = resolvedSortField === "_id" ? cursor : undefined;
+    if (cursorVal) whereQuery._id = { $gt: cursorVal };
   }
 
   const [totalCount, leads] = await Promise.all([
     Lead.countDocuments(countQuery).exec(),
-    Lead.find(whereQuery).sort({ _id: -1 }).limit(limit).exec(),
+    Lead.find(whereQuery).sort(sortStage).limit(limit).exec(),
   ]);
 
   const formattedLeads = leads.map((lead) => ({

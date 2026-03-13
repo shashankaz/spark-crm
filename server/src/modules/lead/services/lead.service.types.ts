@@ -8,6 +8,10 @@ export interface IFetchLeadsInput {
   search?: string;
   userId?: Types.ObjectId;
   role?: string;
+  assignment?: "all" | "assigned";
+  scoreRange?: "any" | "low" | "medium" | "high";
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
 }
 
 export interface IFetchLeadByIdInput {
