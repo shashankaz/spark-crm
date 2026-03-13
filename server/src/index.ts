@@ -6,6 +6,7 @@ import compression from "compression";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import dns from "dns";
+import { intervalToDuration, formatDuration } from "date-fns";
 import "dotenv/config";
 
 import { AppError } from "./shared/app-error";
@@ -73,7 +74,20 @@ Database.connect()
   });
 
 app.get("/", (_req: Request, res: Response) => {
-  res.json({ status: true, message: "API is Live!", uptime: process.uptime() });
+  const uptimeSeconds = process.uptime();
+
+  const duration = intervalToDuration({
+    start: 0,
+    end: uptimeSeconds * 1000,
+  });
+
+  const formattedUptime = formatDuration(duration);
+
+  res.json({
+    status: true,
+    message: "API is Live!",
+    uptime: formattedUptime,
+  });
 });
 
 app.get("/api/health", (_req: Request, res: Response) => {
