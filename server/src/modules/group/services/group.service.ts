@@ -12,6 +12,7 @@ import {
   IUpdateGroupInput,
 } from "./group.service.types";
 import { ILeadDocument } from "../../lead/models/lead.model.types";
+import { IGroupDocument } from "../models/group.model.types";
 
 export const createGroupService = async ({
   name,
@@ -31,18 +32,46 @@ export const createGroupService = async ({
   return group;
 };
 
+const GROUP_SORT_FIELDS: Record<string, string> = {
+  name: "name",
+  description: "description",
+  updatedAt: "updatedAt",
+  _id: "_id",
+};
+
 export const fetchGroupsService = async ({
   tenantId,
   userId,
+  search,
+  leadCount,
+  sortBy = "_id",
+  sortOrder = "desc",
 }: IFetchGroupsInput) => {
-  const query: any = { tenantId, userId };
+  const resolvedSortField = GROUP_SORT_FIELDS[sortBy] ?? "_id";
+  const resolvedSortDir = sortOrder === "asc" ? 1 : -1;
+  const sortStage: Record<string, 1 | -1> = {
+    [resolvedSortField]: resolvedSortDir,
+  };
+
+  const searchQuery: any = { tenantId, userId };
+
+  if (search) {
+    searchQuery.$or = [
+      { name: { $regex: search.trim(), $options: "i" } },
+      { description: { $regex: search.trim(), $options: "i" } },
+    ];
+  }
+
+  if (leadCount && leadCount !== "any") {
+    // Pending to implement
+  }
 
   const [totalCount, groups] = await Promise.all([
-    Group.countDocuments(query).exec(),
-    Group.find(query).sort({ _id: -1 }).exec(),
+    Group.countDocuments(searchQuery).exec(),
+    Group.find(searchQuery).sort(sortStage).exec(),
   ]);
 
-  const formattedGroups = groups.map((group) => ({
+  const formattedGroups = groups.map((group: IGroupDocument) => ({
     _id: group._id,
     name: group.name,
     description: group.description ?? undefined,

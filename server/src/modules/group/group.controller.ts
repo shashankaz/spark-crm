@@ -41,9 +41,24 @@ export const getGroups = asyncHandler(async (req: Request, res: Response) => {
     throw new AppError("Tenant ID is missing in user data", 400);
   }
 
+  const search = req.query.search as string | undefined;
+  const leadCount = req.query.leadCount as
+    | "any"
+    | "empty"
+    | "small"
+    | "medium"
+    | "large"
+    | undefined;
+  const sortBy = req.query.sortBy as string | undefined;
+  const sortOrder = req.query.sortOrder as "asc" | "desc" | undefined;
+
   const { groups, totalCount } = await fetchGroupsService({
     tenantId,
     userId,
+    search,
+    leadCount,
+    sortBy,
+    sortOrder,
   });
 
   sendSuccess(res, 200, "Groups retrieved successfully", {

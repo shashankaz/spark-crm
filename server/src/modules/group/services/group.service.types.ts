@@ -24,6 +24,10 @@ export interface IDeleteGroupInput {
 export interface IFetchGroupsInput {
   tenantId: Types.ObjectId;
   userId?: Types.ObjectId;
+  search?: string;
+  leadCount?: "any" | "empty" | "small" | "medium" | "large";
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
 }
 
 export interface IGetGroupByIdInput {
