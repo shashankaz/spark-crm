@@ -11,6 +11,10 @@ import {
   ISendEmailForLeadInput,
 } from "./email.service.types";
 import { FROM_EMAIL } from "../../../utils/constants/email.constant";
+import {
+  createEmailTracking,
+  injectEmailTracking,
+} from "../../../utils/mail/email-tracking.helper";
 
 export const fetchEmailsByLeadService = async ({
   leadId,
@@ -64,6 +68,12 @@ export const sendEmailForLeadService = async ({
     status: "draft",
   });
 
+  const trackingId = await createEmailTracking(
+    emailRecord._id as Types.ObjectId,
+  );
+  emailRecord.trackingId = new Types.ObjectId(trackingId);
+  const trackedHtml = injectEmailTracking(bodyHtml, trackingId);
+
   try {
     await sqs.send(
       new SendMessageCommand({
@@ -72,7 +82,7 @@ export const sendEmailForLeadService = async ({
           from: `"Spark CRM" <${FROM_EMAIL}>`,
           to,
           subject,
-          html: bodyHtml,
+          html: trackedHtml,
           text: bodyText,
         }),
       }),
