@@ -12,6 +12,7 @@ import {
   assignLead,
   exportLeads,
   importLeads,
+  bulkDeleteLeads,
 } from "./lead.controller";
 import { requireAuth } from "../../middlewares/auth.middleware";
 import { requireAdmin } from "../../middlewares/role.middleware";
@@ -28,6 +29,7 @@ router.get("/:id", getLeadById);
 router.post("/", createLead);
 router.post("/bulk", bulkWriteLeads);
 router.post("/import", upload.single("file"), importLeads);
+router.delete("/bulk", bulkDeleteLeads);
 router.post("/export", exportLeads);
 router.post("/:id/convert", convertLeadToDeal);
 router.patch("/:id", updateLeadById);

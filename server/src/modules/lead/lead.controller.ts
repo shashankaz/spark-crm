@@ -17,6 +17,7 @@ import { AppError } from "../../shared/app-error";
 import { sendSuccess } from "../../shared/api-response";
 import { asyncHandler } from "../../shared/async-handler";
 import { importLeadsService } from "./services/lead-import.service";
+import { bulkDeleteLeadsWithCascade } from "../../services/cascade-delete.service";
 import { validateEmailWithArcjet } from "../../utils/arcjet/validate-email";
 
 export const getAllLeads = asyncHandler(async (req: Request, res: Response) => {
@@ -28,6 +29,15 @@ export const getAllLeads = asyncHandler(async (req: Request, res: Response) => {
   const cursor = req.query.cursor as Types.ObjectId | undefined;
   const limit = Number(req.query.limit) || 10;
   const search = req.query.search as string | undefined;
+  const assignment = req.query.assignment as "all" | "assigned" | undefined;
+  const scoreRange = req.query.scoreRange as
+    | "any"
+    | "low"
+    | "medium"
+    | "high"
+    | undefined;
+  const sortBy = req.query.sortBy as string | undefined;
+  const sortOrder = req.query.sortOrder as "asc" | "desc" | undefined;
 
   const { leads, totalCount } = await fetchLeadsService({
     tenantId,
@@ -36,6 +46,10 @@ export const getAllLeads = asyncHandler(async (req: Request, res: Response) => {
     search,
     userId,
     role,
+    assignment,
+    scoreRange,
+    sortBy,
+    sortOrder,
   });
 
   sendSuccess(res, 200, "Leads retrieved successfully", {
@@ -336,6 +350,32 @@ export const assignLead = asyncHandler(async (req: Request, res: Response) => {
 
   sendSuccess(res, 200, "Lead assigned successfully", { lead });
 });
+
+export const bulkDeleteLeads = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { tenantId } = req.user;
+    if (!tenantId) throw new AppError("Tenant ID is missing", 400);
+
+    const { leadIds } = req.body;
+    if (!Array.isArray(leadIds) || leadIds.length === 0) {
+      throw new AppError("leadIds must be a non-empty array", 400);
+    }
+
+    if (leadIds.some((id) => !Types.ObjectId.isValid(id))) {
+      throw new AppError("One or more Lead IDs are invalid", 400);
+    }
+
+    const objectIds = leadIds.map((id: string) => new Types.ObjectId(id));
+    const { deleted } = await bulkDeleteLeadsWithCascade({
+      leadIds: objectIds,
+      tenantId,
+    });
+
+    sendSuccess(res, 200, `${deleted} lead(s) deleted successfully`, {
+      deleted,
+    });
+  },
+);
 
 export const exportLeads = asyncHandler(async (req: Request, res: Response) => {
   const { tenantId } = req.user;

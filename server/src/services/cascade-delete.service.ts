@@ -55,6 +55,62 @@ export const deleteLeadWithCascade = async ({
   }
 };
 
+export const bulkDeleteLeadsWithCascade = async ({
+  leadIds,
+  tenantId,
+}: {
+  leadIds: Types.ObjectId[];
+  tenantId: Types.ObjectId;
+}) => {
+  const dbSession = await mongoose.startSession();
+
+  try {
+    await dbSession.startTransaction();
+
+    const leads = await Lead.find(
+      { _id: { $in: leadIds }, tenantId },
+      { _id: 1 },
+    ).session(dbSession);
+
+    const verifiedIds = leads.map((l) => l._id);
+
+    await Promise.all([
+      Lead.deleteMany({ _id: { $in: verifiedIds } }, { session: dbSession }),
+      Call.deleteMany({ leadId: { $in: verifiedIds } }, { session: dbSession }),
+      Comment.deleteMany(
+        { leadId: { $in: verifiedIds } },
+        { session: dbSession },
+      ),
+      Attachment.deleteMany(
+        { leadId: { $in: verifiedIds } },
+        { session: dbSession },
+      ),
+      Email.deleteMany(
+        { leadId: { $in: verifiedIds } },
+        { session: dbSession },
+      ),
+      LeadActionHistory.deleteMany(
+        { leadId: { $in: verifiedIds } },
+        { session: dbSession },
+      ),
+      Deal.deleteMany({ leadId: { $in: verifiedIds } }, { session: dbSession }),
+      Group.updateMany(
+        { leads: { $in: verifiedIds } },
+        { $pull: { leads: { $in: verifiedIds } } },
+        { session: dbSession },
+      ),
+    ]);
+
+    await dbSession.commitTransaction();
+    return { deleted: verifiedIds.length };
+  } catch (error) {
+    await dbSession.abortTransaction();
+    throw error;
+  } finally {
+    dbSession.endSession();
+  }
+};
+
 export const deleteUserWithCascade = async ({
   userId,
 }: {
