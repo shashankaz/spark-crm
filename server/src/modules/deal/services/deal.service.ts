@@ -7,6 +7,14 @@ import {
   IUpdateDealInput,
 } from "./deal.service.types";
 
+const DEAL_SORT_FIELDS: Record<string, string> = {
+  name: "name",
+  value: "value",
+  probability: "probability",
+  updatedAt: "updatedAt",
+  _id: "_id",
+};
+
 export const fetchDealsService = async ({
   tenantId,
   cursor,
@@ -14,37 +22,44 @@ export const fetchDealsService = async ({
   search,
   valueRange,
   probability,
+  sortBy = "_id",
+  sortOrder = "desc",
 }: IFetchDealsInput) => {
-  const countQuery: any = { tenantId };
+  const resolvedSortField = DEAL_SORT_FIELDS[sortBy] ?? "_id";
+  const resolvedSortDir = sortOrder === "asc" ? 1 : -1;
+  const sortStage: Record<string, 1 | -1> = {
+    [resolvedSortField]: resolvedSortDir,
+  };
+
+  const whereQuery: any = { tenantId };
 
   if (search) {
-    countQuery.$or = [{ name: { $regex: search, $options: "i" } }];
+    whereQuery.$or = [{ name: { $regex: search, $options: "i" } }];
   }
 
   if (valueRange === "low") {
-    countQuery.value = { $lt: 10000 };
+    whereQuery.value = { $lt: 10000 };
   } else if (valueRange === "medium") {
-    countQuery.value = { $gte: 10000, $lte: 100000 };
+    whereQuery.value = { $gte: 10000, $lte: 100000 };
   } else if (valueRange === "high") {
-    countQuery.value = { $gt: 100000 };
+    whereQuery.value = { $gt: 100000 };
   }
 
   if (probability === "low") {
-    countQuery.probability = { $lte: 30 };
+    whereQuery.probability = { $lte: 30 };
   } else if (probability === "medium") {
-    countQuery.probability = { $gt: 30, $lte: 60 };
+    whereQuery.probability = { $gt: 30, $lte: 60 };
   } else if (probability === "high") {
-    countQuery.probability = { $gt: 60 };
+    whereQuery.probability = { $gt: 60 };
   }
 
-  const whereQuery = { ...countQuery };
   if (cursor) {
     whereQuery._id = { $gt: cursor };
   }
 
   const [totalCount, deals] = await Promise.all([
-    Deal.countDocuments(countQuery).exec(),
-    Deal.find(whereQuery).sort({ _id: -1 }).limit(limit).exec(),
+    Deal.countDocuments(whereQuery).exec(),
+    Deal.find(whereQuery).sort(sortStage).limit(limit).exec(),
   ]);
 
   const formattedDeals = deals.map((deal) => ({

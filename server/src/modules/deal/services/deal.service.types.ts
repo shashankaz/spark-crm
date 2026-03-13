@@ -7,6 +7,8 @@ export interface IFetchDealsInput {
   search?: string;
   valueRange?: "low" | "medium" | "high";
   probability?: "low" | "medium" | "high";
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
 }
 
 export interface IDealResponse {

@@ -31,6 +31,9 @@ export const getAllDeals = asyncHandler(async (req: Request, res: Response) => {
     | "high"
     | undefined;
 
+  const sortBy = req.query.sortBy as string | undefined;
+  const sortOrder = req.query.sortOrder as "asc" | "desc" | undefined;
+
   const { deals, totalCount } = await fetchDealsService({
     tenantId,
     cursor,
@@ -38,6 +41,8 @@ export const getAllDeals = asyncHandler(async (req: Request, res: Response) => {
     search,
     valueRange,
     probability,
+    sortBy,
+    sortOrder,
   });
 
   sendSuccess(res, 200, "Deals retrieved successfully", {
