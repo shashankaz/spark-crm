@@ -1,11 +1,10 @@
-import cron from "node-cron";
 import { subDays, startOfDay, endOfDay } from "date-fns";
 import { SendMessageCommand } from "@aws-sdk/client-sqs";
 
-import { Lead } from "../models/lead.model";
-import { UserDocument } from "../types/models/user.model.types";
+import { Lead } from "../modules/lead/models/lead.model";
+import { IUserDocument } from "../modules/user/models/user.model.types";
 import { LeadReminderJobPayload } from "../types/services/lead-reminder.service.types";
-import { sqs } from "../utils/sqs";
+import { sqs } from "../utils/aws/sqs";
 import { env } from "../config/env";
 
 export const enqueueLeadReminders = async (): Promise<void> => {
@@ -16,7 +15,7 @@ export const enqueueLeadReminders = async (): Promise<void> => {
   const leads = await Lead.find({
     status: "new",
     createdAt: { $gte: start, $lte: end },
-  }).populate<{ userId: UserDocument }>("userId");
+  }).populate<{ userId: IUserDocument }>("userId");
 
   let enqueuedCount = 0;
 
@@ -49,16 +48,4 @@ export const enqueueLeadReminders = async (): Promise<void> => {
   console.log(
     `[LeadReminderJob] Enqueued ${enqueuedCount}/${leads.length} lead reminder messages.`,
   );
-};
-
-export const startLeadReminderJob = (): void => {
-  cron.schedule("0 23 * * *", async () => {
-    console.log("[LeadReminderJob] Starting daily lead reminder enqueue...");
-
-    try {
-      await enqueueLeadReminders();
-    } catch (error) {
-      console.error("[LeadReminderJob] Unexpected error:", error);
-    }
-  });
 };

@@ -1,1 +1,1 @@
-export { startLeadReminderJob } from "./lead-reminder.job";
+export { enqueueLeadReminders } from "./lead-reminder.job";

@@ -3,9 +3,9 @@ import {
   DeleteMessageCommand,
 } from "@aws-sdk/client-sqs";
 
-import { sqs } from "../utils/sqs";
+import { sqs } from "../utils/aws/sqs";
 import { env } from "../config/env";
-import { sendLeadReminderMail } from "../services/email.service";
+import { sendLeadReminderMail } from "../utils/mail/email.helper";
 import { LeadReminderJobPayload } from "../types/services/lead-reminder.service.types";
 import {
   POLL_INTERVAL_MS,
