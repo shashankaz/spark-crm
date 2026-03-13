@@ -9,39 +9,28 @@ export const TableSkeleton = ({
 }) => {
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between border-b pb-4">
-        <div className="space-y-2">
-          <Skeleton className="h-8 w-32" />
-          <Skeleton className="h-4 w-64" />
-        </div>
-        <div className="flex gap-2">
-          <Skeleton className="h-9 w-24 rounded-full" />
-          <Skeleton className="h-9 w-24 rounded-full" />
-        </div>
+      <div className="flex justify-end mb-4 gap-2">
+        <Skeleton className="h-10 w-1/3 rounded-md" />
+        <Skeleton className="h-10 w-24 rounded-md" />
       </div>
 
-      <div className="flex items-center justify-between">
-        <Skeleton className="h-10 w-72 rounded-full" />
-        <Skeleton className="h-9 w-24 rounded-lg" />
-      </div>
-
-      <div className="rounded-lg border overflow-hidden">
-        <div className="flex items-center gap-4 border-b bg-muted/40 px-4 py-3">
-          <Skeleton className="h-4 w-4 rounded" />
-          {Array.from({ length: cols }).map((_, i) => (
-            <Skeleton key={i} className="h-4 flex-1" />
-          ))}
+      <div className="overflow-hidden rounded-md border">
+        <div className="border-b bg-muted/40 px-5 py-3">
+          <div className="flex items-center gap-4">
+            {Array.from({ length: cols }).map((_, i) => (
+              <Skeleton key={`header-${i}`} className="h-4 flex-1" />
+            ))}
+          </div>
         </div>
 
         {Array.from({ length: rows }).map((_, rowIdx) => (
           <div
-            key={rowIdx}
-            className="flex items-center gap-4 border-b last:border-0 px-4 py-4"
+            key={`row-${rowIdx}`}
+            className="flex items-center gap-4 border-b last:border-0 px-5 py-4"
           >
-            <Skeleton className="h-4 w-4 rounded" />
             {Array.from({ length: cols }).map((_, colIdx) => (
               <Skeleton
-                key={colIdx}
+                key={`cell-${rowIdx}-${colIdx}`}
                 className="h-4 flex-1"
                 style={{ opacity: 1 - colIdx * 0.08 }}
               />
@@ -50,11 +39,15 @@ export const TableSkeleton = ({
         ))}
       </div>
 
-      <div className="flex items-center justify-between">
-        <Skeleton className="h-4 w-40" />
-        <div className="flex gap-2">
-          <Skeleton className="h-9 w-24 rounded-lg" />
-          <Skeleton className="h-9 w-24 rounded-lg" />
+      <div className="flex items-center justify-between gap-4 flex-wrap pt-1">
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-4 w-20" />
+          <Skeleton className="h-8 w-14 rounded-md" />
+          <Skeleton className="h-4 w-20" />
+        </div>
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-8 w-8 rounded-md" />
+          <Skeleton className="h-8 w-8 rounded-md" />
         </div>
       </div>
     </div>

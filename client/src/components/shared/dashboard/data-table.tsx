@@ -21,10 +21,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
 
 import { SelectVisibleCols } from "./select-visible-cols";
 import { SearchInput } from "./search-input";
+import { Pagination } from "./pagination";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -33,6 +33,11 @@ interface DataTableProps<TData, TValue> {
   onSelectionChange?: (selectedRows: TData[]) => void;
   search: string;
   onSearchChange: (value: string) => void;
+  totalCount?: number;
+  onPageChange?: (page: number) => void;
+  onPageSizeChange?: (size: number) => void;
+  pageIndex?: number;
+  pageSize?: number;
 }
 
 export const DataTable = <TData, TValue>({
@@ -42,10 +47,27 @@ export const DataTable = <TData, TValue>({
   onSelectionChange,
   search,
   onSearchChange,
+  totalCount,
+  onPageChange,
+  onPageSizeChange,
+  pageIndex: controlledPageIndex,
+  pageSize: controlledPageSize,
 }: DataTableProps<TData, TValue>) => {
+  const isServerPaginated =
+    typeof onPageChange === "function" && typeof totalCount === "number";
+
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
+  const [localPageIndex, setLocalPageIndex] = useState(0);
+  const [localPageSize, setLocalPageSize] = useState(10);
+
+  const currentPageIndex = isServerPaginated
+    ? (controlledPageIndex ?? 0)
+    : localPageIndex;
+  const currentPageSize = isServerPaginated
+    ? (controlledPageSize ?? 10)
+    : localPageSize;
 
   const table = useReactTable({
     data,
@@ -62,10 +84,40 @@ export const DataTable = <TData, TValue>({
     },
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
+    ...(isServerPaginated
+      ? {
+          manualPagination: true,
+          pageCount: Math.ceil(totalCount! / currentPageSize),
+          onPaginationChange: (updater) => {
+            const prev = {
+              pageIndex: currentPageIndex,
+              pageSize: currentPageSize,
+            };
+            const next =
+              typeof updater === "function" ? updater(prev) : updater;
+            if (next.pageIndex !== prev.pageIndex)
+              onPageChange!(next.pageIndex);
+            if (next.pageSize !== prev.pageSize)
+              onPageSizeChange?.(next.pageSize);
+          },
+        }
+      : {
+          onPaginationChange: (updater) => {
+            const prev = { pageIndex: localPageIndex, pageSize: localPageSize };
+            const next =
+              typeof updater === "function" ? updater(prev) : updater;
+            setLocalPageIndex(next.pageIndex);
+            setLocalPageSize(next.pageSize);
+          },
+        }),
     state: {
       columnVisibility,
       rowSelection,
       sorting,
+      pagination: {
+        pageIndex: currentPageIndex,
+        pageSize: currentPageSize,
+      },
     },
   });
 
@@ -79,9 +131,26 @@ export const DataTable = <TData, TValue>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rowSelection]);
 
+  useEffect(() => {
+    if (isServerPaginated) {
+      onPageChange!(0);
+    } else {
+      setLocalPageIndex(0);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search]);
+
+  const totalRows = isServerPaginated
+    ? totalCount!
+    : table.getFilteredRowModel().rows.length;
+  const selectedRowsCount = table.getFilteredSelectedRowModel().rows.length;
+  const canNextPage = table.getCanNextPage();
+  const canPreviousPage = table.getCanPreviousPage();
+
   return (
     <>
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-end mb-4 gap-2">
         <SearchInput
           placeholder={`Search ${placeholder}`}
           value={search}
@@ -95,18 +164,16 @@ export const DataTable = <TData, TValue>({
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
@@ -141,31 +208,21 @@ export const DataTable = <TData, TValue>({
         </Table>
       </div>
 
-      <div className="flex items-center justify-between">
-        <div className="text-muted-foreground text-sm">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div>
-
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
-      </div>
+      {data.length > 0 && (
+        <Pagination
+          pageSize={currentPageSize}
+          onPageSizeChange={(size) => {
+            table.setPageSize(size);
+          }}
+          nextCursor={canNextPage ? "next" : null}
+          prevCursor={canPreviousPage ? "prev" : null}
+          onNext={() => table.nextPage()}
+          onPrevious={() => table.previousPage()}
+          totalRows={totalRows}
+          placeholder={placeholder}
+          selectedRowsCount={selectedRowsCount}
+        />
+      )}
     </>
   );
 };
