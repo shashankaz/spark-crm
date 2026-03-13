@@ -11,13 +11,6 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 
 export type ScoreRange = "any" | "low" | "medium" | "high";
@@ -43,13 +36,11 @@ export const SCORE_RANGE_LABELS: Record<ScoreRange, string> = {
 
 interface LeadFilterModalProps {
   filters: LeadFilters;
-  orgNames: string[];
   onChange: (filters: LeadFilters) => void;
 }
 
 export const LeadFilterModal = ({
   filters,
-  orgNames,
   onChange,
 }: LeadFilterModalProps) => {
   const [open, setOpen] = useState(false);
@@ -98,7 +89,7 @@ export const LeadFilterModal = ({
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-xl">Filter Leads</DialogTitle>
           </DialogHeader>
@@ -129,36 +120,6 @@ export const LeadFilterModal = ({
             <Separator />
 
             <div className="space-y-2">
-              <Label className="text-sm font-semibold">Organization</Label>
-              <Select
-                value={draft.orgName || "__all__"}
-                onValueChange={(val) =>
-                  setDraft((d) => ({
-                    ...d,
-                    orgName: val === "__all__" ? "" : val,
-                  }))
-                }
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="All organizations" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="__all__">All organizations</SelectItem>
-                  <SelectItem value="__unassigned__">
-                    No organization
-                  </SelectItem>
-                  {orgNames.map((name) => (
-                    <SelectItem key={name} value={name}>
-                      {name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <Separator />
-
-            <div className="space-y-2">
               <Label className="text-sm font-semibold">Lead Score</Label>
               <div className="grid grid-cols-2 gap-2">
                 {(["any", "low", "medium", "high"] as ScoreRange[]).map(
@@ -183,7 +144,7 @@ export const LeadFilterModal = ({
             </div>
           </div>
 
-          <DialogFooter className="flex gap-2 sm:justify-between">
+          <DialogFooter className="flex gap-2 items-center sm:justify-between">
             <Button
               type="button"
               variant="ghost"

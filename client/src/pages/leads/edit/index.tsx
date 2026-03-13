@@ -142,7 +142,9 @@ const LeadsEditPage = () => {
       {
         id: leadId!,
         idempotentId: uuidv7(),
-        dealName: lead ? `${lead.firstName} ${lead.lastName}` : "New Deal",
+        dealName: lead
+          ? `${lead.firstName} ${lead.lastName ? lead.lastName : ""}`
+          : "New Deal",
         value: 0,
         probability: 0,
       },
