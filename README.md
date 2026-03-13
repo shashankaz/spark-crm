@@ -30,55 +30,53 @@ Spark CRM is a full-stack Customer Relationship Management application designed 
 
 | Technology | Version | Purpose |
 |---|---|---|
-| React | 19 | UI framework |
-| TypeScript | ~5.9 | Type safety |
-| Vite | 7 | Build tool & dev server |
-| Tailwind CSS | v4 | Utility-first styling |
-| shadcn/ui + Radix UI | latest | Component library |
-| TanStack Query | v5 | Server state & data fetching |
-| TanStack Table | v8 | Data tables |
-| TanStack Hotkeys | latest | Keyboard shortcuts |
-| React Router | v7 | Client-side routing |
-| React Hook Form + Zod | latest | Form handling & validation |
-| Axios | latest | HTTP client |
-| Lucide React | latest | Icons |
-| date-fns | v4 | Date utilities |
-| GridStack | v12 | Dashboard grid layout |
-| Recharts | v2 | Charts & data visualization |
-| react-hot-toast | latest | Toast notifications |
-| react-helmet-async | latest | Document head management |
-| xlsx | latest | XLSX data export |
-| cmdk | latest | Command menu |
-| lodash | v4 | Utility functions |
-| input-otp | latest | OTP input |
-| uuid | v13 | Unique ID generation |
+| React | 19.2 | UI framework |
+| TypeScript | 5.9 | Type safety |
+| Vite | 7.3 | Build tool & dev server |
+| Tailwind CSS | 4.2 | Utility-first styling |
+| shadcn (CLI) | 3.8 | Component scaffolding |
+| Radix UI | 1.4 | Accessible primitives |
+| Base UI | 1.2 | Unstyled components |
+| TanStack Query | 5.90 | Server state & data fetching |
+| TanStack Table | 8.21 | Data tables |
+| TanStack Hotkeys | 0.3 | Keyboard shortcuts |
+| React Router | 7.13 | Client-side routing |
+| React Hook Form + @hookform/resolvers | 7.71 / 5.2 | Form state & validation integration |
+| Axios | 1.13 | HTTP client |
+| Lucide React | 0.577 | Icons |
+| date-fns | 4.1 | Date utilities |
+| GridStack | 12.4 | Dashboard grid layout |
+| Recharts | 2.15 | Charts & data visualization |
+| DOMPurify + Marked | 3.3 / 17.0 | Safe HTML/Markdown |
+| lodash | 4.17 | Utility functions |
+| xlsx | 0.18 | Spreadsheet import/export |
+| uuid | 13.0 | Unique ID generation |
+| react-hot-toast | 2.6 | Toast notifications |
+| react-helmet-async | 2.0 | Document head management |
 
 ### Backend
 
 | Technology | Version | Purpose |
 |---|---|---|
 | Node.js | - | Runtime |
-| Express | v5 | Web framework |
 | TypeScript | 5.9 | Type safety |
-| MongoDB + Mongoose | v9 | Database & ODM |
-| Redis (ioredis) | v5 | Caching & session store |
-| AWS S3 | SDK v3 | File attachment storage |
-| AWS SQS | SDK v3 | Background job queues |
-| JSON Web Tokens | v9 | Authentication |
-| bcrypt | v6 | Password hashing |
-| Zod | v4 | Request validation |
-| Nodemailer | v8 | Email sending |
-| Multer | v2 | File upload handling |
-| node-cron | v4 | Scheduled jobs |
-| csv-parser + csv-stringify | latest | CSV import/export |
-| date-fns | v4 | Date utilities |
-| Helmet + CORS | latest | Security headers |
-| express-rate-limit | v8 | Rate limiting |
-| Morgan | latest | HTTP request logging |
-| LangChain Core | v1 | AI orchestration framework |
-| LangChain Google | latest | Google Gemini LLM integration |
-| LangChain Tavily | latest | AI web search tool |
-| sharp | v0.34 | Image processing |
-| Axios | v1 | HTTP client |
-| cookie-parser | latest | Cookie handling |
-| uuid | v13 | Unique ID generation |
+| Express | 5.2 | Web framework |
+| MongoDB + Mongoose | 9.2 | Database & ODM |
+| Redis (ioredis) | 5.10 | Caching & session store |
+| AWS SDK v3 (S3, SQS, presigner) | 3.998 | Storage, queues, signed URLs |
+| Arcjet | 1.2 | Security and abuse protection |
+| JSON Web Tokens | 9.0 | Authentication |
+| bcrypt | 6.0 | Password hashing |
+| Zod | 4.3 | Request validation |
+| Nodemailer | 8.0 | Email sending |
+| Multer | 2.1 | File uploads |
+| csv-parser + csv-stringify | 3.2 / 6.6 | CSV import/export |
+| xlsx | 0.18 | Spreadsheet import/export |
+| date-fns | 4.1 | Date utilities |
+| Helmet + CORS + compression | 8.1 / 2.8 / 1.8 | Security + middleware |
+| Morgan | 1.10 | HTTP request logging |
+| cookie-parser + body-parser | 1.4 / 2.2 | Request parsing |
+| dotenv | 17.3 | Environment configuration |
+| Axios | 1.13 | HTTP client |
+| LangChain Core/Google/Tavily | 1.1 / 0.1 / 1.2 | AI integrations |
+| uuid | 13.0 | Unique ID generation |
