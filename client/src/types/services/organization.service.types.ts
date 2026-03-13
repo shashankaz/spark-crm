@@ -24,6 +24,8 @@ export type GetAllOrganizationsRequest = {
   industry?: string;
   size?: string;
   country?: string;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
 };
 
 export type GetOrganizationByIdRequest = {

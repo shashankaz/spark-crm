@@ -1,6 +1,7 @@
 export * from "./attachment";
 export * from "./call";
 export * from "./comment";
+export * from "./contact";
 export * from "./deal";
 export * from "./email";
 export * from "./group";

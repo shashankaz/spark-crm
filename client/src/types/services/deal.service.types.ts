@@ -15,6 +15,8 @@ export type GetAllDealsRequest = {
   search?: string;
   valueRange?: string;
   probability?: string;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
 };
 
 export type GetDealRequest = { id: string };

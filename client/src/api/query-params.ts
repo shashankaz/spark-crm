@@ -2,6 +2,21 @@ type QueryKey = {
   cursor?: number;
   limit?: number;
   search?: string;
+  sortBy?: string;
+  sortOrder?: string;
+
+  // Lead
+  assignment?: string;
+  scoreRange?: string;
+  orgName?: string;
+
+  // Contact
+  role?: string;
+  starred?: string;
+  department?: string;
+  lastContactedBefore?: string;
+  lastContactedAfter?: string;
+  orgId?: string;
 
   // Deal
   valueRange?: string;
@@ -13,7 +28,6 @@ type QueryKey = {
   country?: string;
 
   // User
-  role?: string;
   entity?: string;
 
   // Workflow

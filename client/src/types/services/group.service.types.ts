@@ -40,6 +40,12 @@ export type SendCampaignRequest = {
   from?: string;
 };
 
+export type GetGroupsRequest = {
+  search?: string;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+};
+
 export type GetGroupsResponse = {
   message: string;
   groups: IGroup[];

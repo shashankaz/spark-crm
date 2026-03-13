@@ -6,6 +6,9 @@ import type {
   ActivitiesData,
   AssignLeadRequest,
   AssignLeadResponse,
+  BulkDeleteLeadsData,
+  BulkDeleteLeadsRequest,
+  BulkDeleteLeadsResponse,
   ConvertLeadToDealRequest,
   ConvertLeadToDealResponse,
   CreateLeadRequest,
@@ -43,8 +46,24 @@ export const getAllLeads = async (
   params: GetAllLeadsRequest,
 ): Promise<GetAllLeadsResponse> =>
   withApiHandler(async () => {
-    const { cursor, limit = 10, search } = params;
-    const query = buildQueryParams({ cursor, limit, search });
+    const {
+      cursor,
+      limit = 10,
+      search,
+      assignment,
+      scoreRange,
+      sortBy,
+      sortOrder,
+    } = params;
+    const query = buildQueryParams({
+      cursor,
+      limit,
+      search,
+      assignment: assignment !== "all" ? assignment : undefined,
+      scoreRange: scoreRange !== "any" ? scoreRange : undefined,
+      sortBy,
+      sortOrder,
+    });
     const response = await api.get<ApiResponse<LeadsData>>(
       `/lead${query ? `?${query}` : ""}`,
     );
@@ -56,6 +75,20 @@ export const getAllLeads = async (
       leads: data.leads,
       totalCount: data.totalCount,
     };
+  });
+
+export const bulkDeleteLeads = async (
+  params: BulkDeleteLeadsRequest,
+): Promise<BulkDeleteLeadsResponse> =>
+  withApiHandler(async () => {
+    const response = await api.delete<ApiResponse<BulkDeleteLeadsData>>(
+      "/lead/bulk",
+      { data: params },
+    );
+
+    const { message, data } = response.data;
+
+    return { message, deleted: data.deleted };
   });
 
 export const getLeadById = async (

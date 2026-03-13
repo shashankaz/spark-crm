@@ -2,6 +2,7 @@ export * from "./attachment.service.types";
 export * from "./auth.service.types";
 export * from "./call.service.types";
 export * from "./comment.service.types";
+export * from "./contact.service.types";
 export * from "./dashboard.service.types";
 export * from "./deal.service.types";
 export * from "./email.service.types";

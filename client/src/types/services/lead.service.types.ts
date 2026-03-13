@@ -33,6 +33,23 @@ export type GetAllLeadsRequest = {
   cursor?: string;
   limit?: number;
   search?: string;
+  assignment?: "all" | "assigned";
+  scoreRange?: "any" | "low" | "medium" | "high";
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+};
+
+export type BulkDeleteLeadsRequest = {
+  leadIds: string[];
+};
+
+export type BulkDeleteLeadsData = {
+  deleted: number;
+};
+
+export type BulkDeleteLeadsResponse = {
+  message: string;
+  deleted: number;
 };
 
 export type GetLeadByIdRequest = {

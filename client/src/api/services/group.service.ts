@@ -1,5 +1,6 @@
 import { api } from "@/api";
 import { withApiHandler } from "@/api/api-handler";
+import { buildQueryParams } from "@/api/query-params";
 import type { ApiResponse } from "@/api/api-response";
 import type {
   CampaignResponse,
@@ -9,6 +10,7 @@ import type {
   DeleteGroupResponse,
   GetGroupRequest,
   GetGroupResponse,
+  GetGroupsRequest,
   GetGroupsResponse,
   GroupData,
   GroupsData,
@@ -16,17 +18,22 @@ import type {
   UpdateGroupRequest,
 } from "@/types/services";
 
-export const getGroups = async (): Promise<GetGroupsResponse> =>
+export const getGroups = async (
+  params?: GetGroupsRequest,
+): Promise<GetGroupsResponse> =>
   withApiHandler(async () => {
-    const response = await api.get<ApiResponse<GroupsData>>("/group");
-
+    const query = params
+      ? buildQueryParams({
+          search: params.search || undefined,
+          sortBy: params.sortBy,
+          sortOrder: params.sortOrder,
+        })
+      : "";
+    const response = await api.get<ApiResponse<GroupsData>>(
+      `/group${query ? `?${query}` : ""}`,
+    );
     const { message, data } = response.data;
-
-    return {
-      message,
-      groups: data.groups,
-      totalCount: data.totalCount,
-    };
+    return { message, groups: data.groups, totalCount: data.totalCount };
   });
 
 export const getGroup = async ({
