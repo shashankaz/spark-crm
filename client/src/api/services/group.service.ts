@@ -19,20 +19,23 @@ import type {
 } from "@/types/services";
 
 export const getGroups = async (
-  params?: GetGroupsRequest,
+  params: GetGroupsRequest,
 ): Promise<GetGroupsResponse> =>
   withApiHandler(async () => {
-    const query = params
-      ? buildQueryParams({
-          search: params.search || undefined,
-          sortBy: params.sortBy,
-          sortOrder: params.sortOrder,
-        })
-      : "";
+    const { search, sortBy, sortOrder } = params;
+
+    const query = buildQueryParams({
+      search,
+      sortBy,
+      sortOrder,
+    });
+
     const response = await api.get<ApiResponse<GroupsData>>(
       `/group${query ? `?${query}` : ""}`,
     );
+
     const { message, data } = response.data;
+
     return { message, groups: data.groups, totalCount: data.totalCount };
   });
 

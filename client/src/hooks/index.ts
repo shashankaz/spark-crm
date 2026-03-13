@@ -1,6 +1,7 @@
 export * from "./use-auth";
 export * from "./use-call";
 export * from "./use-comment";
+export * from "./use-contact";
 export * from "./use-dashboard";
 export * from "./use-deal";
 export * from "./use-email";

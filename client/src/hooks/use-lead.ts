@@ -13,6 +13,7 @@ import {
   exportLeads,
   importLeads,
   researchLead,
+  bulkDeleteLeads,
 } from "@/api/services";
 
 export const useLeads = ({
@@ -20,17 +21,43 @@ export const useLeads = ({
   limit = 10,
   search,
   orgId,
+  assignment,
+  scoreRange,
+  sortBy,
+  sortOrder,
 }: {
   cursor?: string;
   limit?: number;
   search?: string;
   orgId?: string;
+  assignment?: "all" | "assigned";
+  scoreRange?: "any" | "low" | "medium" | "high";
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
 }) => {
-  const query = buildQueryParams({ cursor, limit, search, orgId });
+  const query = buildQueryParams({
+    cursor,
+    limit,
+    search,
+    orgId,
+    assignment: assignment !== "all" ? assignment : undefined,
+    scoreRange: scoreRange !== "any" ? scoreRange : undefined,
+    sortBy,
+    sortOrder,
+  });
 
   return useQuery({
     queryKey: ["leads", query],
-    queryFn: () => getAllLeads({ cursor, limit, search, orgId }),
+    queryFn: () =>
+      getAllLeads({
+        cursor,
+        limit,
+        search,
+        assignment,
+        scoreRange,
+        sortBy,
+        sortOrder,
+      }),
   });
 };
 
@@ -148,6 +175,17 @@ export const useImportLeads = () => {
 
   return useMutation({
     mutationFn: importLeads,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["leads"] });
+    },
+  });
+};
+
+export const useBulkDeleteLeads = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: bulkDeleteLeads,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["leads"] });
     },

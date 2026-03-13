@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { buildQueryParams } from "@/api/query-params";
 import {
   createGroup,
   getGroups,
@@ -8,10 +9,24 @@ import {
   sendCampaignToGroup,
 } from "@/api/services";
 
-export const useGroups = () => {
+export const useGroups = ({
+  search,
+  sortBy,
+  sortOrder,
+}: {
+  search?: string;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+}) => {
+  const query = buildQueryParams({
+    search,
+    sortBy,
+    sortOrder,
+  });
+
   return useQuery({
-    queryKey: ["groups"],
-    queryFn: getGroups,
+    queryKey: ["groups", query],
+    queryFn: () => getGroups({ search, sortBy, sortOrder }),
   });
 };
 

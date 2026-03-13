@@ -14,12 +14,16 @@ export const useDeals = ({
   search,
   valueRange,
   probability,
+  sortBy,
+  sortOrder,
 }: {
   cursor?: string;
   limit?: number;
   search?: string;
   valueRange?: string;
   probability?: string;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
 }) => {
   const query = buildQueryParams({
     cursor,
@@ -27,12 +31,22 @@ export const useDeals = ({
     search,
     valueRange,
     probability,
+    sortBy,
+    sortOrder,
   });
 
   return useQuery({
     queryKey: ["deals", query],
     queryFn: () =>
-      getAllDeals({ cursor, limit, search, valueRange, probability }),
+      getAllDeals({
+        cursor,
+        limit,
+        search,
+        valueRange,
+        probability,
+        sortBy,
+        sortOrder,
+      }),
   });
 };
 

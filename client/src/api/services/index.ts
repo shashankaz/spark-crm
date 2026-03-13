@@ -2,6 +2,7 @@ export * from "./attachment.service";
 export * from "./auth.service";
 export * from "./call.service";
 export * from "./comment.service";
+export * from "./contact.service";
 export * from "./dashboard.service";
 export * from "./deal.service";
 export * from "./email.service";
