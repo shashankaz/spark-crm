@@ -8,6 +8,8 @@ export interface IFetchOrganizationsInput {
   industry?: string;
   size?: string;
   country?: string;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
 }
 
 export interface IFetchOrganizationByIdInput {

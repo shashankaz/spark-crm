@@ -10,9 +10,20 @@ import {
   IDeleteOrganizationByIdInput,
 } from "./organization.service.types";
 import {
+  IOrganizationDocument,
   OrganizationIndustry,
   OrganizationSize,
 } from "../models/organization.model.types";
+
+const ORG_SORT_FIELDS: Record<string, string> = {
+  name: "name",
+  industry: "industry",
+  country: "country",
+  size: "size",
+  website: "website",
+  updatedAt: "updatedAt",
+  _id: "_id",
+};
 
 export const fetchOrganizationsService = async ({
   tenantId,
@@ -22,11 +33,19 @@ export const fetchOrganizationsService = async ({
   industry,
   size,
   country,
+  sortBy = "_id",
+  sortOrder = "desc",
 }: IFetchOrganizationsInput) => {
-  const countQuery: any = { tenantId };
+  const resolvedSortField = ORG_SORT_FIELDS[sortBy] ?? "_id";
+  const resolvedSortDir = sortOrder === "asc" ? 1 : -1;
+  const sortStage: Record<string, 1 | -1> = {
+    [resolvedSortField]: resolvedSortDir,
+  };
+
+  const whereQuery: any = { tenantId };
 
   if (search) {
-    countQuery.$or = [
+    whereQuery.$or = [
       { name: { $regex: search, $options: "i" } },
       { email: { $regex: search, $options: "i" } },
       { contactName: { $regex: search, $options: "i" } },
@@ -34,36 +53,37 @@ export const fetchOrganizationsService = async ({
   }
 
   if (industry) {
-    countQuery.industry = industry;
+    whereQuery.industry = industry;
   }
 
   if (size) {
-    countQuery.size = size;
+    whereQuery.size = size;
   }
 
   if (country) {
-    countQuery.country = { $regex: country, $options: "i" };
+    whereQuery.country = { $regex: country, $options: "i" };
   }
 
-  const whereQuery: any = { ...countQuery };
   if (cursor) {
     whereQuery._id = { $gt: cursor };
   }
 
   const [totalCount, organizations] = await Promise.all([
-    Organization.countDocuments(countQuery).exec(),
-    Organization.find(whereQuery).sort({ _id: -1 }).limit(limit).exec(),
+    Organization.countDocuments(whereQuery).exec(),
+    Organization.find(whereQuery).sort(sortStage).limit(limit).exec(),
   ]);
 
-  const formattedOrganizations = organizations.map((org) => ({
-    _id: org._id,
-    name: org.name,
-    industry: org.industry || undefined,
-    country: org.country || undefined,
-    size: org.size || undefined,
-    website: org.website || undefined,
-    updatedAt: formatDate(org.updatedAt, "dd/MM/yyyy"),
-  }));
+  const formattedOrganizations = organizations.map(
+    (org: IOrganizationDocument) => ({
+      _id: org._id,
+      name: org.name,
+      industry: org.industry || undefined,
+      country: org.country || undefined,
+      size: org.size || undefined,
+      website: org.website || undefined,
+      updatedAt: formatDate(org.updatedAt, "dd/MM/yyyy"),
+    }),
+  );
 
   return { organizations: formattedOrganizations, totalCount };
 };

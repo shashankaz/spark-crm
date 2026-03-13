@@ -27,6 +27,9 @@ export const getAllOrganizations = asyncHandler(
     const size = req.query.size as string | undefined;
     const country = req.query.country as string | undefined;
 
+    const sortBy = req.query.sortBy as string | undefined;
+    const sortOrder = req.query.sortOrder as "asc" | "desc" | undefined;
+
     const { organizations, totalCount } = await fetchOrganizationsService({
       tenantId,
       cursor,
@@ -35,6 +38,8 @@ export const getAllOrganizations = asyncHandler(
       industry,
       size,
       country,
+      sortBy,
+      sortOrder,
     });
 
     sendSuccess(res, 200, "Organizations retrieved successfully", {
