@@ -12,28 +12,46 @@ import { TableSkeleton } from "@/components/shared/dashboard/skeleton";
 
 import { columns } from "./columns";
 import { DealExportModal } from "./deal-export-modal";
+import {
+  DealFilterModal,
+  defaultDealFilters,
+  type DealFilters,
+} from "./deal-filter-modal";
 
 import { useDeals } from "@/hooks";
 
-import type { Deal } from "@/types/domain";
+import type { IDeal } from "@/types/domain";
 
 const DealPage = () => {
-  const [selectedDeals, setSelectedDeals] = useState<Deal[]>([]);
+  const [selectedDeals, setSelectedDeals] = useState<IDeal[]>([]);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
+  const [filters, setFilters] = useState<DealFilters>(defaultDealFilters);
 
   const [searchInput, setSearchInput] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
 
   const handleSearchChange = useMemo(
     () =>
       debounce((value: string) => {
         setDebouncedSearch(value);
+        setPageIndex(0);
       }, 500),
     [],
   );
 
-  const { data, isPending } = useDeals({ search: debouncedSearch });
+  const { data, isPending } = useDeals({
+    search: debouncedSearch,
+    cursor: pageIndex > 0 ? String(pageIndex * pageSize) : undefined,
+    limit: pageSize,
+    valueRange: filters.valueRange !== "any" ? filters.valueRange : undefined,
+    probability:
+      filters.probability !== "any" ? filters.probability : undefined,
+  });
   const deals = data?.deals ?? [];
+  const totalCount = data?.totalCount ?? 0;
 
   if (isPending) return <TableSkeleton />;
 
@@ -50,6 +68,15 @@ const DealPage = () => {
             <Heading title="Deals" />
             <Description description="Manage your CRM deals and their status" />
           </div>
+          <div className="flex items-center space-x-2">
+            <DealFilterModal
+              filters={filters}
+              onChange={(f) => {
+                setFilters(f);
+                setPageIndex(0);
+              }}
+            />
+          </div>
         </div>
 
         <DataTable
@@ -61,7 +88,15 @@ const DealPage = () => {
             setSearchInput(value);
             handleSearchChange(value);
           }}
-          onSelectionChange={(rows) => setSelectedDeals(rows as Deal[])}
+          onSelectionChange={(rows) => setSelectedDeals(rows as IDeal[])}
+          totalCount={totalCount}
+          pageIndex={pageIndex}
+          pageSize={pageSize}
+          onPageChange={setPageIndex}
+          onPageSizeChange={(size) => {
+            setPageSize(size);
+            setPageIndex(0);
+          }}
         />
       </div>
 
@@ -90,9 +125,7 @@ const DealPage = () => {
           <Button
             size="sm"
             variant="ghost"
-            onClick={() => {
-              setSelectedDeals([]);
-            }}
+            onClick={() => setSelectedDeals([])}
             className="h-7 w-7 p-0"
           >
             <X className="h-4 w-4" />
