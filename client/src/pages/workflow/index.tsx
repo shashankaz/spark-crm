@@ -19,12 +19,20 @@ import { TableSkeleton } from "@/components/shared/dashboard/skeleton";
 
 import { columns } from "./columns";
 import { WorkflowCreateForm } from "./workflow-create-form";
+import {
+  WorkflowFilterModal,
+  defaultWorkflowFilters,
+  type WorkflowFilters,
+} from "./workflow-filter-modal";
 import type { WorkflowFormValues } from "./workflow-form-schema";
 
 import { useWorkflows, useCreateWorkflow } from "@/hooks";
 
 const WorkflowPage = () => {
   const [open, setOpen] = useState(false);
+  const [filters, setFilters] = useState<WorkflowFilters>(
+    defaultWorkflowFilters,
+  );
 
   const [searchInput, setSearchInput] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -37,7 +45,12 @@ const WorkflowPage = () => {
     [],
   );
 
-  const { data, isPending } = useWorkflows({ search: debouncedSearch });
+  const { data, isPending } = useWorkflows({
+    search: debouncedSearch,
+    entity: filters.entity !== "all" ? filters.entity : undefined,
+    event: filters.event !== "all" ? filters.event : undefined,
+    active: filters.status !== "all" ? filters.status === "active" : undefined,
+  });
   const workflows = data?.workflows ?? [];
 
   const { mutate: createWorkflow, isPending: isCreating } = useCreateWorkflow();
@@ -84,7 +97,8 @@ const WorkflowPage = () => {
             <Heading title="Workflows" />
             <Description description="Create automation rules to run actions when events occur" />
           </div>
-          <div>
+          <div className="flex items-center space-x-2">
+            <WorkflowFilterModal filters={filters} onChange={setFilters} />
             <Button type="button" onClick={() => setOpen(true)}>
               <Plus />
               Create

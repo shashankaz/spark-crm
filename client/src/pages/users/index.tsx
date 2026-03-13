@@ -14,6 +14,11 @@ import {
 import { columns } from "./columns";
 import { UserCreateForm } from "./user-create-form";
 import { UserExportModal } from "./user-export-modal";
+import {
+  UserFilterModal,
+  defaultUserFilters,
+  type UserFilters,
+} from "./user-filter-modal";
 
 import { TableSkeleton } from "@/components/shared/dashboard/skeleton";
 import { DataTable } from "@/components/shared/dashboard/data-table";
@@ -28,9 +33,13 @@ const UsersPage = () => {
   const [open, setOpen] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
+  const [filters, setFilters] = useState<UserFilters>(defaultUserFilters);
 
   const [searchInput, setSearchInput] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
 
   const handleSearchChange = useMemo(
     () =>
@@ -40,8 +49,14 @@ const UsersPage = () => {
     [],
   );
 
-  const { data, isPending } = useUsers({ search: debouncedSearch });
+  const { data, isPending } = useUsers({
+    search: debouncedSearch,
+    cursor: pageIndex > 0 ? String(pageIndex * pageSize) : undefined,
+    limit: pageSize,
+    role: filters.role !== "all" ? filters.role : undefined,
+  });
   const users = data?.users || [];
+  const totalCount = data?.totalCount ?? 0;
 
   if (isPending) return <TableSkeleton />;
 
@@ -58,7 +73,8 @@ const UsersPage = () => {
             <Heading title="Users" />
             <Description description="Manage your CRM users and their permissions" />
           </div>
-          <div className="space-x-2">
+          <div className="space-x-2 flex items-center">
+            <UserFilterModal filters={filters} onChange={setFilters} />
             <Button type="button" onClick={() => setOpen(true)}>
               <Plus />
               Create
@@ -74,8 +90,17 @@ const UsersPage = () => {
           onSearchChange={(value) => {
             setSearchInput(value);
             handleSearchChange(value);
+            setPageIndex(0);
           }}
           onSelectionChange={(rows) => setSelectedUsers(rows as User[])}
+          totalCount={totalCount}
+          pageIndex={pageIndex}
+          pageSize={pageSize}
+          onPageChange={setPageIndex}
+          onPageSizeChange={(size) => {
+            setPageSize(size);
+            setPageIndex(0);
+          }}
         />
 
         <Dialog open={open} onOpenChange={setOpen}>
@@ -114,9 +139,7 @@ const UsersPage = () => {
           <Button
             size="sm"
             variant="ghost"
-            onClick={() => {
-              setSelectedUsers([]);
-            }}
+            onClick={() => setSelectedUsers([])}
             className="h-7 w-7 p-0"
           >
             <X className="h-4 w-4" />

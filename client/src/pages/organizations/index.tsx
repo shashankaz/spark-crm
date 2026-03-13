@@ -19,6 +19,11 @@ import { Description } from "@/components/shared/typography/description";
 import { columns } from "./columns";
 import { OrganizationCreateForm } from "./organization-create-form";
 import { OrganizationExportModal } from "./organization-export-modal";
+import {
+  OrganizationFilterModal,
+  defaultOrganizationFilters,
+  type OrganizationFilters,
+} from "./organization-filter-modal";
 
 import { useOrganizations } from "@/hooks";
 
@@ -30,9 +35,15 @@ const OrganizationsPage = () => {
     Organization[]
   >([]);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
+  const [filters, setFilters] = useState<OrganizationFilters>(
+    defaultOrganizationFilters,
+  );
 
   const [searchInput, setSearchInput] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
 
   const handleSearchChange = useMemo(
     () =>
@@ -42,8 +53,16 @@ const OrganizationsPage = () => {
     [],
   );
 
-  const { data, isPending } = useOrganizations({ search: debouncedSearch });
+  const { data, isPending } = useOrganizations({
+    search: debouncedSearch,
+    cursor: pageIndex > 0 ? String(pageIndex * pageSize) : undefined,
+    limit: pageSize,
+    industry: filters.industry !== "any" ? filters.industry : undefined,
+    size: filters.size !== "any" ? filters.size : undefined,
+    country: filters.country || undefined,
+  });
   const organizations = data?.organizations ?? [];
+  const totalCount = data?.totalCount ?? 0;
 
   if (isPending) return <TableSkeleton />;
 
@@ -60,7 +79,8 @@ const OrganizationsPage = () => {
             <Heading title="Organizations" />
             <Description description="Manage your CRM organizations and their details" />
           </div>
-          <div className="space-x-2">
+          <div className="space-x-2 flex items-center">
+            <OrganizationFilterModal filters={filters} onChange={setFilters} />
             <Button type="button" onClick={() => setOpen(true)}>
               <Plus />
               Create
@@ -76,10 +96,19 @@ const OrganizationsPage = () => {
           onSearchChange={(value) => {
             setSearchInput(value);
             handleSearchChange(value);
+            setPageIndex(0);
           }}
           onSelectionChange={(rows) =>
             setSelectedOrganizations(rows as Organization[])
           }
+          totalCount={totalCount}
+          pageIndex={pageIndex}
+          pageSize={pageSize}
+          onPageChange={setPageIndex}
+          onPageSizeChange={(size) => {
+            setPageSize(size);
+            setPageIndex(0);
+          }}
         />
 
         <Dialog open={open} onOpenChange={setOpen}>
@@ -120,9 +149,7 @@ const OrganizationsPage = () => {
           <Button
             size="sm"
             variant="ghost"
-            onClick={() => {
-              setSelectedOrganizations([]);
-            }}
+            onClick={() => setSelectedOrganizations([])}
             className="h-7 w-7 p-0"
           >
             <X className="h-4 w-4" />

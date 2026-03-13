@@ -18,6 +18,7 @@ const Layout = lazy(() => import("@/layout/layout"));
 const Dashboard = lazy(() => import("@/pages/dashboard"));
 const Organizations = lazy(() => import("@/pages/organizations"));
 const OrganizationsEditPage = lazy(() => import("@/pages/organizations/edit"));
+const Contacts = lazy(() => import("@/pages/contacts"));
 const Leads = lazy(() => import("@/pages/leads"));
 const LeadsEditPage = lazy(() => import("@/pages/leads/edit"));
 const Deals = lazy(() => import("@/pages/deals"));
@@ -62,10 +63,12 @@ export const ReactRouter = () => {
                 path="organizations/:organizationId/edit"
                 element={<OrganizationsEditPage />}
               />
+              <Route path="contacts" element={<Contacts />} />
               <Route path="leads" element={<Leads />} />
               <Route path="leads/:leadId/edit" element={<LeadsEditPage />} />
               <Route path="deals" element={<Deals />} />
               <Route path="deals/:dealId/edit" element={<DealsEditPage />} />
+              <Route path="tasks" element={<Tasks />} />
               <Route path="users" element={<Users />} />
               <Route path="users/:userId/edit" element={<UsersEditPage />} />
               <Route path="workflows" element={<Workflows />} />
@@ -74,7 +77,6 @@ export const ReactRouter = () => {
                 element={<WorkflowsEditPage />}
               />
               <Route path="groups" element={<Groups />} />
-              <Route path="tasks" element={<Tasks />} />
               <Route path="profile" element={<Profile />} />
               <Route path="shortcuts" element={<Shortcuts />} />
             </Route>
