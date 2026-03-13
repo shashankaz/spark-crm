@@ -22,14 +22,15 @@ import {
 
 import { leadFormSchema } from "../lead-form-schema";
 import type { LeadFormValues } from "../lead-form-schema";
+import { AIAutofillBanner } from "./ai-autofill-banner";
 
 import { useUpdateLead } from "@/hooks";
 
-import type { Lead } from "@/types/domain";
+import type { ILead } from "@/types/domain";
 
 interface LeadEditFormProps {
   lead: Omit<
-    Lead,
+    ILead,
     | "userId"
     | "tenantId"
     | "idempotentId"
@@ -62,11 +63,11 @@ export const LeadEditForm: React.FC<LeadEditFormProps> = ({
   useEffect(() => {
     form.reset({
       firstName: lead.firstName,
-      lastName: lead.lastName ?? "",
+      lastName: lead.lastName ?? undefined,
       email: lead.email,
       mobile: lead.mobile,
       gender: lead.gender as LeadFormValues["gender"],
-      organization: lead.orgId ?? "",
+      organization: lead.orgId ?? undefined,
       source: lead.source as LeadFormValues["source"],
     });
   }, [lead, form]);
@@ -75,10 +76,7 @@ export const LeadEditForm: React.FC<LeadEditFormProps> = ({
 
   const onSubmit = (data: LeadFormValues) => {
     mutate(
-      {
-        id: lead._id,
-        ...data,
-      },
+      { id: lead._id, ...data },
       {
         onSuccess: ({ message }) => {
           toast.success(message);
@@ -91,210 +89,223 @@ export const LeadEditForm: React.FC<LeadEditFormProps> = ({
   };
 
   return (
-    <form id="lead-edit-form" onSubmit={form.handleSubmit(onSubmit)}>
-      <FieldGroup className="grid grid-cols-2 gap-8 -space-y-4">
-        <Controller
-          name="firstName"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="firstName">First Name</FieldLabel>
-              <Input
-                {...field}
-                id="firstName"
-                aria-invalid={fieldState.invalid}
-                placeholder="Enter first name"
-                autoComplete="off"
-              />
-              {fieldState.invalid && (
-                <FieldError
-                  className="text-error text-xs"
-                  errors={[fieldState.error]}
-                />
-              )}
-            </Field>
-          )}
-        />
-        <Controller
-          name="lastName"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="lastName">Last Name</FieldLabel>
-              <Input
-                {...field}
-                id="lastName"
-                aria-invalid={fieldState.invalid}
-                placeholder="Enter last name"
-                autoComplete="off"
-              />
-              {fieldState.invalid && (
-                <FieldError
-                  className="text-error text-xs"
-                  errors={[fieldState.error]}
-                />
-              )}
-            </Field>
-          )}
-        />
-        <Controller
-          name="email"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="email">Email</FieldLabel>
-              <Input
-                {...field}
-                id="email"
-                aria-invalid={fieldState.invalid}
-                placeholder="Enter email"
-                autoComplete="off"
-              />
-              {fieldState.invalid && (
-                <FieldError
-                  className="text-error text-xs"
-                  errors={[fieldState.error]}
-                />
-              )}
-            </Field>
-          )}
-        />
-        <Controller
-          name="mobile"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="mobile">Mobile</FieldLabel>
-              <Input
-                {...field}
-                id="mobile"
-                aria-invalid={fieldState.invalid}
-                placeholder="Enter mobile number"
-                autoComplete="off"
-              />
-              {fieldState.invalid && (
-                <FieldError
-                  className="text-error text-xs"
-                  errors={[fieldState.error]}
-                />
-              )}
-            </Field>
-          )}
-        />
-        <Controller
-          name="gender"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="gender">Gender</FieldLabel>
-              <Select onValueChange={field.onChange} value={field.value ?? ""}>
-                <SelectTrigger
-                  className="w-full"
-                  id="gender"
-                  aria-invalid={fieldState.invalid}
-                >
-                  <SelectValue placeholder="Select gender" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="male">Male</SelectItem>
-                    <SelectItem value="female">Female</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              {fieldState.invalid && (
-                <FieldError
-                  className="text-error text-xs"
-                  errors={[fieldState.error]}
-                />
-              )}
-            </Field>
-          )}
-        />
-        <Controller
-          name="organization"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="organization">Organization</FieldLabel>
-              <Select onValueChange={field.onChange} value={field.value ?? ""}>
-                <SelectTrigger
-                  className="w-full"
-                  id="organization"
-                  aria-invalid={fieldState.invalid}
-                >
-                  <SelectValue placeholder="Select organization" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {organizations.map((org) => (
-                      <SelectItem key={org._id} value={org._id}>
-                        {org.name}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              {fieldState.invalid && (
-                <FieldError
-                  className="text-error text-xs"
-                  errors={[fieldState.error]}
-                />
-              )}
-            </Field>
-          )}
-        />
-        <Controller
-          name="source"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="source">Source</FieldLabel>
-              <Select onValueChange={field.onChange} value={field.value ?? ""}>
-                <SelectTrigger
-                  className="w-full"
-                  id="source"
-                  aria-invalid={fieldState.invalid}
-                >
-                  <SelectValue placeholder="Select source" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="website">Website</SelectItem>
-                    <SelectItem value="facebook ads">Facebook Ads</SelectItem>
-                    <SelectItem value="google ads">Google Ads</SelectItem>
-                    <SelectItem value="instagram">Instagram</SelectItem>
-                    <SelectItem value="linkedin">LinkedIn</SelectItem>
-                    <SelectItem value="email marketing">
-                      Email Marketing
-                    </SelectItem>
-                    <SelectItem value="referral">Referral</SelectItem>
-                    <SelectItem value="cold call">Cold Call</SelectItem>
-                    <SelectItem value="whatsapp">WhatsApp</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              {fieldState.invalid && (
-                <FieldError
-                  className="text-error text-xs"
-                  errors={[fieldState.error]}
-                />
-              )}
-            </Field>
-          )}
-        />
-      </FieldGroup>
+    <div className="space-y-6">
+      <AIAutofillBanner form={form} />
 
-      <div className="space-x-2 mt-8 flex justify-end">
-        <Button type="button" variant="outline" onClick={() => form.reset()}>
-          Reset
-        </Button>
-        <Button type="submit" form="lead-edit-form" disabled={isPending}>
-          {isPending ? "Saving..." : "Save Changes"}
-        </Button>
-      </div>
-    </form>
+      <form id="lead-edit-form" onSubmit={form.handleSubmit(onSubmit)}>
+        <FieldGroup className="grid grid-cols-2 gap-8 -space-y-4">
+          <Controller
+            name="firstName"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid} className="-space-y-2">
+                <FieldLabel htmlFor="firstName">First Name</FieldLabel>
+                <Input
+                  {...field}
+                  id="firstName"
+                  aria-invalid={fieldState.invalid}
+                  placeholder="Enter first name"
+                  autoComplete="off"
+                />
+                {fieldState.invalid && (
+                  <FieldError
+                    className="text-error text-xs"
+                    errors={[fieldState.error]}
+                  />
+                )}
+              </Field>
+            )}
+          />
+          <Controller
+            name="lastName"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid} className="-space-y-2">
+                <FieldLabel htmlFor="lastName">Last Name</FieldLabel>
+                <Input
+                  {...field}
+                  id="lastName"
+                  aria-invalid={fieldState.invalid}
+                  placeholder="Enter last name"
+                  autoComplete="off"
+                />
+                {fieldState.invalid && (
+                  <FieldError
+                    className="text-error text-xs"
+                    errors={[fieldState.error]}
+                  />
+                )}
+              </Field>
+            )}
+          />
+          <Controller
+            name="email"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid} className="-space-y-2">
+                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <Input
+                  {...field}
+                  id="email"
+                  aria-invalid={fieldState.invalid}
+                  placeholder="Enter email"
+                  autoComplete="off"
+                />
+                {fieldState.invalid && (
+                  <FieldError
+                    className="text-error text-xs"
+                    errors={[fieldState.error]}
+                  />
+                )}
+              </Field>
+            )}
+          />
+          <Controller
+            name="mobile"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid} className="-space-y-2">
+                <FieldLabel htmlFor="mobile">Mobile</FieldLabel>
+                <Input
+                  {...field}
+                  id="mobile"
+                  aria-invalid={fieldState.invalid}
+                  placeholder="Enter mobile number"
+                  autoComplete="off"
+                />
+                {fieldState.invalid && (
+                  <FieldError
+                    className="text-error text-xs"
+                    errors={[fieldState.error]}
+                  />
+                )}
+              </Field>
+            )}
+          />
+          <Controller
+            name="gender"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid} className="-space-y-2">
+                <FieldLabel htmlFor="gender">Gender</FieldLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value ?? ""}
+                >
+                  <SelectTrigger
+                    className="w-full"
+                    id="gender"
+                    aria-invalid={fieldState.invalid}
+                  >
+                    <SelectValue placeholder="Select gender" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="male">Male</SelectItem>
+                      <SelectItem value="female">Female</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                {fieldState.invalid && (
+                  <FieldError
+                    className="text-error text-xs"
+                    errors={[fieldState.error]}
+                  />
+                )}
+              </Field>
+            )}
+          />
+          <Controller
+            name="organization"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid} className="-space-y-2">
+                <FieldLabel htmlFor="organization">Organization</FieldLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value ?? ""}
+                >
+                  <SelectTrigger
+                    className="w-full"
+                    id="organization"
+                    aria-invalid={fieldState.invalid}
+                  >
+                    <SelectValue placeholder="Select organization" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {organizations.map((org) => (
+                        <SelectItem key={org._id} value={org._id}>
+                          {org.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                {fieldState.invalid && (
+                  <FieldError
+                    className="text-error text-xs"
+                    errors={[fieldState.error]}
+                  />
+                )}
+              </Field>
+            )}
+          />
+          <Controller
+            name="source"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid} className="-space-y-2">
+                <FieldLabel htmlFor="source">Source</FieldLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value ?? ""}
+                >
+                  <SelectTrigger
+                    className="w-full"
+                    id="source"
+                    aria-invalid={fieldState.invalid}
+                  >
+                    <SelectValue placeholder="Select source" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="website">Website</SelectItem>
+                      <SelectItem value="facebook ads">Facebook Ads</SelectItem>
+                      <SelectItem value="google ads">Google Ads</SelectItem>
+                      <SelectItem value="instagram">Instagram</SelectItem>
+                      <SelectItem value="linkedin">LinkedIn</SelectItem>
+                      <SelectItem value="email marketing">
+                        Email Marketing
+                      </SelectItem>
+                      <SelectItem value="referral">Referral</SelectItem>
+                      <SelectItem value="cold call">Cold Call</SelectItem>
+                      <SelectItem value="whatsapp">WhatsApp</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                {fieldState.invalid && (
+                  <FieldError
+                    className="text-error text-xs"
+                    errors={[fieldState.error]}
+                  />
+                )}
+              </Field>
+            )}
+          />
+        </FieldGroup>
+
+        <div className="space-x-2 mt-8 flex justify-end">
+          <Button type="button" variant="outline" onClick={() => form.reset()}>
+            Reset
+          </Button>
+          <Button type="submit" form="lead-edit-form" disabled={isPending}>
+            {isPending ? "Saving..." : "Save Changes"}
+          </Button>
+        </div>
+      </form>
+    </div>
   );
 };
