@@ -31,6 +31,14 @@ import type {
   TenantDashboardStatsData,
   TenantUserData,
   TenantUsersData,
+  AdminWidgetResponse,
+  AdminWidgetData,
+  TenantGrowthItem,
+  AdminRevenueItem,
+  PlanDistributionChartItem,
+  UserGrowthItem,
+  TopTenantItem,
+  AvailableSlugData,
 } from "@/types/services";
 
 export const getTenantDashboardStats =
@@ -51,12 +59,78 @@ export const getTenantDashboardStats =
       };
     });
 
+export const getAdminTenantGrowth = async (): Promise<
+  AdminWidgetResponse<TenantGrowthItem>
+> =>
+  withApiHandler(async () => {
+    const response = await api.get<
+      ApiResponse<AdminWidgetData<TenantGrowthItem>>
+    >("/tenant/dashboard/tenant-growth");
+
+    const { message, data } = response.data;
+
+    return { message, data: data.data };
+  });
+
+export const getAdminRevenue = async (): Promise<
+  AdminWidgetResponse<AdminRevenueItem>
+> =>
+  withApiHandler(async () => {
+    const response = await api.get<
+      ApiResponse<AdminWidgetData<AdminRevenueItem>>
+    >("/tenant/dashboard/admin-revenue");
+
+    const { message, data } = response.data;
+
+    return { message, data: data.data };
+  });
+
+export const getAdminPlanDistributionChart = async (): Promise<
+  AdminWidgetResponse<PlanDistributionChartItem>
+> =>
+  withApiHandler(async () => {
+    const response = await api.get<
+      ApiResponse<AdminWidgetData<PlanDistributionChartItem>>
+    >("/tenant/dashboard/plan-distribution-chart");
+
+    const { message, data } = response.data;
+
+    return { message, data: data.data };
+  });
+
+export const getAdminUserGrowth = async (): Promise<
+  AdminWidgetResponse<UserGrowthItem>
+> =>
+  withApiHandler(async () => {
+    const response = await api.get<
+      ApiResponse<AdminWidgetData<UserGrowthItem>>
+    >("/tenant/dashboard/user-growth");
+
+    const { message, data } = response.data;
+
+    return { message, data: data.data };
+  });
+
+export const getAdminTopTenants = async (): Promise<
+  AdminWidgetResponse<TopTenantItem>
+> =>
+  withApiHandler(async () => {
+    const response = await api.get<ApiResponse<AdminWidgetData<TopTenantItem>>>(
+      "/tenant/dashboard/top-tenants",
+    );
+
+    const { message, data } = response.data;
+
+    return { message, data: data.data };
+  });
+
 export const getAvailableSlug = async (
   params: GetAvailableSlugRequest,
 ): Promise<GetAvailableSlugResponse> =>
   withApiHandler(async () => {
     const { slug } = params;
-    const response = await api.get<ApiResponse<{ isAvailable: boolean }>>(
+
+    const response = await api.get<ApiResponse<AvailableSlugData>>(
       `/tenant/slug/${encodeURIComponent(slug)}`,
     );
 
@@ -72,8 +146,10 @@ export const getAllTenants = async (
   params: GetAllTenantsRequest,
 ): Promise<GetAllTenantsResponse> =>
   withApiHandler(async () => {
-    const { cursor, limit = 10, search } = params;
-    const query = buildQueryParams({ cursor, limit, search });
+    const { cursor, limit = 10, search, plan, country } = params;
+
+    const query = buildQueryParams({ cursor, limit, search, plan, country });
+
     const response = await api.get<ApiResponse<TenantsData>>(
       `/tenant${query ? `?${query}` : ""}`,
     );

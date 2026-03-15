@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { buildQueryParams } from "@/api/query-params";
 import {
   getTenantDashboardStats,
   getAllTenants,
@@ -10,13 +11,58 @@ import {
   createUserForTenant,
   exportTenants,
   getAvailableSlug,
+  getAdminTenantGrowth,
+  getAdminRevenue,
+  getAdminPlanDistributionChart,
+  getAdminUserGrowth,
+  getAdminTopTenants,
 } from "@/api/services";
 
 export const useTenantDashboardStats = () => {
   return useQuery({
     queryKey: ["tenant", "dashboard"],
     queryFn: getTenantDashboardStats,
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60 * 5,
+  });
+};
+
+export const useAdminTenantGrowth = () => {
+  return useQuery({
+    queryKey: ["tenant", "dashboard", "tenant-growth"],
+    queryFn: getAdminTenantGrowth,
+    staleTime: 1000 * 60 * 5,
+  });
+};
+
+export const useAdminRevenue = () => {
+  return useQuery({
+    queryKey: ["tenant", "dashboard", "admin-revenue"],
+    queryFn: getAdminRevenue,
+    staleTime: 1000 * 60 * 5,
+  });
+};
+
+export const useAdminPlanDistributionChart = () => {
+  return useQuery({
+    queryKey: ["tenant", "dashboard", "plan-distribution-chart"],
+    queryFn: getAdminPlanDistributionChart,
+    staleTime: 1000 * 60 * 5,
+  });
+};
+
+export const useAdminUserGrowth = () => {
+  return useQuery({
+    queryKey: ["tenant", "dashboard", "user-growth"],
+    queryFn: getAdminUserGrowth,
+    staleTime: 1000 * 60 * 5,
+  });
+};
+
+export const useAdminTopTenants = () => {
+  return useQuery({
+    queryKey: ["tenant", "dashboard", "top-tenants"],
+    queryFn: getAdminTopTenants,
+    staleTime: 1000 * 60 * 5,
   });
 };
 
@@ -24,14 +70,20 @@ export const useTenants = ({
   cursor,
   limit = 10,
   search,
+  plan,
+  country,
 }: {
   cursor?: string;
   limit?: number;
   search?: string;
+  plan?: string;
+  country?: string;
 }) => {
+  const query = buildQueryParams({ cursor, limit, search, plan, country });
+
   return useQuery({
-    queryKey: ["tenants", { cursor, limit, search }],
-    queryFn: () => getAllTenants({ cursor, limit, search }),
+    queryKey: ["tenants", query],
+    queryFn: () => getAllTenants({ cursor, limit, search, plan, country }),
   });
 };
 

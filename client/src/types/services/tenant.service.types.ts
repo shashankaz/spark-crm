@@ -41,6 +41,53 @@ export type TenantDashboardStatsData = {
   planDistribution: TenantPlanDistribution[];
 };
 
+export type TenantGrowthItem = {
+  month: string;
+  newTenants: number;
+};
+
+export type AdminRevenueItem = {
+  month: string;
+  free: number;
+  basic: number;
+  pro: number;
+  enterprise: number;
+  total: number;
+};
+
+export type PlanDistributionChartItem = {
+  plan: string;
+  count: number;
+  revenue: number;
+};
+
+export type UserGrowthItem = {
+  month: string;
+  admin: number;
+  user: number;
+  total: number;
+};
+
+export type TopTenantItem = {
+  name: string;
+  plan: string;
+  userCount: number;
+  revenue: number;
+};
+
+export type AdminWidgetData<T> = {
+  data: T[];
+};
+
+export type AvailableSlugData = {
+  isAvailable: boolean;
+};
+
+export type AdminWidgetResponse<T> = {
+  message: string;
+  data: T[];
+};
+
 export type TenantsData = {
   tenants: Tenant[];
   totalCount: number;
@@ -75,6 +122,8 @@ export type GetAllTenantsRequest = {
   cursor?: string;
   limit?: number;
   search?: string;
+  plan?: string;
+  country?: string;
 };
 
 export type GetTenantByIdRequest = {
