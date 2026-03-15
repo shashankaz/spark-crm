@@ -20,7 +20,7 @@ export const SelectVisibleCols = <TData,>({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" className="ml-auto">
-          Columns
+          Visible Columns
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
