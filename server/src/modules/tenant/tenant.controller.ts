@@ -10,6 +10,11 @@ import {
   createUserForTenantService,
   fetchUsersByTenantIdService,
   checkSlugAvailabilityService,
+  fetchTenantGrowthService,
+  fetchAdminRevenueService,
+  fetchPlanDistributionChartService,
+  fetchUserGrowthService,
+  fetchTopTenantsByPlanService,
 } from "./services/tenant.service";
 import { enqueueTenantExportService } from "../../utils/export/export.helper";
 import { AppError } from "../../shared/app-error";
@@ -30,16 +35,71 @@ export const getTenantDashboardStats = asyncHandler(
   },
 );
 
+export const getTenantGrowth = asyncHandler(
+  async (_req: Request, res: Response) => {
+    const { data } = await fetchTenantGrowthService();
+
+    sendSuccess(res, 200, "Tenant growth data retrieved successfully", {
+      data,
+    });
+  },
+);
+
+export const getAdminRevenue = asyncHandler(
+  async (_req: Request, res: Response) => {
+    const { data } = await fetchAdminRevenueService();
+
+    sendSuccess(res, 200, "Admin revenue data retrieved successfully", {
+      data,
+    });
+  },
+);
+
+export const getPlanDistributionChart = asyncHandler(
+  async (_req: Request, res: Response) => {
+    const { data } = await fetchPlanDistributionChartService();
+
+    sendSuccess(
+      res,
+      200,
+      "Plan distribution chart data retrieved successfully",
+      { data },
+    );
+  },
+);
+
+export const getUserGrowth = asyncHandler(
+  async (_req: Request, res: Response) => {
+    const { data } = await fetchUserGrowthService();
+
+    sendSuccess(res, 200, "User growth data retrieved successfully", { data });
+  },
+);
+
+export const getTopTenantsByPlan = asyncHandler(
+  async (_req: Request, res: Response) => {
+    const { data } = await fetchTopTenantsByPlanService();
+
+    sendSuccess(res, 200, "Top tenants by plan retrieved successfully", {
+      data,
+    });
+  },
+);
+
 export const getAllTenants = asyncHandler(
   async (req: Request, res: Response) => {
     const cursor = req.query.cursor as Types.ObjectId | undefined;
     const limit = Number(req.query.limit) || 10;
     const search = req.query.search as string | undefined;
+    const plan = req.query.plan as string | undefined;
+    const country = req.query.country as string | undefined;
 
     const { tenants, totalCount } = await fetchTenantsService({
       cursor,
       limit,
       search,
+      plan,
+      country,
     });
 
     sendSuccess(res, 200, "Tenants retrieved successfully", {

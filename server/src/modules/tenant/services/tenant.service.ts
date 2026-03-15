@@ -21,6 +21,7 @@ import {
   ICheckSlugAvailabilityInput,
 } from "./tenant.service.types";
 import { ITenantDocument, TenantPlan } from "../models/tenant.model.types";
+import { MONTHS } from "../../../utils/constants/months.constant";
 
 const tempPasswordGlobal = "Asdf@1234";
 
@@ -149,14 +150,205 @@ export const fetchTenantDashboardStatsService = async () => {
   return { stats, recentTenants, planDistribution };
 };
 
+export const fetchTenantGrowthService = async () => {
+  const now = new Date();
+  const since = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
+
+  const result = await Tenant.aggregate([
+    { $match: { isDeleted: false, createdAt: { $gte: since } } },
+    {
+      $group: {
+        _id: { $month: "$createdAt" },
+        newTenants: { $sum: 1 },
+      },
+    },
+    { $sort: { _id: 1 } },
+  ]).allowDiskUse(true);
+
+  const data = MONTHS.map((month, index) => {
+    const monthData = result.find((r: any) => r._id === index + 1);
+    return {
+      month,
+      newTenants: monthData?.newTenants ?? 0,
+    };
+  });
+
+  return { data };
+};
+
+export const fetchAdminRevenueService = async () => {
+  const now = new Date();
+  const since = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
+
+  const result = await Tenant.aggregate([
+    { $match: { isDeleted: false, createdAt: { $gte: since } } },
+    {
+      $group: {
+        _id: { month: { $month: "$createdAt" }, plan: "$plan" },
+        count: { $sum: 1 },
+      },
+    },
+    { $sort: { "_id.month": 1 } },
+  ]).allowDiskUse(true);
+
+  const data = MONTHS.map((month, index) => {
+    const monthNum = index + 1;
+    const getRevenue = (plan: string) => {
+      const entry = result.find(
+        (r: any) => r._id.month === monthNum && r._id.plan === plan,
+      );
+      return (
+        (PLAN_PRICES[plan as keyof typeof PLAN_PRICES] || 0) *
+        (entry?.count ?? 0)
+      );
+    };
+
+    return {
+      month,
+      free: getRevenue("free"),
+      basic: getRevenue("basic"),
+      pro: getRevenue("pro"),
+      enterprise: getRevenue("enterprise"),
+      total:
+        getRevenue("free") +
+        getRevenue("basic") +
+        getRevenue("pro") +
+        getRevenue("enterprise"),
+    };
+  });
+
+  return { data };
+};
+
+export const fetchPlanDistributionChartService = async () => {
+  const result = await Tenant.aggregate([
+    { $match: { isDeleted: false } },
+    { $group: { _id: "$plan", count: { $sum: 1 } } },
+    { $sort: { count: -1 } },
+  ]).allowDiskUse(true);
+
+  const planOrder = ["free", "basic", "pro", "enterprise"];
+  const data = planOrder.map((plan) => ({
+    plan,
+    count: result.find((r: any) => r._id === plan)?.count ?? 0,
+    revenue:
+      (PLAN_PRICES[plan as keyof typeof PLAN_PRICES] || 0) *
+      (result.find((r: any) => r._id === plan)?.count ?? 0),
+  }));
+
+  return { data };
+};
+
+export const fetchUserGrowthService = async () => {
+  const now = new Date();
+  const since = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
+
+  const result = await User.aggregate([
+    {
+      $match: {
+        role: { $ne: "super_admin" },
+        createdAt: { $gte: since },
+      },
+    },
+    {
+      $group: {
+        _id: { month: { $month: "$createdAt" }, role: "$role" },
+        count: { $sum: 1 },
+      },
+    },
+    { $sort: { "_id.month": 1 } },
+  ]).allowDiskUse(true);
+
+  const data = MONTHS.map((month, index) => {
+    const monthNum = index + 1;
+    const getCount = (role: string) =>
+      result.find((r: any) => r._id.month === monthNum && r._id.role === role)
+        ?.count ?? 0;
+    return {
+      month,
+      admin: getCount("admin"),
+      user: getCount("user"),
+      total: getCount("admin") + getCount("user"),
+    };
+  });
+
+  return { data };
+};
+
+export const fetchTopTenantsByPlanService = async () => {
+  const result = await Tenant.aggregate([
+    { $match: { isDeleted: false } },
+    {
+      $lookup: {
+        from: "users",
+        localField: "_id",
+        foreignField: "tenantId",
+        as: "users",
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        name: 1,
+        plan: 1,
+        email: 1,
+        userCount: { $size: "$users" },
+        revenue: {
+          $switch: {
+            branches: [
+              {
+                case: { $eq: ["$plan", "basic"] },
+                then: PLAN_PRICES.basic,
+              },
+              {
+                case: { $eq: ["$plan", "pro"] },
+                then: PLAN_PRICES.pro,
+              },
+              {
+                case: { $eq: ["$plan", "enterprise"] },
+                then: PLAN_PRICES.enterprise,
+              },
+            ],
+            default: PLAN_PRICES.free,
+          },
+        },
+      },
+    },
+    { $sort: { revenue: -1, userCount: -1 } },
+    { $limit: 10 },
+  ]).allowDiskUse(true);
+
+  const data = result.map((r: any) => ({
+    name: r.name,
+    plan: r.plan,
+    userCount: r.userCount,
+    revenue: r.revenue,
+  }));
+
+  return { data };
+};
+
 export const fetchTenantsService = async ({
   cursor,
   limit,
   search,
+  plan,
+  country,
 }: IFetchTenantsInput) => {
   const countQuery: any = { isDeleted: false };
   if (search) {
-    countQuery.name = { $regex: search, $options: "i" };
+    countQuery.$or = [
+      { name: { $regex: search, $options: "i" } },
+      { email: { $regex: search, $options: "i" } },
+    ];
+  }
+
+  if (plan) {
+    countQuery.plan = plan;
+  }
+
+  if (country) {
+    countQuery["address.country"] = { $regex: country, $options: "i" };
   }
 
   const whereQuery = { ...countQuery };

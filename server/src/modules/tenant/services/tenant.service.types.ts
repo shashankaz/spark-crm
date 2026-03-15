@@ -4,6 +4,8 @@ export interface IFetchTenantsInput {
   cursor?: Types.ObjectId;
   limit: number;
   search?: string;
+  plan?: string;
+  country?: string;
 }
 
 export interface IFetchTenantByIdInput {
