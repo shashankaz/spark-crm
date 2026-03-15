@@ -9,7 +9,7 @@ import {
   Users,
   CreditCard,
   TrendingUp,
-  Plus,
+  X,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,18 @@ import {
   AdminStatWidget,
   PlanDistributionWidget,
   RecentTenantsWidget,
+  TenantGrowthWidget,
+  AdminRevenueWidget,
+  PlanDistributionChartWidget,
+  UserGrowthWidget,
+  TopTenantsWidget,
 } from "./widgets";
+import { AddAdminWidgetDialog } from "./add-admin-widget-dialog";
+import {
+  ADMIN_CUSTOM_WIDGETS,
+  type AdminCustomWidgetId,
+  type AdminWidgetMeta,
+} from "./admin-widget-registry";
 
 import type {
   TenantDashboardStat,
@@ -41,6 +52,7 @@ type Props = {
 };
 
 const STORAGE_KEY = "crm-admin-dashboard-layout";
+const CUSTOM_WIDGETS_KEY = "crm-admin-dashboard-custom-widgets";
 
 const DEFAULT_LAYOUT: GridStackWidget[] = [
   { id: "stat-tenants", x: 0, y: 0, w: 3, h: 3, minH: 3, minW: 2 },
@@ -51,19 +63,54 @@ const DEFAULT_LAYOUT: GridStackWidget[] = [
   { id: "plan-distribution", x: 8, y: 3, w: 4, h: 7, minH: 4, minW: 3 },
 ];
 
-const getInitialLayout: () => GridStackWidget[] = () => {
+const getSavedCustomWidgetIds = (): AdminCustomWidgetId[] => {
+  try {
+    const saved = localStorage.getItem(CUSTOM_WIDGETS_KEY);
+    if (saved) return JSON.parse(saved) as AdminCustomWidgetId[];
+  } catch {
+    // ignore
+  }
+
+  return [];
+};
+
+const getInitialLayout = (
+  customIds: AdminCustomWidgetId[],
+): GridStackWidget[] => {
+  const allWidgets: GridStackWidget[] = [
+    ...DEFAULT_LAYOUT,
+    ...customIds.map((id) => {
+      const meta = ADMIN_CUSTOM_WIDGETS.find((w) => w.id === id)!;
+      return {
+        id,
+        x: 0,
+        y: 999,
+        w: meta.defaultSize.w,
+        h: meta.defaultSize.h,
+        minW: meta.defaultSize.minW,
+        minH: meta.defaultSize.minH,
+      };
+    }),
+  ];
+
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       const parsed = JSON.parse(saved) as GridStackWidget[];
-      const ids = new Set(parsed.map((w) => w.id));
-      if (DEFAULT_LAYOUT.every((w) => ids.has(w.id))) return parsed;
+      const savedIds = new Set(parsed.map((w) => w.id));
+      if (allWidgets.every((w) => savedIds.has(w.id))) {
+        return parsed.filter(
+          (w) =>
+            DEFAULT_LAYOUT.some((d) => d.id === w.id) ||
+            customIds.includes(w.id as AdminCustomWidgetId),
+        );
+      }
     }
   } catch {
     // ignore
   }
 
-  return DEFAULT_LAYOUT;
+  return allWidgets;
 };
 
 export const AdminDashboardGrid = ({
@@ -74,9 +121,17 @@ export const AdminDashboardGrid = ({
 }: Props) => {
   const gridRef = useRef<HTMLDivElement>(null);
   const gridInstance = useRef<GridStack | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
+  const isEditingRef = useRef(false);
 
-  const initialLayout = useMemo(() => getInitialLayout(), []);
+  const [isEditing, setIsEditing] = useState(false);
+  const [customWidgetIds, setCustomWidgetIds] = useState<AdminCustomWidgetId[]>(
+    getSavedCustomWidgetIds,
+  );
+
+  const fullLayout = useMemo(
+    () => getInitialLayout(customWidgetIds),
+    [customWidgetIds],
+  );
 
   useEffect(() => {
     if (!gridRef.current) return;
@@ -95,7 +150,7 @@ export const AdminDashboardGrid = ({
     );
 
     gridInstance.current = grid;
-    grid.setStatic(true);
+    grid.setStatic(!isEditingRef.current);
 
     grid.on("change", () => {
       const saved = grid.save(false) as GridStackWidget[];
@@ -106,23 +161,73 @@ export const AdminDashboardGrid = ({
       grid.destroy(false);
       gridInstance.current = null;
     };
-  }, []);
+  }, [customWidgetIds]);
 
-  const toggleEdit = useCallback(() => {
-    const grid = gridInstance.current;
-    if (!grid) return;
-    setIsEditing((prev) => {
-      grid.setStatic(prev);
-      return !prev;
-    });
-  }, []);
+  useEffect(() => {
+    isEditingRef.current = isEditing;
+    gridInstance.current?.setStatic(!isEditing);
+  }, [isEditing]);
+
+  const toggleEdit = useCallback(() => setIsEditing((prev) => !prev), []);
 
   const resetLayout = useCallback(() => {
-    const grid = gridInstance.current;
-    if (!grid) return;
-    grid.load(DEFAULT_LAYOUT);
     localStorage.removeItem(STORAGE_KEY);
-  }, []);
+    localStorage.removeItem(CUSTOM_WIDGETS_KEY);
+    setCustomWidgetIds([]);
+    if (customWidgetIds.length === 0) {
+      gridInstance.current?.load(DEFAULT_LAYOUT);
+    }
+  }, [customWidgetIds.length]);
+
+  const handleAddWidget = useCallback(
+    (widget: AdminWidgetMeta) => {
+      const grid = gridInstance.current;
+      if (grid) {
+        const current = grid.save(false) as GridStackWidget[];
+        const newItem: GridStackWidget = {
+          id: widget.id,
+          x: 0,
+          y: 999,
+          w: widget.defaultSize.w,
+          h: widget.defaultSize.h,
+          minW: widget.defaultSize.minW,
+          minH: widget.defaultSize.minH,
+        };
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify([...current, newItem]),
+        );
+      }
+
+      const newIds = [...customWidgetIds, widget.id];
+      localStorage.setItem(CUSTOM_WIDGETS_KEY, JSON.stringify(newIds));
+      setCustomWidgetIds(newIds);
+    },
+    [customWidgetIds],
+  );
+
+  const handleRemoveWidget = useCallback(
+    (id: AdminCustomWidgetId) => {
+      const grid = gridInstance.current;
+      if (grid) {
+        const current = grid.save(false) as GridStackWidget[];
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify(current.filter((w) => w.id !== id)),
+        );
+      }
+
+      const newIds = customWidgetIds.filter((wid) => wid !== id);
+      localStorage.setItem(CUSTOM_WIDGETS_KEY, JSON.stringify(newIds));
+      setCustomWidgetIds(newIds);
+    },
+    [customWidgetIds],
+  );
+
+  const customIdSet = useMemo(
+    () => new Set(customWidgetIds),
+    [customWidgetIds],
+  );
 
   return (
     <div className="space-y-3">
@@ -148,14 +253,14 @@ export const AdminDashboardGrid = ({
           {isEditing ? "Done" : "Customize"}
         </Button>
 
-        <Button variant="secondary" size="sm">
-          <Plus className="h-3.5 w-3.5 mr-1.5" />
-          Add Widget
-        </Button>
+        <AddAdminWidgetDialog
+          activeWidgetIds={customWidgetIds}
+          onAdd={handleAddWidget}
+        />
       </div>
 
       <div ref={gridRef} className="grid-stack">
-        {initialLayout.map((item) => (
+        {fullLayout.map((item) => (
           <div
             key={item.id}
             className="grid-stack-item"
@@ -174,6 +279,18 @@ export const AdminDashboardGrid = ({
                   <span className="text-[11px] text-muted-foreground">
                     drag to move
                   </span>
+                  {customIdSet.has(item.id as AdminCustomWidgetId) && (
+                    <button
+                      type="button"
+                      className="ml-auto mr-1.5 rounded p-0.5 hover:bg-destructive/20 hover:text-destructive transition-colors cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRemoveWidget(item.id as AdminCustomWidgetId);
+                      }}
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  )}
                 </div>
               )}
 
@@ -228,6 +345,18 @@ export const AdminDashboardGrid = ({
                     isLoading={isLoading}
                   />
                 )}
+
+                {item.id === "chart-tenant-growth" && <TenantGrowthWidget />}
+
+                {item.id === "chart-admin-revenue" && <AdminRevenueWidget />}
+
+                {item.id === "chart-plan-distribution" && (
+                  <PlanDistributionChartWidget />
+                )}
+
+                {item.id === "chart-user-growth" && <UserGrowthWidget />}
+
+                {item.id === "chart-top-tenants" && <TopTenantsWidget />}
               </div>
             </div>
           </div>
