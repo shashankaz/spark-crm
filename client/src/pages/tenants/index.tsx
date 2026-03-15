@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import debounce from "lodash/debounce";
 import { Helmet } from "react-helmet-async";
 import { Download, Plus, X } from "lucide-react";
+import { useHotkey } from "@tanstack/react-hotkeys";
 
 import {
   Dialog,
@@ -19,6 +20,11 @@ import { DataTable } from "@/components/shared/dashboard/data-table";
 import { columns } from "./columns";
 import { TenantCreateForm } from "./tenant-create-form";
 import { TenantExportModal } from "./tenant-export-modal";
+import {
+  TenantFilterModal,
+  defaultTenantFilters,
+  type TenantFilters,
+} from "./tenant-filter-modal";
 
 import { useTenants } from "@/hooks";
 
@@ -31,17 +37,32 @@ const TenantsPage = () => {
 
   const [searchInput, setSearchInput] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [filters, setFilters] = useState<TenantFilters>(defaultTenantFilters);
+
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
 
   const handleSearchChange = useMemo(
     () =>
       debounce((value: string) => {
         setDebouncedSearch(value);
+        setPageIndex(0);
       }, 500),
     [],
   );
 
-  const { data, isPending } = useTenants({ search: debouncedSearch });
+  const { data, isPending } = useTenants({
+    search: debouncedSearch,
+    cursor: pageIndex > 0 ? String(pageIndex * pageSize) : undefined,
+    limit: pageSize,
+    plan: filters.plan !== "any" ? filters.plan : undefined,
+    country: filters.country || undefined,
+  });
+
   const tenants = data?.tenants ?? [];
+  const totalCount = data?.totalCount ?? 0;
+
+  useHotkey("Mod+T", () => setOpen(true));
 
   if (isPending) return <TableSkeleton />;
 
@@ -58,7 +79,14 @@ const TenantsPage = () => {
             <Heading title="Tenants" />
             <Description description="Manage your CRM tenants and their subscriptions" />
           </div>
-          <div className="space-x-2">
+          <div className="space-x-2 flex items-center">
+            <TenantFilterModal
+              filters={filters}
+              onChange={(f) => {
+                setFilters(f);
+                setPageIndex(0);
+              }}
+            />
             <Button type="button" onClick={() => setOpen(true)}>
               <Plus />
               Create
@@ -76,6 +104,14 @@ const TenantsPage = () => {
             handleSearchChange(value);
           }}
           onSelectionChange={(rows) => setSelectedTenants(rows as Tenant[])}
+          totalCount={totalCount}
+          pageIndex={pageIndex}
+          pageSize={pageSize}
+          onPageChange={setPageIndex}
+          onPageSizeChange={(size) => {
+            setPageSize(size);
+            setPageIndex(0);
+          }}
         />
 
         <Dialog open={open} onOpenChange={setOpen}>
