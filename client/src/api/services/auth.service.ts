@@ -8,6 +8,7 @@ import type {
   EditProfileResponse,
   GetProfileResponse,
   GetSessionsResponse,
+  LoginData,
   LoginRequest,
   LoginResponse,
   LogoutResponse,
@@ -22,7 +23,7 @@ import type {
 
 export const login = async (params: LoginRequest): Promise<LoginResponse> =>
   withApiHandler(async () => {
-    const response = await api.post<ApiResponse<{ userId: string }>>(
+    const response = await api.post<ApiResponse<LoginData>>(
       "/auth/login",
       params,
     );

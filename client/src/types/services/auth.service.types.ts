@@ -4,6 +4,10 @@ export type SessionsData = {
   sessions: Session[];
 };
 
+export type LoginData = {
+  userId: string;
+};
+
 export type LoginRequest = {
   email: string;
   password: string;
