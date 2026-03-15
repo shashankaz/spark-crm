@@ -1,5 +1,9 @@
 import type { User } from "@/types/domain";
 
+/**
+ * API response types
+ */
+
 export type UsersData = {
   users: User[];
   totalCount: number;
@@ -20,6 +24,16 @@ export type UpdatedUserData = {
 export type DeletedUserData = {
   id: string;
 };
+
+export type ExportUsersData = {
+  messageId: string;
+  userCount: number;
+  recipientEmail: string;
+};
+
+/**
+ * Request types
+ */
 
 export type GetAllUsersRequest = {
   cursor?: string;
@@ -55,6 +69,15 @@ export type DeleteUserRequest = {
   id: string;
 };
 
+export type ExportUsersRequest = {
+  userIds: string[];
+  recipientEmail: string;
+};
+
+/**
+ * Response types
+ */
+
 export type GetAllUsersResponse = {
   message: string;
   users: User[];
@@ -79,17 +102,6 @@ export type UpdateUserResponse = {
 export type DeleteUserResponse = {
   message: string;
   id: string;
-};
-
-export type ExportUsersRequest = {
-  userIds: string[];
-  recipientEmail: string;
-};
-
-export type ExportUsersData = {
-  messageId: string;
-  userCount: number;
-  recipientEmail: string;
 };
 
 export type ExportUsersResponse = {

@@ -1,5 +1,9 @@
 import type { IAttachment } from "@/types/domain";
 
+/**
+ * API response types
+ */
+
 export type AttachmentsData = {
   attachments: IAttachment[];
   totalCount: number;
@@ -14,6 +18,10 @@ export type UploadUrlData = {
   key: string;
   fileUrl: string;
 };
+
+/**
+ * Request types
+ */
 
 export type GetAllAttachmentsByLeadIdRequest = {
   leadId: string;
@@ -34,6 +42,10 @@ export type GenerateUploadUrlRequest = {
   fileName: string;
   fileType: string;
 };
+
+/**
+ * Response types
+ */
 
 export type GetAttachmentsResponse = {
   message: string;

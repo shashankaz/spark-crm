@@ -1,5 +1,9 @@
 import type { IComment } from "@/types/domain";
 
+/**
+ * API response types
+ */
+
 export type CommentsData = {
   comments: IComment[];
   totalCount: number;
@@ -8,6 +12,10 @@ export type CommentsData = {
 export type CommentData = {
   comment: IComment;
 };
+
+/**
+ * Request types
+ */
 
 export type GetAllCommentsByLeadIdRequest = {
   leadId: string;
@@ -20,6 +28,10 @@ export type CreateCommentForLeadRequest = {
   leadId: string;
   comment: string;
 };
+
+/**
+ * Response types
+ */
 
 export type GetAllCommentsByLeadIdResponse = {
   message: string;

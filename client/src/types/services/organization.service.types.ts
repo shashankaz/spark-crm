@@ -1,5 +1,9 @@
 import type { Organization } from "@/types/domain";
 
+/**
+ * API response types
+ */
+
 export type OrganizationsData = {
   organizations: Organization[];
   totalCount: number;
@@ -16,6 +20,16 @@ export type UpdatedOrganizationData = {
 export type DeletedOrganizationData = {
   id: string;
 };
+
+export type ExportOrganizationsData = {
+  messageId: string;
+  organizationCount: number;
+  recipientEmail: string;
+};
+
+/**
+ * Request types
+ */
 
 export type GetAllOrganizationsRequest = {
   cursor?: string;
@@ -64,6 +78,15 @@ export type DeleteOrganizationByIdRequest = {
   id: string;
 };
 
+export type ExportOrganizationsRequest = {
+  organizationIds: string[];
+  recipientEmail: string;
+};
+
+/**
+ * Response types
+ */
+
 export type GetAllOrganizationsResponse = {
   message: string;
   organizations: Organization[];
@@ -88,17 +111,6 @@ export type UpdateOrganizationResponse = {
 export type DeleteOrganizationResponse = {
   message: string;
   id: string;
-};
-
-export type ExportOrganizationsRequest = {
-  organizationIds: string[];
-  recipientEmail: string;
-};
-
-export type ExportOrganizationsData = {
-  messageId: string;
-  organizationCount: number;
-  recipientEmail: string;
 };
 
 export type ExportOrganizationsResponse = {

@@ -1,5 +1,9 @@
 import type { User, Session } from "@/types/domain";
 
+/**
+ * API response types
+ */
+
 export type SessionsData = {
   sessions: Session[];
 };
@@ -7,6 +11,10 @@ export type SessionsData = {
 export type LoginData = {
   userId: string;
 };
+
+/**
+ * Request types
+ */
 
 export type LoginRequest = {
   email: string;
@@ -32,6 +40,10 @@ export type ChangePasswordRequest = {
   currentPassword: string;
   newPassword: string;
 };
+
+/**
+ * Response types
+ */
 
 export type LoginResponse = {
   message: string;

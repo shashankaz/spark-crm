@@ -1,5 +1,9 @@
 import type { ICall } from "@/types/domain";
 
+/**
+ * API response types
+ */
+
 export type CallsData = {
   calls: ICall[];
   totalCount: number;
@@ -8,6 +12,10 @@ export type CallsData = {
 export type CallData = {
   call: ICall;
 };
+
+/**
+ * Request types
+ */
 
 export type GetAllCallsByLeadIdRequest = {
   leadId: string;
@@ -22,6 +30,10 @@ export type CreateCallForLeadRequest = {
   status: string;
   duration: number;
 };
+
+/**
+ * Response types
+ */
 
 export type GetAllCallsByLeadIdResponse = {
   message: string;

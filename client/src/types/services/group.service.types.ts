@@ -1,5 +1,9 @@
 import type { IGroup } from "@/types/domain";
 
+/**
+ * API response types
+ */
+
 export type GroupsData = {
   groups: IGroup[];
   totalCount: number;
@@ -14,6 +18,10 @@ export type CampaignResult = {
   successful: number;
   failed: number;
 };
+
+/**
+ * Request types
+ */
 
 export type GetGroupRequest = {
   id: string;
@@ -46,6 +54,14 @@ export type GetGroupsRequest = {
   sortOrder?: "asc" | "desc";
 };
 
+export type DeleteGroupRequest = {
+  id: string;
+};
+
+/**
+ * Response types
+ */
+
 export type GetGroupsResponse = {
   message: string;
   groups: IGroup[];
@@ -55,10 +71,6 @@ export type GetGroupsResponse = {
 export type GetGroupResponse = {
   message: string;
   group: IGroup;
-};
-
-export type DeleteGroupRequest = {
-  id: string;
 };
 
 export type DeleteGroupResponse = {

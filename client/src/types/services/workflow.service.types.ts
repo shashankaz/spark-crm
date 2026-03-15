@@ -1,5 +1,9 @@
 import type { IWorkflow } from "@/types/domain";
 
+/**
+ * API response types
+ */
+
 export type WorkflowsData = {
   workflows: IWorkflow[];
   totalCount: number;
@@ -12,6 +16,10 @@ export type WorkflowData = {
 export type DeletedWorkflowData = {
   id: string;
 };
+
+/**
+ * Request types
+ */
 
 export type GetAllWorkflowsRequest = {
   cursor?: string;
@@ -33,6 +41,10 @@ export type DeleteWorkflowRequest = {
 export type ToggleWorkflowRequest = {
   id: string;
 };
+
+/**
+ * Response types
+ */
 
 export interface IWorkflowActionPayload {
   type: string;

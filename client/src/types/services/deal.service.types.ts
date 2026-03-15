@@ -1,5 +1,9 @@
 import type { IDeal } from "@/types/domain";
 
+/**
+ * API response types
+ */
+
 export type DealsData = {
   deals: IDeal[];
   totalCount: number;
@@ -8,6 +12,16 @@ export type DealsData = {
 export type DealData = {
   deal: IDeal;
 };
+
+export type ExportDealsData = {
+  messageId: string;
+  dealCount: number;
+  recipientEmail: string;
+};
+
+/**
+ * Request types
+ */
 
 export type GetAllDealsRequest = {
   cursor?: string;
@@ -30,6 +44,15 @@ export type UpdateDealRequest = {
 
 export type DeleteDealRequest = { id: string };
 
+export type ExportDealsRequest = {
+  dealIds: string[];
+  recipientEmail: string;
+};
+
+/**
+ * Response types
+ */
+
 export type GetAllDealsResponse = {
   message: string;
   deals: IDeal[];
@@ -41,17 +64,6 @@ export type GetDealResponse = { message: string; deal: IDeal };
 export type UpdateDealResponse = { message: string; deal: IDeal };
 
 export type DeleteDealResponse = { message: string };
-
-export type ExportDealsRequest = {
-  dealIds: string[];
-  recipientEmail: string;
-};
-
-export type ExportDealsData = {
-  messageId: string;
-  dealCount: number;
-  recipientEmail: string;
-};
 
 export type ExportDealsResponse = {
   message: string;

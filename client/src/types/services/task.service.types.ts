@@ -1,5 +1,9 @@
 import type { Task } from "@/types/domain";
 
+/**
+ * API response types
+ */
+
 export type TasksData = {
   tasks: Task[];
 };
@@ -7,6 +11,10 @@ export type TasksData = {
 export type TaskData = {
   task: Task;
 };
+
+/**
+ * Request types
+ */
 
 export type GetAllTasksRequest = {
   search?: string;
@@ -37,6 +45,10 @@ export type UpdateTaskRequest = {
 };
 
 export type DeleteTaskRequest = { id: string };
+
+/**
+ * Response types
+ */
 
 export type GetAllTasksResponse = {
   message: string;

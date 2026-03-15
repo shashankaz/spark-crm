@@ -1,5 +1,9 @@
 import type { IContact } from "@/types/domain";
 
+/**
+ * API response types
+ */
+
 export type ContactsData = {
   contacts: IContact[];
   totalCount: number;
@@ -22,7 +26,7 @@ export type BulkDeleteContactsData = {
 };
 
 /**
- * Request Types
+ * Request types
  */
 
 export type GetAllContactsRequest = {
@@ -78,7 +82,7 @@ export type BulkDeleteContactsRequest = {
 };
 
 /**
- * Response Types
+ * Response types
  */
 
 export type GetAllContactsResponse = {

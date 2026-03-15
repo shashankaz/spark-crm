@@ -1,5 +1,9 @@
 import type { IDeal, ILead, ILeadActionHistory } from "@/types/domain";
 
+/**
+ * API response types
+ */
+
 export type LeadsData = {
   leads: ILead[];
   totalCount: number;
@@ -29,6 +33,43 @@ export type LeadDealData = {
   deal: IDeal;
 };
 
+export type BulkDeleteLeadsData = {
+  deleted: number;
+};
+
+export type ExportLeadsData = {
+  messageId: string;
+  leadCount: number;
+  recipientEmail: string;
+};
+
+export type ImportLeadsData = {
+  inserted: number;
+  failed: number;
+  failedLeadIds: string[];
+};
+
+export type LeadResearchResult = {
+  firstName: string;
+  lastName?: string;
+  email: string;
+  mobile: string;
+  gender: "male" | "female" | "other";
+  orgName?: string;
+  source?: string;
+  score: number;
+  status: "new" | "contacted" | "qualified" | "converted" | "lost";
+  summary: string;
+};
+
+export type ResearchLeadData = {
+  result: LeadResearchResult;
+};
+
+/**
+ * Request types
+ */
+
 export type GetAllLeadsRequest = {
   cursor?: string;
   limit?: number;
@@ -41,15 +82,6 @@ export type GetAllLeadsRequest = {
 
 export type BulkDeleteLeadsRequest = {
   leadIds: string[];
-};
-
-export type BulkDeleteLeadsData = {
-  deleted: number;
-};
-
-export type BulkDeleteLeadsResponse = {
-  message: string;
-  deleted: number;
 };
 
 export type GetLeadByIdRequest = {
@@ -107,6 +139,28 @@ export type AssignLeadRequest = {
   assignedUserId: string;
 };
 
+export type ExportLeadsRequest = {
+  leadIds: string[];
+  recipientEmail: string;
+};
+
+export type ImportLeadsRequest = {
+  file: File;
+};
+
+export type ResearchLeadRequest = {
+  query: string;
+};
+
+/**
+ * Response types
+ */
+
+export type BulkDeleteLeadsResponse = {
+  message: string;
+  deleted: number;
+};
+
 export type GetAllLeadsResponse = {
   message: string;
   leads: ILead[];
@@ -153,17 +207,6 @@ export type AssignLeadResponse = {
   lead: ILead;
 };
 
-export type ExportLeadsRequest = {
-  leadIds: string[];
-  recipientEmail: string;
-};
-
-export type ExportLeadsData = {
-  messageId: string;
-  leadCount: number;
-  recipientEmail: string;
-};
-
 export type ExportLeadsResponse = {
   message: string;
   messageId: string;
@@ -171,42 +214,11 @@ export type ExportLeadsResponse = {
   recipientEmail: string;
 };
 
-export type ImportLeadsRequest = {
-  file: File;
-};
-
-export type ImportLeadsData = {
-  inserted: number;
-  failed: number;
-  failedLeadIds: string[];
-};
-
 export type ImportLeadsResponse = {
   message: string;
   inserted: number;
   failed: number;
   failedLeadIds: string[];
-};
-
-export type LeadResearchResult = {
-  firstName: string;
-  lastName?: string;
-  email: string;
-  mobile: string;
-  gender: "male" | "female" | "other";
-  orgName?: string;
-  source?: string;
-  score: number;
-  status: "new" | "contacted" | "qualified" | "converted" | "lost";
-  summary: string;
-};
-
-export type ResearchLeadRequest = {
-  query: string;
-};
-
-export type ResearchLeadData = {
-  result: LeadResearchResult;
 };
 
 export type ResearchLeadResponse = {

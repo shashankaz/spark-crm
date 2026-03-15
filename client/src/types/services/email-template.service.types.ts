@@ -1,5 +1,9 @@
 import type { IEmailTemplate } from "@/types/domain";
 
+/**
+ * API response types
+ */
+
 export type EmailTemplatesData = {
   templates: IEmailTemplate[];
 };
@@ -7,6 +11,10 @@ export type EmailTemplatesData = {
 export type EmailTemplateData = {
   template: IEmailTemplate;
 };
+
+/**
+ * Request types
+ */
 
 export type GetAllEmailTemplatesRequest = {
   search?: string;
@@ -31,6 +39,10 @@ export type UpdateEmailTemplateRequest = {
 };
 
 export type DeleteEmailTemplateRequest = { id: string };
+
+/**
+ * Response types
+ */
 
 export type GetAllEmailTemplatesResponse = {
   message: string;

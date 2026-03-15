@@ -1,5 +1,9 @@
 import type { IEmail } from "@/types/domain";
 
+/**
+ * API response types
+ */
+
 export type EmailsData = {
   emails: IEmail[];
   totalCount: number;
@@ -8,6 +12,10 @@ export type EmailsData = {
 export type EmailData = {
   email: IEmail;
 };
+
+/**
+ * Request types
+ */
 
 export type GetAllEmailsByLeadIdRequest = {
   leadId: string;
@@ -24,6 +32,10 @@ export type SendEmailForLeadRequest = {
   bodyText?: string;
   from?: string;
 };
+
+/**
+ * Response types
+ */
 
 export type GetEmailsResponse = {
   message: string;
