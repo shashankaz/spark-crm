@@ -153,9 +153,11 @@ export const updateLeadById = asyncHandler(
       status,
     } = req.body;
 
-    const isDenied = await validateEmailWithArcjet({ req, email });
-    if (isDenied) {
-      throw new AppError("Invalid email address", 400);
+    if (email) {
+      const isDenied = await validateEmailWithArcjet({ req, email });
+      if (isDenied) {
+        throw new AppError("Invalid email address", 400);
+      }
     }
 
     const updatedLead = await updateLeadByIdService({
@@ -389,16 +391,16 @@ export const exportLeads = asyncHandler(async (req: Request, res: Response) => {
     throw new AppError("Lead Ids must be a non-empty array", 400);
   }
 
+  if (!recipientEmail) {
+    throw new AppError("Email is required", 400);
+  }
+
   const isDenied = await validateEmailWithArcjet({
     req,
     email: recipientEmail,
   });
   if (isDenied) {
     throw new AppError("Invalid email address", 400);
-  }
-
-  if (!recipientEmail) {
-    throw new AppError("Email is required", 400);
   }
 
   const { messageId } = await enqueueLeadExportService({

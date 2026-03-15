@@ -12,6 +12,7 @@ import { AppError } from "../../shared/app-error";
 import { sendSuccess } from "../../shared/api-response";
 import { asyncHandler } from "../../shared/async-handler";
 import { UserRole } from "./models/user.model.types";
+import { validateEmailWithArcjet } from "../../utils/arcjet/validate-email";
 
 export const getAllUsers = asyncHandler(async (req: Request, res: Response) => {
   const { tenantId } = req.user;
@@ -68,6 +69,11 @@ export const createUser = asyncHandler(async (req: Request, res: Response) => {
     throw new AppError("First name, email, and password are required", 400);
   }
 
+  const isDenied = await validateEmailWithArcjet({ req, email });
+  if (isDenied) {
+    throw new AppError("Invalid email address", 400);
+  }
+
   const createdUser = await createUserService({
     tenantId,
     firstName,
@@ -101,6 +107,13 @@ export const updateUser = asyncHandler(async (req: Request, res: Response) => {
       "At least one field (first name, email, mobile, password, or role) is required to update",
       400,
     );
+  }
+
+  if (email) {
+    const isDenied = await validateEmailWithArcjet({ req, email });
+    if (isDenied) {
+      throw new AppError("Invalid email address", 400);
+    }
   }
 
   const updatedUser = await updateUserService({
@@ -154,6 +167,11 @@ export const exportUsers = asyncHandler(async (req: Request, res: Response) => {
 
   if (!recipientEmail) {
     throw new AppError("Email is required", 400);
+  }
+
+  const isDenied = await validateEmailWithArcjet({ req, email: recipientEmail });
+  if (isDenied) {
+    throw new AppError("Invalid email address", 400);
   }
 
   const { messageId } = await enqueueUserExportService({

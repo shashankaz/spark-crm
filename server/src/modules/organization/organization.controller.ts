@@ -107,6 +107,13 @@ export const createOrganization = asyncHandler(
       }
     }
 
+    if (contactEmail) {
+      const isDenied = await validateEmailWithArcjet({ req, email: contactEmail });
+      if (isDenied) {
+        throw new AppError("Invalid contact email address", 400);
+      }
+    }
+
     const organization = await createOrganizationService({
       idempotentId,
       tenantId,
@@ -161,6 +168,13 @@ export const updateOrganizationById = asyncHandler(
       const isDenied = await validateEmailWithArcjet({ req, email });
       if (isDenied) {
         throw new AppError("Invalid email address", 400);
+      }
+    }
+
+    if (contactEmail) {
+      const isDenied = await validateEmailWithArcjet({ req, email: contactEmail });
+      if (isDenied) {
+        throw new AppError("Invalid contact email address", 400);
       }
     }
 

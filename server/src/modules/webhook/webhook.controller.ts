@@ -3,6 +3,7 @@ import { Types } from "mongoose";
 import { AppError } from "../../shared/app-error";
 import { sendSuccess } from "../../shared/api-response";
 import { asyncHandler } from "../../shared/async-handler";
+import { validateEmailWithArcjet } from "../../utils/arcjet/validate-email";
 import {
   generateWebhookTokenService,
   listWebhookTokensService,
@@ -101,6 +102,11 @@ export const createLeadFromWebhook = asyncHandler(
         "firstName, email, mobile, and gender are required",
         400,
       );
+    }
+
+    const isDenied = await validateEmailWithArcjet({ req, email });
+    if (isDenied) {
+      throw new AppError("Invalid email address", 400);
     }
 
     const validGenders = ["male", "female", "other"];

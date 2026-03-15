@@ -10,6 +10,7 @@ import { enqueueDealExportService } from "../../utils/export/export.helper";
 import { AppError } from "../../shared/app-error";
 import { sendSuccess } from "../../shared/api-response";
 import { asyncHandler } from "../../shared/async-handler";
+import { validateEmailWithArcjet } from "../../utils/arcjet/validate-email";
 
 export const getAllDeals = asyncHandler(async (req: Request, res: Response) => {
   const { tenantId } = req.user;
@@ -140,6 +141,11 @@ export const exportDeals = asyncHandler(async (req: Request, res: Response) => {
 
   if (!recipientEmail) {
     throw new AppError("Email is required", 400);
+  }
+
+  const isDenied = await validateEmailWithArcjet({ req, email: recipientEmail });
+  if (isDenied) {
+    throw new AppError("Invalid email address", 400);
   }
 
   const { messageId } = await enqueueDealExportService({
