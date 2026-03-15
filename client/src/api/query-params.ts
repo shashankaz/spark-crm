@@ -27,6 +27,9 @@ type QueryKey = {
   size?: string;
   country?: string;
 
+  // Tenant
+  plan?: string;
+
   // User
   entity?: string;
 

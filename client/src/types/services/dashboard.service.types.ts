@@ -97,6 +97,10 @@ export type RevenueTargetItem = {
   actual: number;
 };
 
+export type DashboardWidgetData<T> = {
+  data: T[];
+};
+
 export type WidgetResponse<T> = {
   message: string;
   data: T[];
