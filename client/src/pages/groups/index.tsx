@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import debounce from "lodash/debounce";
 import { Helmet } from "react-helmet-async";
 import { Plus, Users, FileText } from "lucide-react";
+import { useHotkey } from "@tanstack/react-hotkeys";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -45,6 +46,8 @@ const GroupsPage = () => {
     search: debouncedSearch || undefined,
   });
   const groups = data?.groups ?? [];
+
+  useHotkey("Mod+G", () => setCreateOpen(true));
 
   if (isPending) return <TableSkeleton />;
 

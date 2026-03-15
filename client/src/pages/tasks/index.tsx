@@ -9,6 +9,7 @@ import {
   XCircle,
   Circle,
 } from "lucide-react";
+import { useHotkey } from "@tanstack/react-hotkeys";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -67,6 +68,8 @@ const TaskPage = () => {
   });
 
   const tasks: Task[] = data?.tasks ?? [];
+
+  useHotkey("Mod+T", () => setOpen(true));
 
   const counts = useMemo(() => {
     const all = data?.tasks ?? [];

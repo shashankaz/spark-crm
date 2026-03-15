@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import debounce from "lodash/debounce";
 import { Helmet } from "react-helmet-async";
 import { Download, Plus, X } from "lucide-react";
+import { useHotkey } from "@tanstack/react-hotkeys";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -57,6 +58,8 @@ const UsersPage = () => {
   });
   const users = data?.users || [];
   const totalCount = data?.totalCount ?? 0;
+
+  useHotkey("Mod+U", () => setOpen(true));
 
   if (isPending) return <TableSkeleton />;
 

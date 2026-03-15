@@ -1,40 +1,38 @@
 import { Helmet } from "react-helmet-async";
-import { Keyboard } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Heading } from "@/components/shared/typography/heading";
 import { Description } from "@/components/shared/typography/description";
 
-import { shortcuts } from "@/data/shortcuts";
+import { getShortcutsForRole } from "@/data/shortcuts";
+
+import { useUser } from "@/hooks/use-user";
 
 const ShortcutsPage = () => {
   const isMac = navigator.userAgent.includes("Mac");
 
-  const grouped = (
-    shortcuts as readonly {
-      keys: readonly string[];
-      windowsKeys: readonly string[];
-      description: string;
-      context: string;
-    }[]
-  ).reduce<
-    Record<
-      string,
-      {
-        keys: readonly string[];
-        windowsKeys: readonly string[];
-        description: string;
-        context: string;
-      }[]
-    >
+  const { user } = useUser();
+
+  const role = user?.role ?? "user";
+  const visibleShortcuts = getShortcutsForRole(role);
+
+  const grouped = visibleShortcuts.reduce<
+    Record<string, typeof visibleShortcuts>
   >((acc, shortcut) => {
     if (!acc[shortcut.context]) acc[shortcut.context] = [];
     acc[shortcut.context].push(shortcut);
     return acc;
   }, {});
 
-  const totalShortcuts = shortcuts.length as number;
+  const totalShortcuts = visibleShortcuts.length;
   const totalContexts = Object.keys(grouped).length;
+
+  const roleLabel =
+    role === "super_admin"
+      ? "Super Admin"
+      : role === "admin"
+        ? "Admin"
+        : "User";
 
   return (
     <>
@@ -47,9 +45,17 @@ const ShortcutsPage = () => {
       </Helmet>
 
       <div className="space-y-6">
-        <div className="border-b pb-4">
-          <Heading title="Keyboard Shortcuts" />
-          <Description description="Boost your productivity with these keyboard shortcuts" />
+        <div className="border-b pb-4 flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <Heading title="Keyboard Shortcuts" />
+            <Description description="Boost your productivity with these keyboard shortcuts" />
+          </div>
+          <Badge
+            variant="outline"
+            className="text-xs font-semibold px-3 py-1.5 shrink-0"
+          >
+            {roleLabel} shortcuts
+          </Badge>
         </div>
 
         <div className="space-y-8">
@@ -63,6 +69,9 @@ const ShortcutsPage = () => {
                   {context}
                 </Badge>
                 <div className="h-px flex-1 bg-border" />
+                <span className="text-xs text-muted-foreground shrink-0">
+                  {items.length} shortcut{items.length !== 1 ? "s" : ""}
+                </span>
               </div>
 
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -71,14 +80,9 @@ const ShortcutsPage = () => {
                     key={i}
                     className="flex items-center justify-between p-4 border rounded-xl bg-card text-card-foreground shadow-sm hover:shadow-md transition-shadow"
                   >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted">
-                        <Keyboard className="h-4 w-4 text-muted-foreground" />
-                      </div>
-                      <span className="text-sm font-medium leading-snug">
-                        {shortcut.description}
-                      </span>
-                    </div>
+                    <span className="text-sm font-medium leading-snug min-w-0">
+                      {shortcut.description}
+                    </span>
                     <div className="flex items-center gap-1 ml-3 shrink-0">
                       {(isMac ? shortcut.keys : shortcut.windowsKeys).map(
                         (k, j) => (

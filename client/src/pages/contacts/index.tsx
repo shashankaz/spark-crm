@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import debounce from "lodash/debounce";
 import { Helmet } from "react-helmet-async";
 import { Plus, UserCircle2, Star, Trash2, X } from "lucide-react";
+import { useHotkey } from "@tanstack/react-hotkeys";
 import toast from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
@@ -110,6 +111,8 @@ const ContactsPage = () => {
     activeTab === "starred" ? displayedContacts.length : totalCount;
   const canPreviousPage = pageIndex > 0;
   const canNextPage = (pageIndex + 1) * pageSize < totalRows;
+
+  useHotkey("Mod+E", () => setOpen(true));
 
   if (isPending) return <TableSkeleton />;
 

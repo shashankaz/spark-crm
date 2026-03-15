@@ -3,6 +3,7 @@ import debounce from "lodash/debounce";
 import toast from "react-hot-toast";
 import { Helmet } from "react-helmet-async";
 import { Plus } from "lucide-react";
+import { useHotkey } from "@tanstack/react-hotkeys";
 
 import {
   Dialog,
@@ -54,6 +55,8 @@ const WorkflowPage = () => {
   const workflows = data?.workflows ?? [];
 
   const { mutate: createWorkflow, isPending: isCreating } = useCreateWorkflow();
+
+  useHotkey("Mod+W", () => setOpen(true));
 
   const handleCreate = (formData: WorkflowFormValues) => {
     const actions = (formData.actions ?? []).map((type) => ({
