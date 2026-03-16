@@ -9,6 +9,7 @@ import {
   updateUser,
   deleteUser,
   exportUsers,
+  generatePassword,
 } from "@/api/services";
 
 export const useUser = () => {
@@ -89,5 +90,11 @@ export const useDeleteUser = () => {
 export const useExportUsers = () => {
   return useMutation({
     mutationFn: exportUsers,
+  });
+};
+
+export const useGeneratePassword = () => {
+  return useMutation({
+    mutationFn: generatePassword,
   });
 };

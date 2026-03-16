@@ -6,7 +6,6 @@ export const userEditSchema = z.object({
     .trim()
     .min(2, "First name must be at least 2 characters"),
   lastName: z.string().trim().optional(),
-  email: z.email("Invalid email address"),
   mobile: z
     .string()
     .trim()
@@ -15,12 +14,6 @@ export const userEditSchema = z.object({
     .optional()
     .or(z.literal("")),
   role: z.enum(["admin", "user"], "Role must be either Admin or User"),
-  newPassword: z
-    .string()
-    .trim()
-    .min(6, "Password must be at least 6 characters")
-    .optional()
-    .or(z.literal("")),
 });
 
 export type UserEditFormValues = z.infer<typeof userEditSchema>;

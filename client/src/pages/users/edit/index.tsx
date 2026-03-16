@@ -1,20 +1,50 @@
 import { useParams, Link } from "react-router";
 import { Helmet } from "react-helmet-async";
+import { KeyRound, LoaderCircle } from "lucide-react";
+import toast from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 import { UserEditForm } from "./user-edit-form";
 import { Heading } from "@/components/shared/typography/heading";
 import { Description } from "@/components/shared/typography/description";
 
-import { useUserById } from "@/hooks";
+import { useUserById, useGeneratePassword } from "@/hooks";
 
 const UsersEditPage = () => {
   const { userId } = useParams<{ userId: string }>();
 
   const { data, isPending } = useUserById({ id: userId! });
   const user = data?.user;
+
+  const { mutate: generatePwd, isPending: isGenerating } =
+    useGeneratePassword();
+
+  const handleGeneratePassword = () => {
+    generatePwd(
+      { id: userId! },
+      {
+        onSuccess: ({ message }) => {
+          toast.success(message);
+        },
+        onError: ({ message }) => {
+          toast.error(message);
+        },
+      },
+    );
+  };
 
   if (isPending) return null;
 
@@ -50,6 +80,41 @@ const UsersEditPage = () => {
               </div>
               <Description description={user.email} />
             </div>
+
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={isGenerating}
+                >
+                  {isGenerating ? (
+                    <LoaderCircle className="animate-spin mr-2 h-4 w-4" />
+                  ) : (
+                    <KeyRound className="mr-2 h-4 w-4" />
+                  )}
+                  Generate Password
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Generate new password?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will generate a secure random password, revoke all
+                    active sessions for{" "}
+                    <strong>{user.firstName}</strong>, and email the new
+                    password to <strong>{user.email}</strong>. They will need
+                    to log in again on all devices.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleGeneratePassword}>
+                    Generate &amp; Send
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
 

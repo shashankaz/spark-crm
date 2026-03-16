@@ -12,6 +12,8 @@ import type {
   ExportUsersData,
   ExportUsersRequest,
   ExportUsersResponse,
+  GeneratePasswordRequest,
+  GeneratePasswordResponse,
   GetAllUsersRequest,
   GetAllUsersResponse,
   GetUserByIdRequest,
@@ -107,6 +109,18 @@ export const deleteUser = async (
       message,
       id: data.id,
     };
+  });
+
+export const generatePassword = async (
+  params: GeneratePasswordRequest,
+): Promise<GeneratePasswordResponse> =>
+  withApiHandler(async () => {
+    const { id } = params;
+    const response = await api.post<ApiResponse<{}>>(
+      `/user/${id}/generate-password`,
+    );
+
+    return { message: response.data.message };
   });
 
 export const exportUsers = async (

@@ -20,12 +20,8 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-
 import { userEditSchema } from "./user-edit-form-scheme";
 import type { UserEditFormValues } from "./user-edit-form-scheme";
-
-import { PasswordInput } from "@/components/shared/password-input";
 
 import { useUpdateUser } from "@/hooks";
 
@@ -44,10 +40,8 @@ export const UserEditForm: React.FC<UserEditFormProps> = ({ user }) => {
     defaultValues: {
       firstName: user.firstName,
       lastName: user.lastName ?? "",
-      email: user.email,
       mobile: user.mobile ?? "",
       role: roleValue,
-      newPassword: "",
     },
   });
 
@@ -55,10 +49,8 @@ export const UserEditForm: React.FC<UserEditFormProps> = ({ user }) => {
     form.reset({
       firstName: user.firstName,
       lastName: user.lastName ?? "",
-      email: user.email,
       mobile: user.mobile ?? "",
       role: roleValue,
-      newPassword: "",
     });
   }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -70,9 +62,7 @@ export const UserEditForm: React.FC<UserEditFormProps> = ({ user }) => {
         id: user._id,
         firstName: data.firstName,
         lastName: data.lastName,
-        email: data.email,
         mobile: data.mobile || undefined,
-        password: data.newPassword || undefined,
         role: data.role,
       },
       {
@@ -135,31 +125,16 @@ export const UserEditForm: React.FC<UserEditFormProps> = ({ user }) => {
             </Field>
           )}
         />
-        <Controller
-          name="email"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid} className="-space-y-2">
-              <FieldLabel htmlFor="email">
-                Email <span className="text-error">*</span>
-              </FieldLabel>
-              <Input
-                {...field}
-                id="email"
-                type="email"
-                aria-invalid={fieldState.invalid}
-                placeholder="Enter email"
-                autoComplete="off"
-              />
-              {fieldState.invalid && (
-                <FieldError
-                  className="text-error text-xs"
-                  errors={[fieldState.error]}
-                />
-              )}
-            </Field>
-          )}
-        />
+        <Field className="-space-y-2">
+          <FieldLabel htmlFor="email">Email</FieldLabel>
+          <Input
+            id="email"
+            value={user.email}
+            disabled
+            readOnly
+            className="text-muted-foreground"
+          />
+        </Field>
         <Controller
           name="mobile"
           control={form.control}
@@ -217,19 +192,7 @@ export const UserEditForm: React.FC<UserEditFormProps> = ({ user }) => {
           )}
         />
 
-        <div className="col-span-2">
-          <Separator />
-          <p className="text-sm font-medium mt-3 mb-1">Change Password</p>
-          <p className="text-xs text-muted-foreground mb-3">
-            Leave blank to keep the current password.
-          </p>
-        </div>
 
-        <PasswordInput
-          form={form}
-          name="newPassword"
-          placeholder="Enter new password"
-        />
       </FieldGroup>
 
       <div className="space-x-2 mt-6 flex justify-end">
@@ -241,10 +204,8 @@ export const UserEditForm: React.FC<UserEditFormProps> = ({ user }) => {
             form.reset({
               firstName: user.firstName,
               lastName: user.lastName ?? "",
-              email: user.email,
               mobile: user.mobile ?? "",
               role: roleValue,
-              newPassword: "",
             })
           }
         >

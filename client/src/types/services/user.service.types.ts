@@ -110,3 +110,11 @@ export type ExportUsersResponse = {
   userCount: number;
   recipientEmail: string;
 };
+
+export type GeneratePasswordRequest = {
+  id: string;
+};
+
+export type GeneratePasswordResponse = {
+  message: string;
+};
