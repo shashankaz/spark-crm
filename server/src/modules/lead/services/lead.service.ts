@@ -8,13 +8,17 @@ import { AppError } from "../../../shared/app-error";
 import { calculateLeadScore } from "../../../utils/calculate-score";
 import { createLeadActionHistoryService } from "../../../services/lead-action-history.service";
 import { LeadActionHistory } from "../../../models/lead-action-history.model";
-import { deleteLeadWithCascade } from "../../../services/cascade-delete.service";
+import {
+  deleteLeadWithCascade,
+  bulkDeleteLeadsWithCascade,
+} from "../../../services/cascade-delete.service";
 import {
   IFetchLeadsInput,
   IFetchLeadByIdInput,
   ICreateLeadInput,
   IUpdateLeadByIdInput,
   IDeleteLeadByIdInput,
+  IBulkDeleteLeadsInput,
   IBulkWriteLeadsInput,
   IConvertLeadToDealInput,
   IFetchOrganizationsForLeadInput,
@@ -279,6 +283,29 @@ export const deleteLeadByIdService = async ({
   }
 
   return await deleteLeadWithCascade({ leadId: id });
+};
+
+export const bulkDeleteLeadsService = async ({
+  leadIds,
+  tenantId,
+}: IBulkDeleteLeadsInput) => {
+  const leads = await Lead.find(
+    { _id: { $in: leadIds }, tenantId },
+    { _id: 1, dealId: 1, status: 1 },
+  ).exec();
+
+  const hasConvertedLead = leads.some(
+    (lead) => Boolean(lead.dealId) || lead.status === "converted",
+  );
+
+  if (hasConvertedLead) {
+    throw new AppError(
+      "Cannot delete a lead that has been converted to a deal",
+      400,
+    );
+  }
+
+  return await bulkDeleteLeadsWithCascade({ leadIds, tenantId });
 };
 
 export const bulkWriteLeadsService = async ({

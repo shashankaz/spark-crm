@@ -8,6 +8,7 @@ import {
   deleteLeadByIdService,
   fetchOrganizationsService,
   bulkWriteLeadsService,
+  bulkDeleteLeadsService,
   convertLeadToDealService,
   fetchLeadActivityByLeadIdService,
   assignLeadService,
@@ -17,7 +18,6 @@ import { AppError } from "../../shared/app-error";
 import { sendSuccess } from "../../shared/api-response";
 import { asyncHandler } from "../../shared/async-handler";
 import { importLeadsService } from "./services/lead-import.service";
-import { bulkDeleteLeadsWithCascade } from "../../services/cascade-delete.service";
 import { validateEmailWithArcjet } from "../../utils/arcjet/validate-email";
 
 export const getAllLeads = asyncHandler(async (req: Request, res: Response) => {
@@ -368,7 +368,7 @@ export const bulkDeleteLeads = asyncHandler(
     }
 
     const objectIds = leadIds.map((id: string) => new Types.ObjectId(id));
-    const { deleted } = await bulkDeleteLeadsWithCascade({
+    const { deleted } = await bulkDeleteLeadsService({
       leadIds: objectIds,
       tenantId,
     });

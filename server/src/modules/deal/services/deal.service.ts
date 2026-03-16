@@ -1,5 +1,6 @@
 import { formatDate } from "date-fns";
 import { Deal } from "../models/deal.model";
+import { Lead } from "../../lead/models/lead.model";
 import {
   IFetchDealsInput,
   IDeleteDealInput,
@@ -77,7 +78,18 @@ export const deleteDealByIdService = async ({
   id,
   tenantId,
 }: IDeleteDealInput) => {
-  return await Deal.deleteOne({ _id: id, tenantId }).exec();
+  const deal = await Deal.findOne({ _id: id, tenantId }).exec();
+  if (!deal) {
+    throw new Error("Deal not found");
+  }
+
+  const deleteResult = await Deal.deleteOne({ _id: id, tenantId }).exec();
+  await Lead.updateOne(
+    { _id: deal.leadId, tenantId, dealId: id },
+    { $unset: { dealId: 1 }, $set: { status: "lost" } },
+  ).exec();
+
+  return deleteResult;
 };
 
 export const getDealByIdService = async ({ id, tenantId }: IGetDealInput) => {

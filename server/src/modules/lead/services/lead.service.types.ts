@@ -57,6 +57,11 @@ export interface IDeleteLeadByIdInput {
   tenantId: Types.ObjectId;
 }
 
+export interface IBulkDeleteLeadsInput {
+  leadIds: Types.ObjectId[];
+  tenantId: Types.ObjectId;
+}
+
 export interface IBulkWriteLeadsInput {
   tenantId: Types.ObjectId;
   leads: ILeadBase[];
