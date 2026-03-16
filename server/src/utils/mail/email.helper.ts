@@ -6,6 +6,7 @@ import {
   PasswordChangedMail,
   OtpMail,
   TaskReminderJobPayload,
+  PasswordResetMail,
 } from "./email.types";
 import {
   adminMailTemplate,
@@ -19,6 +20,7 @@ import {
   passwordChangedMailTemplate,
   otpMailTemplate,
   taskReminderMailTemplate,
+  passwordResetMailTemplate,
 } from "../../email/templates";
 import { sqs } from "../aws/sqs";
 import { env } from "../../config/env";
@@ -167,6 +169,16 @@ export const sendOtpMail = async (payload: OtpMail) => {
     return await enqueueEmail({ mailOptions });
   } catch (error) {
     console.error("Error sending OTP mail:", error);
+    throw error;
+  }
+};
+
+export const sendPasswordResetMail = async (payload: PasswordResetMail) => {
+  try {
+    const mailOptions = passwordResetMailTemplate(payload);
+    return await enqueueEmail({ mailOptions });
+  } catch (error) {
+    console.error("Error sending password reset mail:", error);
     throw error;
   }
 };

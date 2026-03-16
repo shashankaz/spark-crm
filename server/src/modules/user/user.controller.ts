@@ -6,6 +6,7 @@ import {
   createUserService,
   updateUserService,
   removeUserService,
+  generatePasswordService,
 } from "./services/user.service";
 import { enqueueUserExportService } from "../../utils/export/export.helper";
 import { AppError } from "../../shared/app-error";
@@ -101,23 +102,14 @@ export const updateUser = asyncHandler(async (req: Request, res: Response) => {
     throw new AppError("User ID is required", 400);
   }
 
-  const { firstName, lastName, email, mobile, password, role } = req.body;
-
-  if (email) {
-    const isDenied = await validateEmailWithArcjet({ req, email });
-    if (isDenied) {
-      throw new AppError("Invalid email address", 400);
-    }
-  }
+  const { firstName, lastName, mobile, role } = req.body;
 
   const updatedUser = await updateUserService({
     tenantId,
     id,
     firstName,
     lastName,
-    email,
     mobile,
-    password,
     role,
   });
   if (!updatedUser) {
@@ -128,7 +120,7 @@ export const updateUser = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export const deleteUser = asyncHandler(async (req: Request, res: Response) => {
-  const { tenantId } = req.user;
+  const { tenantId, _id: userId } = req.user;
 
   if (!tenantId) {
     throw new AppError("Tenant ID is missing in user data", 400);
@@ -139,13 +131,35 @@ export const deleteUser = asyncHandler(async (req: Request, res: Response) => {
     throw new AppError("User ID is required", 400);
   }
 
-  const deletedUser = await removeUserService({ tenantId, id });
+  const deletedUser = await removeUserService({
+    tenantId,
+    id,
+    userId,
+  });
   if (!deletedUser) {
     throw new AppError("User not found", 404);
   }
 
   sendSuccess(res, 200, "User deleted successfully", { id });
 });
+
+export const generatePassword = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { tenantId } = req.user;
+    if (!tenantId) {
+      throw new AppError("Tenant ID is missing in user data", 400);
+    }
+
+    const id = req.params.id as unknown as Types.ObjectId;
+    if (!id) {
+      throw new AppError("User ID is required", 400);
+    }
+
+    const { email } = await generatePasswordService({ tenantId, id });
+
+    sendSuccess(res, 200, `New password generated and sent to ${email}`, {});
+  },
+);
 
 export const exportUsers = asyncHandler(async (req: Request, res: Response) => {
   const { tenantId } = req.user;

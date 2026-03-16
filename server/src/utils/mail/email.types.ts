@@ -19,6 +19,12 @@ export interface OtpMail {
   otp: number;
 }
 
+export interface PasswordResetMail {
+  userEmail: string;
+  userName: string;
+  newPassword: string;
+}
+
 export interface TaskReminderJobPayload {
   userEmail: string;
   userFirstName: string;

@@ -1,14 +1,20 @@
 import { formatDate } from "date-fns";
 import { User } from "../models/user.model";
-import { hashPassword } from "../../../utils/auth/bcrypt";
+import { Session } from "../../auth/models/session.model";
+import {
+  generateStrongPassword,
+  hashPassword,
+} from "../../../utils/auth/bcrypt";
 import { AppError } from "../../../shared/app-error";
 import { deleteUserWithCascade } from "../../../services/cascade-delete.service";
+import { sendPasswordResetMail } from "../../../utils/mail/email.helper";
 import {
   IFetchUsersInput,
   IFetchUserByIdInput,
   ICreateUserInput,
   IUpdateUserInput,
   IRemoveUserInput,
+  IGeneratePasswordInput,
 } from "./user.service.types";
 import { UserRole } from "../models/user.model.types";
 
@@ -91,9 +97,7 @@ export const updateUserService = async ({
   id,
   firstName,
   lastName,
-  email,
   mobile,
-  password,
   role,
 }: IUpdateUserInput) => {
   const user = await User.findOne({ _id: id, tenantId }).exec();
@@ -103,19 +107,50 @@ export const updateUserService = async ({
 
   if (firstName) user.firstName = firstName;
   if (lastName) user.lastName = lastName;
-  if (email) user.email = email;
   if (mobile) user.mobile = mobile;
-  if (password) user.password = await hashPassword(password);
   if (role) user.role = role as UserRole;
 
   return await user.save();
 };
 
-export const removeUserService = async ({ tenantId, id }: IRemoveUserInput) => {
+export const removeUserService = async ({
+  tenantId,
+  id,
+  userId,
+}: IRemoveUserInput) => {
   const user = await User.findOne({ _id: id, tenantId }).exec();
   if (!user) {
     throw new AppError("User not found", 404);
   }
 
+  if (userId.equals(id)) {
+    throw new AppError("Users cannot delete themselves", 400);
+  }
+
   return await deleteUserWithCascade({ userId: id });
+};
+
+export const generatePasswordService = async ({
+  tenantId,
+  id,
+}: IGeneratePasswordInput) => {
+  const user = await User.findOne({ _id: id, tenantId }).exec();
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
+  const plainPassword = generateStrongPassword();
+
+  user.password = await hashPassword(plainPassword);
+  await user.save();
+
+  await Session.deleteMany({ userId: id });
+
+  await sendPasswordResetMail({
+    userEmail: user.email,
+    userName: user.firstName,
+    newPassword: plainPassword,
+  });
+
+  return { email: user.email };
 };

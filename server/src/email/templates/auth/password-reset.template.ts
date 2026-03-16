@@ -1,13 +1,19 @@
-import { PasswordChangedMail } from "../../../utils/mail/email.types";
 import { FROM_NAME, FROM_EMAIL } from "../../../utils/constants/email.constant";
 
-export const passwordChangedMailTemplate = ({
+export interface PasswordResetMail {
+  userEmail: string;
+  userName: string;
+  newPassword: string;
+}
+
+export const passwordResetMailTemplate = ({
   userEmail,
   userName,
-}: PasswordChangedMail) => ({
+  newPassword,
+}: PasswordResetMail) => ({
   from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
   to: userEmail,
-  subject: "Security Alert: Your Password Was Changed",
+  subject: "Your New Password — Spark CRM",
   html: `
 <!DOCTYPE html>
 <html lang="en">
@@ -16,7 +22,7 @@ export const passwordChangedMailTemplate = ({
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light dark" />
     <meta name="supported-color-schemes" content="light dark" />
-    <title>Password Changed - Spark CRM</title>
+    <title>New Password - Spark CRM</title>
     <style>
       @media only screen and (max-width: 600px) {
         .email-card {
@@ -62,17 +68,20 @@ export const passwordChangedMailTemplate = ({
         .email-body-text {
           color: #a09d97 !important;
         }
-        .email-body-text-strong {
-          color: #d4d1cb !important;
+        .email-credentials-box {
+          background-color: #1f1408 !important;
+          border-color: #3a3830 !important;
         }
-        .email-alert-box {
-          background-color: #200e0e !important;
-          border-color: #7f1d1d !important;
+        .email-credentials-label {
+          color: #6b6760 !important;
         }
-        .email-alert-text {
-          color: #fca5a5 !important;
+        .email-credentials-value {
+          color: #e8956a !important;
         }
-        .email-meta-text {
+        .email-credentials-divider {
+          border-color: #3a3830 !important;
+        }
+        .email-note {
           color: #6b6760 !important;
         }
         .email-footer-cell {
@@ -130,7 +139,7 @@ export const passwordChangedMailTemplate = ({
                   "
                   class="email-tag"
                 >
-                  Security Alert
+                  Account Security
                 </p>
                 <p
                   style="
@@ -160,7 +169,7 @@ export const passwordChangedMailTemplate = ({
                   "
                   class="email-greeting"
                 >
-                  Password Changed, ${userName}
+                  New Password, ${userName}
                 </h1>
                 <p
                   style="
@@ -172,12 +181,9 @@ export const passwordChangedMailTemplate = ({
                   "
                   class="email-body-text"
                 >
-                  Your account password was successfully changed on
-                  <strong style="color: #3d3a35" class="email-body-text-strong"
-                    >${new Date().toLocaleString("en-IN", { timeZone:
-                    "Asia/Kolkata", dateStyle: "medium", timeStyle: "short"
-                    })}</strong
-                  >.
+                  An administrator has reset your password. All previous
+                  sessions have been revoked. Use the temporary password below
+                  to log in and change it immediately.
                 </p>
                 <table
                   role="presentation"
@@ -189,26 +195,66 @@ export const passwordChangedMailTemplate = ({
                   <tr>
                     <td
                       style="
-                        padding: 14px 16px;
-                        background-color: #fef2f2;
-                        border-left: 3px solid #dc2626;
-                        border-radius: 4px;
+                        padding: 20px 24px;
+                        background-color: #fef9f0;
+                        border: 1px solid #e5e2dc;
+                        border-radius: 10px;
                       "
-                      class="email-alert-box"
+                      class="email-credentials-box"
                     >
                       <p
                         style="
-                          margin: 0;
-                          font-size: 13px;
-                          line-height: 1.65;
-                          color: #b91c1c;
+                          margin: 0 0 3px;
+                          font-size: 10px;
+                          letter-spacing: 0.12em;
+                          text-transform: uppercase;
+                          color: #8b8680;
                           font-family: Helvetica, Arial, sans-serif;
                         "
-                        class="email-alert-text"
+                        class="email-credentials-label"
                       >
-                        <strong>Not you?</strong> If you did not make this
-                        change, your account may be compromised. Please contact
-                        support immediately and reset your password.
+                        Email
+                      </p>
+                      <p
+                        style="
+                          margin: 0;
+                          padding-bottom: 16px;
+                          font-size: 14px;
+                          font-weight: 600;
+                          color: #3d3a35;
+                          font-family:
+                            &quot;Courier New&quot;, Courier, monospace;
+                          border-bottom: 1px solid #e5e2dc;
+                        "
+                        class="email-credentials-value email-credentials-divider"
+                      >
+                        ${userEmail}
+                      </p>
+                      <p
+                        style="
+                          margin: 16px 0 3px;
+                          font-size: 10px;
+                          letter-spacing: 0.12em;
+                          text-transform: uppercase;
+                          color: #8b8680;
+                          font-family: Helvetica, Arial, sans-serif;
+                        "
+                        class="email-credentials-label"
+                      >
+                        New Temporary Password
+                      </p>
+                      <p
+                        style="
+                          margin: 0;
+                          font-size: 14px;
+                          font-weight: 600;
+                          color: #c27530;
+                          font-family:
+                            &quot;Courier New&quot;, Courier, monospace;
+                        "
+                        class="email-credentials-value"
+                      >
+                        ${newPassword}
                       </p>
                     </td>
                   </tr>
@@ -221,10 +267,11 @@ export const passwordChangedMailTemplate = ({
                     color: #8b8680;
                     font-family: Helvetica, Arial, sans-serif;
                   "
-                  class="email-meta-text"
+                  class="email-note"
                 >
-                  For your security, all active sessions have been revoked.
-                  You will need to log in again on all devices.
+                  For your security, please change your password immediately
+                  after logging in. If you did not expect this, contact your
+                  administrator right away.
                 </p>
               </td>
             </tr>

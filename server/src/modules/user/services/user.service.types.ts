@@ -29,13 +29,17 @@ export interface IUpdateUserInput {
   id: Types.ObjectId;
   firstName?: string;
   lastName?: string;
-  email?: string;
   mobile?: string;
-  password?: string;
   role?: UserRole;
 }
 
 export interface IRemoveUserInput {
+  tenantId: Types.ObjectId;
+  id: Types.ObjectId;
+  userId: Types.ObjectId;
+}
+
+export interface IGeneratePasswordInput {
   tenantId: Types.ObjectId;
   id: Types.ObjectId;
 }

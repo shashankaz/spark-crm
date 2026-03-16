@@ -9,3 +9,4 @@ export { userWelcomeMailTemplate } from "./user-welcome.template";
 export { passwordChangedMailTemplate } from "./auth/password-changed.template";
 export { otpMailTemplate } from "./auth/otp.template";
 export { taskReminderMailTemplate } from "./reminder/task-reminder.template";
+export { passwordResetMailTemplate } from "./auth/password-reset.template";

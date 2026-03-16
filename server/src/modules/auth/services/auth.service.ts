@@ -283,6 +283,8 @@ export const changePasswordService = async ({
 
   await user.save();
 
+  await Session.deleteMany({ userId: new Types.ObjectId(id) });
+
   await sendPasswordChangedMail({
     userEmail: user.email,
     userName: user.firstName,
