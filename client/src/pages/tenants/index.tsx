@@ -20,11 +20,9 @@ import { DataTable } from "@/components/shared/dashboard/data-table";
 import { columns } from "./columns";
 import { TenantCreateForm } from "./tenant-create-form";
 import { TenantExportModal } from "./tenant-export-modal";
-import {
-  TenantFilterModal,
-  defaultTenantFilters,
-  type TenantFilters,
-} from "./tenant-filter-modal";
+import { TenantFilterModal } from "./tenant-filter-modal";
+import { defaultTenantFilters } from "./tenant-filter-types";
+import type { TenantFilters } from "./tenant-filter-types";
 
 import { useTenants } from "@/hooks";
 

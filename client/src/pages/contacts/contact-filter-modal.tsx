@@ -12,13 +12,8 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 
-export interface ContactFilters {
-  starred: "all" | "starred" | "unstarred";
-}
-
-export const defaultContactFilters: ContactFilters = {
-  starred: "all",
-};
+import type { ContactFilters } from "./contact-filter-types";
+import { defaultContactFilters } from "./contact-filter-types";
 
 const STARRED_OPTIONS = [
   { value: "all" as const, label: "All" },

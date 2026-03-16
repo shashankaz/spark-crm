@@ -22,25 +22,11 @@ import { Separator } from "@/components/ui/separator";
 
 import { countriesFlag } from "@/utils/countries/countries-flag";
 
-export type TenantPlanFilter = "any" | "Free" | "Basic" | "Pro" | "Enterprise";
-
-export interface TenantFilters {
-  plan: TenantPlanFilter;
-  country: string;
-}
-
-export const defaultTenantFilters: TenantFilters = {
-  plan: "any",
-  country: "",
-};
-
-export const PLAN_FILTER_LABELS: Record<TenantPlanFilter, string> = {
-  any: "Any plan",
-  Free: "Free",
-  Basic: "Basic",
-  Pro: "Pro",
-  Enterprise: "Enterprise",
-};
+import type { TenantPlanFilter, TenantFilters } from "./tenant-filter-types";
+import {
+  defaultTenantFilters,
+  PLAN_FILTER_LABELS,
+} from "./tenant-filter-types";
 
 interface TenantFilterModalProps {
   filters: TenantFilters;

@@ -33,11 +33,9 @@ import { Description } from "@/components/shared/typography/description";
 import { columns } from "./columns";
 import { ContactCard } from "./contact-card";
 import { ContactCreateForm } from "./contact-create-form";
-import {
-  ContactFilterModal,
-  defaultContactFilters,
-  type ContactFilters,
-} from "./contact-filter-modal";
+import { ContactFilterModal } from "./contact-filter-modal";
+import { defaultContactFilters } from "./contact-filter-types";
+import type { ContactFilters } from "./contact-filter-types";
 
 import { useContacts, useBulkDeleteContacts } from "@/hooks";
 

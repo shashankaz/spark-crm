@@ -12,11 +12,9 @@ import { TableSkeleton } from "@/components/shared/dashboard/skeleton";
 
 import { columns } from "./columns";
 import { DealExportModal } from "./deal-export-modal";
-import {
-  DealFilterModal,
-  defaultDealFilters,
-  type DealFilters,
-} from "./deal-filter-modal";
+import { DealFilterModal } from "./deal-filter-modal";
+import { defaultDealFilters } from "./deal-filter-types";
+import type { DealFilters } from "./deal-filter-types";
 
 import { useDeals } from "@/hooks";
 

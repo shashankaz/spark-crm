@@ -12,21 +12,8 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 
-export interface GroupFilters {
-  leadCount: "any" | "empty" | "small" | "medium" | "large";
-}
-
-export const defaultGroupFilters: GroupFilters = {
-  leadCount: "any",
-};
-
-const LEAD_COUNT_LABELS: Record<GroupFilters["leadCount"], string> = {
-  any: "Any size",
-  empty: "Empty (0)",
-  small: "Small (1 - 10)",
-  medium: "Medium (11 - 50)",
-  large: "Large (50+)",
-};
+import type { GroupFilters } from "./group-filter-types";
+import { defaultGroupFilters, LEAD_COUNT_LABELS } from "./group-filter-types";
 
 interface GroupFilterModalProps {
   filters: GroupFilters;

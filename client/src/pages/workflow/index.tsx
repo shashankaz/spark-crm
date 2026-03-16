@@ -20,12 +20,10 @@ import { TableSkeleton } from "@/components/shared/dashboard/skeleton";
 
 import { columns } from "./columns";
 import { WorkflowCreateForm } from "./workflow-create-form";
-import {
-  WorkflowFilterModal,
-  defaultWorkflowFilters,
-  type WorkflowFilters,
-} from "./workflow-filter-modal";
+import { WorkflowFilterModal } from "./workflow-filter-modal";
 import type { WorkflowFormValues } from "./workflow-form-schema";
+import type { WorkflowFilters } from "./workflow-filter-types";
+import { defaultWorkflowFilters } from "./workflow-filter-types";
 
 import { useWorkflows, useCreateWorkflow } from "@/hooks";
 

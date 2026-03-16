@@ -15,11 +15,9 @@ import {
 import { columns } from "./columns";
 import { UserCreateForm } from "./user-create-form";
 import { UserExportModal } from "./user-export-modal";
-import {
-  UserFilterModal,
-  defaultUserFilters,
-  type UserFilters,
-} from "./user-filter-modal";
+import { UserFilterModal } from "./user-filter-modal";
+import { defaultUserFilters } from "./user-filter-types";
+import type { UserFilters } from "./user-filter-types";
 
 import { TableSkeleton } from "@/components/shared/dashboard/skeleton";
 import { DataTable } from "@/components/shared/dashboard/data-table";

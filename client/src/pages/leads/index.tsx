@@ -31,12 +31,10 @@ import { Description } from "@/components/shared/typography/description";
 import { columns } from "./columns";
 import { LeadCreateForm } from "./lead-create-form";
 import { LeadImportModal } from "./lead-import-modal";
-import {
-  LeadFilterModal,
-  defaultFilters,
-  type LeadFilters,
-} from "./lead-filter-modal";
+import { LeadFilterModal } from "./lead-filter-modal";
 import { LeadExportModal } from "./lead-export-modal";
+import { defaultFilters } from "./lead-filter-types";
+import type { LeadFilters } from "./lead-filter-types";
 
 import { useLeads, useBulkDeleteLeads } from "@/hooks";
 

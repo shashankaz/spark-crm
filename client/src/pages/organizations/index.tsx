@@ -20,11 +20,9 @@ import { Description } from "@/components/shared/typography/description";
 import { columns } from "./columns";
 import { OrganizationCreateForm } from "./organization-create-form";
 import { OrganizationExportModal } from "./organization-export-modal";
-import {
-  OrganizationFilterModal,
-  defaultOrganizationFilters,
-  type OrganizationFilters,
-} from "./organization-filter-modal";
+import { OrganizationFilterModal } from "./organization-filter-modal";
+import { defaultOrganizationFilters } from "./organization-filter-types";
+import type { OrganizationFilters } from "./organization-filter-types";
 
 import { useOrganizations } from "@/hooks";
 

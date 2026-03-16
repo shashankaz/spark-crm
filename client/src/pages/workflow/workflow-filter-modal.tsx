@@ -13,51 +13,18 @@ import {
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 
-export type WorkflowEntityFilter = "all" | "lead" | "deal" | "organization";
-export type WorkflowEventFilter =
-  | "all"
-  | "create"
-  | "update"
-  | "delete"
-  | "won"
-  | "lost"
-  | "status_change";
-export type WorkflowStatusFilter = "all" | "active" | "inactive";
-
-export interface WorkflowFilters {
-  entity: WorkflowEntityFilter;
-  event: WorkflowEventFilter;
-  status: WorkflowStatusFilter;
-}
-
-export const defaultWorkflowFilters: WorkflowFilters = {
-  entity: "all",
-  event: "all",
-  status: "all",
-};
-
-const ENTITY_LABELS: Record<WorkflowEntityFilter, string> = {
-  all: "All entities",
-  lead: "Lead",
-  deal: "Deal",
-  organization: "Organization",
-};
-
-const EVENT_LABELS: Record<WorkflowEventFilter, string> = {
-  all: "All events",
-  create: "Create",
-  update: "Update",
-  delete: "Delete",
-  won: "Won",
-  lost: "Lost",
-  status_change: "Status Change",
-};
-
-const STATUS_LABELS: Record<WorkflowStatusFilter, string> = {
-  all: "All",
-  active: "Active",
-  inactive: "Inactive",
-};
+import type {
+  WorkflowEntityFilter,
+  WorkflowEventFilter,
+  WorkflowStatusFilter,
+  WorkflowFilters,
+} from "./workflow-filter-types";
+import {
+  defaultWorkflowFilters,
+  ENTITY_LABELS,
+  EVENT_LABELS,
+  STATUS_LABELS,
+} from "./workflow-filter-types";
 
 interface WorkflowFilterModalProps {
   filters: WorkflowFilters;

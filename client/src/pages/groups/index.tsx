@@ -20,11 +20,9 @@ import { TableSkeleton } from "@/components/shared/dashboard/skeleton";
 import { GroupCreateForm } from "./group-create-form";
 import { GroupLeadsTable } from "./group-leads-table";
 import { EmailTemplatesTab } from "./email-template-tab";
-import {
-  GroupFilterModal,
-  defaultGroupFilters,
-  type GroupFilters,
-} from "./group-filter-modal";
+import { GroupFilterModal } from "./group-filter-modal";
+import { defaultGroupFilters } from "./group-filter-types";
+import type { GroupFilters } from "./group-filter-types";
 
 import { useGroups } from "@/hooks";
 
