@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-import { formatBytes, getFileIcon } from "./attachments-helpers";
+import { formatBytes, getFileIcon } from "./attachments-utils";
 
 import { cn } from "@/lib/utils";
 
