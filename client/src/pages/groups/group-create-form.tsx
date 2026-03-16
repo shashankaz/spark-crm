@@ -31,7 +31,7 @@ export const GroupCreateForm: React.FC<GroupCreateFormProps> = ({
   const [search, setSearch] = useState("");
 
   const { data, isPending } = useLeads({});
-  const leads = data?.leads ?? [];
+  const leads = useMemo(() => data?.leads ?? [], [data?.leads]);
 
   const { mutate, isPending: isCreating } = useCreateGroup();
 
