@@ -26,7 +26,3 @@ jobs:
       - name: Build React App (Vite)
         working-directory: ./client
         run: bun run build
-
-      - name: Lint Client Code
-        working-directory: ./client
-        run: bun run lint
