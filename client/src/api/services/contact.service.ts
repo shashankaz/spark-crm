@@ -128,9 +128,9 @@ export const bulkDeleteContacts = async (
   params: BulkDeleteContactsRequest,
 ): Promise<BulkDeleteContactsResponse> =>
   withApiHandler(async () => {
-    const response = await api.post<ApiResponse<BulkDeleteContactsData>>(
-      "/contact/bulk-delete",
-      params,
+    const response = await api.delete<ApiResponse<BulkDeleteContactsData>>(
+      "/contact/bulk",
+      { data: params },
     );
 
     const { message, data } = response.data;

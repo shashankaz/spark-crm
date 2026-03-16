@@ -17,7 +17,7 @@ router.use(requireAuth);
 router.get("/", getAllContacts);
 router.get("/:id", getContactById);
 router.post("/", createContact);
-router.post("/bulk-delete", bulkDeleteContacts);
+router.delete("/bulk", bulkDeleteContacts);
 router.patch("/:id", updateContact);
 router.patch("/:id/star", toggleStarContact);
 router.delete("/:id", deleteContact);
