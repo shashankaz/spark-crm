@@ -102,12 +102,6 @@ export const updateUser = asyncHandler(async (req: Request, res: Response) => {
   }
 
   const { firstName, lastName, email, mobile, password, role } = req.body;
-  if (!firstName && !email && !mobile && !password && !role) {
-    throw new AppError(
-      "At least one field (first name, email, mobile, password, or role) is required to update",
-      400,
-    );
-  }
 
   if (email) {
     const isDenied = await validateEmailWithArcjet({ req, email });
@@ -169,7 +163,10 @@ export const exportUsers = asyncHandler(async (req: Request, res: Response) => {
     throw new AppError("Email is required", 400);
   }
 
-  const isDenied = await validateEmailWithArcjet({ req, email: recipientEmail });
+  const isDenied = await validateEmailWithArcjet({
+    req,
+    email: recipientEmail,
+  });
   if (isDenied) {
     throw new AppError("Invalid email address", 400);
   }
