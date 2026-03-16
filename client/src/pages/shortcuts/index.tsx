@@ -27,13 +27,6 @@ const ShortcutsPage = () => {
   const totalShortcuts = visibleShortcuts.length;
   const totalContexts = Object.keys(grouped).length;
 
-  const roleLabel =
-    role === "super_admin"
-      ? "Super Admin"
-      : role === "admin"
-        ? "Admin"
-        : "User";
-
   return (
     <>
       <Helmet>
@@ -45,17 +38,9 @@ const ShortcutsPage = () => {
       </Helmet>
 
       <div className="space-y-6">
-        <div className="border-b pb-4 flex items-start justify-between gap-4 flex-wrap">
-          <div>
-            <Heading title="Keyboard Shortcuts" />
-            <Description description="Boost your productivity with these keyboard shortcuts" />
-          </div>
-          <Badge
-            variant="outline"
-            className="text-xs font-semibold px-3 py-1.5 shrink-0"
-          >
-            {roleLabel} shortcuts
-          </Badge>
+        <div className="border-b pb-4">
+          <Heading title="Keyboard Shortcuts" />
+          <Description description="Boost your productivity with these keyboard shortcuts" />
         </div>
 
         <div className="space-y-8">
