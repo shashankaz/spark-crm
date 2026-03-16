@@ -6,6 +6,14 @@ import type { Task } from "@/types/domain";
 
 export type TasksData = {
   tasks: Task[];
+  counts: TaskCounts;
+};
+
+export type TaskCounts = {
+  all: number;
+  todo: number;
+  in_progress: number;
+  completed: number;
 };
 
 export type TaskData = {
@@ -53,6 +61,7 @@ export type DeleteTaskRequest = { id: string };
 export type GetAllTasksResponse = {
   message: string;
   tasks: Task[];
+  counts: TaskCounts;
 };
 
 export type GetTaskResponse = { message: string; task: Task };

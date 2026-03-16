@@ -24,7 +24,7 @@ const taskSchema = new Schema<ITaskDocument>(
     },
     status: {
       type: String,
-      enum: ["todo", "in_progress", "completed", "cancelled"],
+      enum: ["todo", "in_progress", "completed"],
       default: "todo",
     },
     priority: {

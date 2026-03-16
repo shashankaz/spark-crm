@@ -6,7 +6,6 @@ import {
   ListTodo,
   CheckCircle2,
   Loader2,
-  XCircle,
   Circle,
 } from "lucide-react";
 import { useHotkey } from "@tanstack/react-hotkeys";
@@ -43,7 +42,6 @@ const TABS = [
   { value: "todo", label: "To Do", icon: Circle },
   { value: "in_progress", label: "In Progress", icon: Loader2 },
   { value: "completed", label: "Completed", icon: CheckCircle2 },
-  { value: "cancelled", label: "Cancelled", icon: XCircle },
 ];
 
 const TaskPage = () => {
@@ -68,19 +66,14 @@ const TaskPage = () => {
   });
 
   const tasks: Task[] = data?.tasks ?? [];
+  const counts = data?.counts ?? {
+    all: 0,
+    todo: 0,
+    in_progress: 0,
+    completed: 0,
+  };
 
   useHotkey("Mod+T", () => setOpen(true));
-
-  const counts = useMemo(() => {
-    const all = data?.tasks ?? [];
-    return {
-      all: all.length,
-      todo: all.filter((t) => t.status === "todo").length,
-      in_progress: all.filter((t) => t.status === "in_progress").length,
-      completed: all.filter((t) => t.status === "completed").length,
-      cancelled: all.filter((t) => t.status === "cancelled").length,
-    };
-  }, [data]);
 
   return (
     <>

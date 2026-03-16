@@ -9,7 +9,6 @@ import {
   CalendarDays,
   CheckCircle2,
   Circle,
-  XCircle,
   Loader2,
 } from "lucide-react";
 import toast from "react-hot-toast";
@@ -58,7 +57,6 @@ const STATUS_CONFIG: Record<
     icon: CheckCircle2,
     color: "text-green-500",
   },
-  cancelled: { label: "Cancelled", icon: XCircle, color: "text-destructive" },
 };
 
 const PRIORITY_CONFIG = {
@@ -93,9 +91,7 @@ export const TaskCard = ({ task }: TaskCardProps) => {
   const StatusIcon = statusCfg.icon;
   const priorityCfg = PRIORITY_CONFIG[task.priority];
 
-  const isCompleted = task.status === "completed";
-  const isCancelled = task.status === "cancelled";
-  const isDone = isCompleted || isCancelled;
+  const isDone = task.status === "completed";
 
   const dueDateObj = task.dueDate ? new Date(task.dueDate) : null;
   const isOverdue = dueDateObj && isPast(dueDateObj) && !isDone;
@@ -106,7 +102,6 @@ export const TaskCard = ({ task }: TaskCardProps) => {
       todo: "in_progress",
       in_progress: "completed",
       completed: "todo",
-      cancelled: "todo",
     };
 
     updateTask(

@@ -31,7 +31,14 @@ export const fetchTasksService = async ({
 
   const tasks = await Task.find(query).sort({ createdAt: -1 }).exec();
 
-  return { tasks };
+  const counts = {
+    all: tasks.length,
+    todo: tasks.filter((t) => t.status === "todo").length,
+    in_progress: tasks.filter((t) => t.status === "in_progress").length,
+    completed: tasks.filter((t) => t.status === "completed").length,
+  };
+
+  return { tasks, counts };
 };
 
 export const fetchTaskByIdService = async ({
@@ -127,7 +134,7 @@ export const processTaskRemindersService = async (): Promise<void> => {
   const dueTasks = await Task.find({
     reminderAt: { $lte: now },
     reminderSent: false,
-    status: { $nin: ["completed", "cancelled"] },
+    status: { $in: ["todo", "in_progress"] },
   })
     .populate<{ userId: { email: string; firstName: string } }>(
       "userId",

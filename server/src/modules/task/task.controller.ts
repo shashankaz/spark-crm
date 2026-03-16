@@ -22,7 +22,7 @@ export const getAllTasks = asyncHandler(async (req: Request, res: Response) => {
   const status = req.query.status as string | undefined;
   const priority = req.query.priority as string | undefined;
 
-  const { tasks } = await fetchTasksService({
+  const { tasks, counts } = await fetchTasksService({
     tenantId,
     userId,
     search,
@@ -30,7 +30,7 @@ export const getAllTasks = asyncHandler(async (req: Request, res: Response) => {
     priority: priority as TaskPriority,
   });
 
-  sendSuccess(res, 200, "Tasks retrieved successfully", { tasks });
+  sendSuccess(res, 200, "Tasks retrieved successfully", { tasks, counts });
 });
 
 export const getTaskById = asyncHandler(async (req: Request, res: Response) => {

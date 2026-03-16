@@ -28,7 +28,7 @@ export const getAllTasks = async (
 
     const { message, data } = response.data;
 
-    return { message, tasks: data.tasks };
+    return { message, tasks: data.tasks, counts: data.counts };
   });
 
 export const getTask = async ({
