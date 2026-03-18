@@ -19,6 +19,7 @@ const Dashboard = lazy(() => import("@/pages/dashboard"));
 const Organizations = lazy(() => import("@/pages/organizations"));
 const OrganizationsEditPage = lazy(() => import("@/pages/organizations/edit"));
 const Contacts = lazy(() => import("@/pages/contacts"));
+const ContactsEditPage = lazy(() => import("@/pages/contacts/edit"));
 const Leads = lazy(() => import("@/pages/leads"));
 const LeadsEditPage = lazy(() => import("@/pages/leads/edit"));
 const Deals = lazy(() => import("@/pages/deals"));
@@ -64,6 +65,10 @@ export const ReactRouter = () => {
                 element={<OrganizationsEditPage />}
               />
               <Route path="contacts" element={<Contacts />} />
+              <Route
+                path="contacts/:contactId/edit"
+                element={<ContactsEditPage />}
+              />
               <Route path="leads" element={<Leads />} />
               <Route path="leads/:leadId/edit" element={<LeadsEditPage />} />
               <Route path="deals" element={<Deals />} />

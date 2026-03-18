@@ -179,9 +179,9 @@ export const updateContactByIdService = async ({
     }
   }
 
+  if (firstName) contact.firstName = firstName;
   if (orgId) contact.orgId = orgId as Types.ObjectId;
   if (orgName) contact.orgName = orgName;
-  if (firstName) contact.firstName = firstName;
   if (lastName) contact.lastName = lastName;
   if (email) contact.email = email;
   if (phone) contact.phone = phone;
