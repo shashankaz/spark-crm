@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import {
   Bold,
   Italic,
@@ -92,6 +92,7 @@ export const RichEditor = ({
   });
 
   const [isEmpty, setIsEmpty] = useState(!defaultValue);
+  const initializedRef = useRef(false);
 
   const handleSelectionChange = useCallback(() => {
     setFmt(getFormatState());
@@ -104,9 +105,14 @@ export const RichEditor = ({
   }, [handleSelectionChange]);
 
   useEffect(() => {
-    if (editorRef.current && defaultValue && !editorRef.current.innerHTML) {
+    if (
+      editorRef.current &&
+      defaultValue &&
+      !initializedRef.current &&
+      !editorRef.current.innerHTML
+    ) {
       editorRef.current.innerHTML = defaultValue;
-      setIsEmpty(false);
+      initializedRef.current = true;
     }
   }, [defaultValue, editorRef]);
 
