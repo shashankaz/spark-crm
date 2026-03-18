@@ -157,9 +157,15 @@ export const TenantEditForm: React.FC<TenantEditFormProps> = ({ tenant }) => {
               <Input
                 {...field}
                 id="mobile"
+                type="tel"
+                inputMode="numeric"
                 aria-invalid={fieldState.invalid}
                 placeholder="Enter 10-digit mobile number"
                 autoComplete="off"
+                maxLength={10}
+                onChange={(e) =>
+                  field.onChange(e.target.value.replace(/\D/g, "").slice(0, 10))
+                }
               />
               {fieldState.invalid && (
                 <FieldError

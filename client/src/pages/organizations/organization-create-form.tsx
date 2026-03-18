@@ -246,9 +246,15 @@ export const OrganizationCreateForm: React.FC<OrganizationCreateFormProps> = ({
               <Input
                 {...field}
                 id="mobile"
+                type="tel"
+                inputMode="numeric"
                 aria-invalid={fieldState.invalid}
                 placeholder="Enter mobile number"
                 autoComplete="off"
+                maxLength={10}
+                onChange={(e) =>
+                  field.onChange(e.target.value.replace(/\D/g, "").slice(0, 10))
+                }
               />
               {fieldState.invalid && (
                 <FieldError
