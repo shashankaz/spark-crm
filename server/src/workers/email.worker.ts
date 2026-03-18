@@ -6,7 +6,7 @@ import { SendMailOptions } from "nodemailer";
 
 import { sqs } from "../utils/aws/sqs";
 import { env } from "../config/env";
-import { transport } from "../utils/mail/mail-transport";
+import { Mailer } from "../utils/mail/mail-transport";
 import {
   POLL_INTERVAL_MS,
   VISIBILITY_TIMEOUT,
@@ -18,6 +18,8 @@ const processEmailMessage = async ({
 }: {
   payload: SendMailOptions;
 }): Promise<void> => {
+  const transport = Mailer.getTransport();
+
   await transport.sendMail(payload);
 };
 
