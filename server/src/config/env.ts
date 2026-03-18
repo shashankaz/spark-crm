@@ -21,6 +21,9 @@ const envSchema = z.object({
 
   SMTP_HOST: z.string().min(1, "SMTP_HOST is required"),
   SMTP_PORT: z.coerce.number().int().positive().default(2525),
+  SMTP_SECURE: z.coerce.boolean().default(true),
+  SMTP_MAX_CONNECTIONS: z.coerce.number().int().positive().default(5),
+  SMTP_MAX_MESSAGES: z.coerce.number().int().positive().default(100),
   SMTP_USER: z.string().min(1, "SMTP_USER is required"),
   SMTP_NAME: z.string().min(1, "SMTP_NAME is required"),
   SMTP_PASS: z.string().min(1, "SMTP_PASS is required"),
