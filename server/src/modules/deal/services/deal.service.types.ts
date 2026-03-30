@@ -27,6 +27,7 @@ export interface IFetchDealsResponse {
 export interface IDeleteDealInput {
   id: Types.ObjectId;
   tenantId: Types.ObjectId;
+  userId: Types.ObjectId;
 }
 
 export interface IGetDealInput {
@@ -37,6 +38,7 @@ export interface IGetDealInput {
 export interface IUpdateDealInput {
   id: Types.ObjectId;
   tenantId: Types.ObjectId;
+  userId: Types.ObjectId;
   name?: string;
   value?: number;
   probability?: number;

@@ -54,7 +54,7 @@ export const getAllDeals = asyncHandler(async (req: Request, res: Response) => {
 
 export const deleteDealById = asyncHandler(
   async (req: Request, res: Response) => {
-    const { tenantId } = req.user;
+    const { tenantId, _id: userId } = req.user;
     if (!tenantId) {
       throw new AppError("Tenant ID is missing in user data", 400);
     }
@@ -67,6 +67,7 @@ export const deleteDealById = asyncHandler(
     const deleted = await deleteDealByIdService({
       id,
       tenantId,
+      userId,
     });
     if (!deleted) {
       throw new AppError("Deal not found", 404);
@@ -100,7 +101,7 @@ export const getDealById = asyncHandler(async (req: Request, res: Response) => {
 
 export const updateDealById = asyncHandler(
   async (req: Request, res: Response) => {
-    const { tenantId } = req.user;
+    const { tenantId, _id: userId } = req.user;
     if (!tenantId) {
       throw new AppError("Tenant ID is missing in user data", 400);
     }
@@ -115,6 +116,7 @@ export const updateDealById = asyncHandler(
     const updatedDeal = await updateDealByIdService({
       id,
       tenantId,
+      userId,
       name,
       value,
       probability,
@@ -143,7 +145,10 @@ export const exportDeals = asyncHandler(async (req: Request, res: Response) => {
     throw new AppError("Email is required", 400);
   }
 
-  const isDenied = await validateEmailWithArcjet({ req, email: recipientEmail });
+  const isDenied = await validateEmailWithArcjet({
+    req,
+    email: recipientEmail,
+  });
   if (isDenied) {
     throw new AppError("Invalid email address", 400);
   }

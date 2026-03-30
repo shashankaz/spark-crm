@@ -7,6 +7,7 @@ import {
   IGetDealInput,
   IUpdateDealInput,
 } from "./deal.service.types";
+import { triggerWorkflowsService } from "../../workflow/services/workflow.service";
 
 const DEAL_SORT_FIELDS: Record<string, string> = {
   name: "name",
@@ -77,6 +78,7 @@ export const fetchDealsService = async ({
 export const deleteDealByIdService = async ({
   id,
   tenantId,
+  userId,
 }: IDeleteDealInput) => {
   const deal = await Deal.findOne({ _id: id, tenantId }).exec();
   if (!deal) {
@@ -89,6 +91,16 @@ export const deleteDealByIdService = async ({
     { $unset: { dealId: 1 }, $set: { status: "lost" } },
   ).exec();
 
+  triggerWorkflowsService({
+    tenantId,
+    userId,
+    entity: "deal",
+    event: "lost",
+    payload: { dealId: id.toString() },
+  }).catch((err) =>
+    console.error("[Workflow] trigger failed for deal.lost:", err),
+  );
+
   return deleteResult;
 };
 
@@ -99,6 +111,7 @@ export const getDealByIdService = async ({ id, tenantId }: IGetDealInput) => {
 export const updateDealByIdService = async ({
   id,
   tenantId,
+  userId,
   name,
   value,
   probability,
@@ -109,8 +122,23 @@ export const updateDealByIdService = async ({
   if (value !== undefined) updateData.value = value;
   if (probability !== undefined) updateData.probability = probability;
 
-  return await Deal.findOneAndUpdate(
+  const updatedDeal = await Deal.findOneAndUpdate(
     { _id: id, tenantId },
     { $set: updateData },
+    { new: true },
   ).exec();
+
+  if (updatedDeal) {
+    triggerWorkflowsService({
+      tenantId,
+      userId,
+      entity: "deal",
+      event: "update",
+      payload: { dealId: id.toString() },
+    }).catch((err) =>
+      console.error("[Workflow] trigger failed for deal.update:", err),
+    );
+  }
+
+  return updatedDeal;
 };
