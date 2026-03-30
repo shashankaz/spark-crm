@@ -388,82 +388,231 @@ export const WorkflowEditForm: React.FC<WorkflowEditFormProps> = ({
                           </div>
                         )}
 
-                        {a.id === "notify_user" && (
-                          <Field className="-space-y-2">
-                            <FieldLabel htmlFor={`edit-${a.id}-message`}>
-                              Message
-                            </FieldLabel>
-                            <Input
-                              id={`edit-${a.id}-message`}
-                              placeholder="Notification message"
-                              value={
-                                (
-                                  watchedActionConfigs?.[a.id] as
-                                    | ActionConfig
-                                    | undefined
-                                )?.message ?? ""
-                              }
-                              onChange={(e) =>
-                                setActionConfig(a.id, {
-                                  message: e.target.value,
-                                })
-                              }
-                            />
-                          </Field>
-                        )}
-
-                        {a.id === "send_webhook" && (
+                        {a.id === "add_task" && (
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <Field className="-space-y-2 sm:col-span-2">
-                              <FieldLabel htmlFor={`edit-${a.id}-url`}>
-                                Webhook URL
+                              <FieldLabel htmlFor={`edit-${a.id}-title`}>
+                                Task Title
                               </FieldLabel>
                               <Input
-                                id={`edit-${a.id}-url`}
-                                placeholder="https://example.com/webhook"
+                                id={`edit-${a.id}-title`}
+                                placeholder="e.g. Follow up with lead"
                                 value={
                                   (
                                     watchedActionConfigs?.[a.id] as
                                       | ActionConfig
                                       | undefined
-                                  )?.url ?? ""
+                                  )?.title ?? ""
                                 }
                                 onChange={(e) =>
-                                  setActionConfig(a.id, { url: e.target.value })
+                                  setActionConfig(a.id, {
+                                    title: e.target.value,
+                                  })
                                 }
                               />
                             </Field>
-                            <Field className="-space-y-2 col-span-2 mb-2">
-                              <FieldLabel htmlFor={`edit-${a.id}-method`}>
-                                HTTP Method
+                            <Field className="-space-y-2 sm:col-span-2">
+                              <FieldLabel htmlFor={`edit-${a.id}-description`}>
+                                Description
+                              </FieldLabel>
+                              <Textarea
+                                id={`edit-${a.id}-description`}
+                                placeholder="Optional task description"
+                                value={
+                                  (
+                                    watchedActionConfigs?.[a.id] as
+                                      | ActionConfig
+                                      | undefined
+                                  )?.description ?? ""
+                                }
+                                onChange={(e) =>
+                                  setActionConfig(a.id, {
+                                    description: e.target.value,
+                                  })
+                                }
+                                className="min-h-20 resize-none"
+                              />
+                            </Field>
+                            <Field className="-space-y-2">
+                              <FieldLabel htmlFor={`edit-${a.id}-priority`}>
+                                Priority
                               </FieldLabel>
                               <Select
                                 onValueChange={(val) =>
-                                  setActionConfig(a.id, { method: val })
+                                  setActionConfig(a.id, { priority: val })
                                 }
                                 value={
                                   (
                                     watchedActionConfigs?.[a.id] as
                                       | ActionConfig
                                       | undefined
-                                  )?.method ?? "POST"
+                                  )?.priority ?? "medium"
                                 }
                               >
                                 <SelectTrigger
-                                  id={`edit-${a.id}-method`}
+                                  id={`edit-${a.id}-priority`}
                                   className="w-full"
                                 >
-                                  <SelectValue placeholder="Method" />
+                                  <SelectValue placeholder="Priority" />
                                 </SelectTrigger>
                                 <SelectContent>
                                   <SelectGroup>
-                                    <SelectItem value="POST">POST</SelectItem>
-                                    <SelectItem value="GET">GET</SelectItem>
-                                    <SelectItem value="PUT">PUT</SelectItem>
-                                    <SelectItem value="PATCH">PATCH</SelectItem>
+                                    <SelectItem value="low">Low</SelectItem>
+                                    <SelectItem value="medium">
+                                      Medium
+                                    </SelectItem>
+                                    <SelectItem value="high">High</SelectItem>
                                   </SelectGroup>
                                 </SelectContent>
                               </Select>
+                            </Field>
+                            <Field className="-space-y-2">
+                              <FieldLabel htmlFor={`edit-${a.id}-dueDate`}>
+                                Due Date
+                              </FieldLabel>
+                              <Input
+                                id={`edit-${a.id}-dueDate`}
+                                type="datetime-local"
+                                value={
+                                  (
+                                    watchedActionConfigs?.[a.id] as
+                                      | ActionConfig
+                                      | undefined
+                                  )?.dueDate ?? ""
+                                }
+                                onChange={(e) =>
+                                  setActionConfig(a.id, {
+                                    dueDate: e.target.value,
+                                  })
+                                }
+                              />
+                            </Field>
+                          </div>
+                        )}
+
+                        {a.id === "add_task_with_reminder" && (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <Field className="-space-y-2 sm:col-span-2">
+                              <FieldLabel htmlFor={`edit-${a.id}-title`}>
+                                Task Title
+                              </FieldLabel>
+                              <Input
+                                id={`edit-${a.id}-title`}
+                                placeholder="e.g. Send proposal to client"
+                                value={
+                                  (
+                                    watchedActionConfigs?.[a.id] as
+                                      | ActionConfig
+                                      | undefined
+                                  )?.title ?? ""
+                                }
+                                onChange={(e) =>
+                                  setActionConfig(a.id, {
+                                    title: e.target.value,
+                                  })
+                                }
+                              />
+                            </Field>
+                            <Field className="-space-y-2 sm:col-span-2">
+                              <FieldLabel htmlFor={`edit-${a.id}-description`}>
+                                Description
+                              </FieldLabel>
+                              <Textarea
+                                id={`edit-${a.id}-description`}
+                                placeholder="Optional task description"
+                                value={
+                                  (
+                                    watchedActionConfigs?.[a.id] as
+                                      | ActionConfig
+                                      | undefined
+                                  )?.description ?? ""
+                                }
+                                onChange={(e) =>
+                                  setActionConfig(a.id, {
+                                    description: e.target.value,
+                                  })
+                                }
+                                className="min-h-20 resize-none"
+                              />
+                            </Field>
+                            <Field className="-space-y-2">
+                              <FieldLabel htmlFor={`edit-${a.id}-priority`}>
+                                Priority
+                              </FieldLabel>
+                              <Select
+                                onValueChange={(val) =>
+                                  setActionConfig(a.id, { priority: val })
+                                }
+                                value={
+                                  (
+                                    watchedActionConfigs?.[a.id] as
+                                      | ActionConfig
+                                      | undefined
+                                  )?.priority ?? "medium"
+                                }
+                              >
+                                <SelectTrigger
+                                  id={`edit-${a.id}-priority`}
+                                  className="w-full"
+                                >
+                                  <SelectValue placeholder="Priority" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectGroup>
+                                    <SelectItem value="low">Low</SelectItem>
+                                    <SelectItem value="medium">
+                                      Medium
+                                    </SelectItem>
+                                    <SelectItem value="high">High</SelectItem>
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                            </Field>
+                            <Field className="-space-y-2">
+                              <FieldLabel htmlFor={`edit-${a.id}-dueDate`}>
+                                Due Date
+                              </FieldLabel>
+                              <Input
+                                id={`edit-${a.id}-dueDate`}
+                                type="datetime-local"
+                                value={
+                                  (
+                                    watchedActionConfigs?.[a.id] as
+                                      | ActionConfig
+                                      | undefined
+                                  )?.dueDate ?? ""
+                                }
+                                onChange={(e) =>
+                                  setActionConfig(a.id, {
+                                    dueDate: e.target.value,
+                                  })
+                                }
+                              />
+                            </Field>
+                            <Field className="-space-y-2 sm:col-span-2">
+                              <FieldLabel htmlFor={`edit-${a.id}-reminderAt`}>
+                                Reminder Date &amp; Time
+                              </FieldLabel>
+                              <Input
+                                id={`edit-${a.id}-reminderAt`}
+                                type="datetime-local"
+                                value={
+                                  (
+                                    watchedActionConfigs?.[a.id] as
+                                      | ActionConfig
+                                      | undefined
+                                  )?.reminderAt ?? ""
+                                }
+                                onChange={(e) =>
+                                  setActionConfig(a.id, {
+                                    reminderAt: e.target.value,
+                                  })
+                                }
+                              />
+                              <p className="text-xs text-muted-foreground mt-1">
+                                A reminder email will be sent to the task owner
+                                at this time.
+                              </p>
                             </Field>
                           </div>
                         )}

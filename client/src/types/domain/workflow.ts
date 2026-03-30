@@ -1,10 +1,7 @@
 export type WorkflowActionType =
   | "send_email"
-  | "create_task"
-  | "notify_user"
-  | "assign_lead"
-  | "update_status"
-  | "send_webhook";
+  | "add_task"
+  | "add_task_with_reminder";
 
 export interface IWorkflowAction {
   type: WorkflowActionType;

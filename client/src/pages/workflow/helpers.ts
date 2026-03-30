@@ -29,13 +29,14 @@ export const availableActions: {
     description: "Send an automated email notification",
   },
   {
-    id: "notify_user",
-    label: "Notify User",
-    description: "Send an in-app notification to users",
+    id: "add_task",
+    label: "Add Task",
+    description: "Automatically create a task when this event fires",
   },
   {
-    id: "send_webhook",
-    label: "Send Webhook",
-    description: "Post a payload to an external URL",
+    id: "add_task_with_reminder",
+    label: "Add Task with Reminder",
+    description:
+      "Create a task and schedule a reminder email at a specified time",
   },
 ];
