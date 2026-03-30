@@ -18,10 +18,12 @@ export const fetchTasksService = async ({
   status,
   priority,
 }: IFetchTasksInput) => {
-  const query: any = { tenantId, userId };
+  const baseQuery: any = { tenantId, userId };
+  const query: any = { ...baseQuery };
 
   if (status) query.status = status;
   if (priority) query.priority = priority;
+
   if (search) {
     query.$or = [
       { title: { $regex: search, $options: "i" } },
@@ -31,12 +33,14 @@ export const fetchTasksService = async ({
 
   const tasks = await Task.find(query).sort({ createdAt: -1 }).exec();
 
-  const counts = {
-    all: tasks.length,
-    todo: tasks.filter((t) => t.status === "todo").length,
-    in_progress: tasks.filter((t) => t.status === "in_progress").length,
-    completed: tasks.filter((t) => t.status === "completed").length,
-  };
+  const [all, todo, in_progress, completed] = await Promise.all([
+    Task.countDocuments(baseQuery),
+    Task.countDocuments({ ...baseQuery, status: "todo" }),
+    Task.countDocuments({ ...baseQuery, status: "in_progress" }),
+    Task.countDocuments({ ...baseQuery, status: "completed" }),
+  ]);
+
+  const counts = { all, todo, in_progress, completed };
 
   return { tasks, counts };
 };
